@@ -1,32 +1,45 @@
 # Hardware Wallet Emulators
 
-**Status: Planned**
+Practice Bitcoin self-custody without owning the hardware. These emulators run actual device firmware on your desktop.
 
-Web-based practice environments for Bitcoin hardware wallets. Practice device setup, seed generation, and transaction signing without owning the hardware.
+## Available Emulators
 
-## Vision
+| Device | Type | Platform | Setup Effort |
+|--------|------|----------|-------------|
+| [SeedSigner](seedsigner/) | Desktop app (Python + tkinter) | macOS, Linux, Windows | **Easy** — run `setup.sh` |
+| [Jade](jade/) | Docker + web UI | Linux (Docker) | Medium |
+| [ColdCard](coldcard/) | Desktop app (SDL) | macOS, Linux | Hard (C toolchain required) |
 
-- Browser-based, no installation required
-- Realistic UI that mirrors the actual device experience
-- Testnet only, never touches real funds
-- Follows the same step-by-step flow as our written guides
+## Quick Start: SeedSigner (Easiest)
 
-## Planned Emulators
+```bash
+cd emulators/seedsigner
+bash setup.sh    # one-time setup
+bash run.sh      # launch emulator
+```
 
-- [ ] SeedSigner (stateless, good starting point)
-- [ ] ColdCard Mk4 / Q
-- [ ] Passport
-- [ ] Jade / Jade Plus
+Arrow keys to navigate, Enter to select, 1/2/3 for physical buttons.
+
+## Why Emulators?
+
+- **Practice before you buy.** See exactly what the device experience is like.
+- **Learn without risk.** Make mistakes on testnet, not with real Bitcoin.
+- **Stay current.** Emulators run real firmware, so they update with the device.
+- **Develop and test.** Build wallet integrations without physical hardware.
+
+## What's NOT Here Yet
+
+- **Passport** — no emulator exists for Foundation Passport. If you're interested in building one, open an issue.
+- **Browser-based versions** — all current emulators are desktop apps. Web-based versions are on the roadmap.
 
 ## Contributing
 
-If you're interested in building emulators, open an issue to discuss the approach. We're looking for contributors with experience in:
+We'd love help with:
+- Dockerizing the ColdCard simulator for easier setup
+- Building a Passport emulator (MicroPython on STM32, LVGL UI)
+- Wrapping desktop emulators in web frontends (noVNC, WebSocket canvas)
+- Testing on Windows
 
-- Hardware wallet firmware (any device)
-- Web-based UI simulation
-- Bitcoin transaction construction (PSBTs)
-- Testnet integration
+## Safety
 
-## Why This Matters
-
-Most people buy a hardware wallet and are immediately confronted with unfamiliar screens and decisions. A practice environment lets them build confidence before touching real money.
+These emulators are for **learning and testing only**. Never enter a real seed phrase or use mainnet with an emulator. Treat emulator environments as compromised by default.

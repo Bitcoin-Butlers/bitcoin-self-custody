@@ -1,0 +1,4 @@
+# Emulator build artifacts (created by setup scripts)
+emulators/seedsigner/seedsigner-emu/
+emulators/coldcard/firmware/
+emulators/jade/Jade/

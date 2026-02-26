@@ -56,7 +56,8 @@ No tracking. No paywalls. No affiliate links.
 
 - [x] Device setup guides (9 guides)
 - [x] Backup and security checklists
-- [ ] Web-based hardware wallet emulators (practice without a device)
+- [x] Hardware wallet emulators — SeedSigner (easy), Jade (Docker), ColdCard (advanced)
+- [ ] Browser-based emulators (no install required)
 - [ ] Video walkthroughs
 - [ ] Translations (community-driven or automated)
 
