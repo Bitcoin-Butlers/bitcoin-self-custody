@@ -1,6 +1,6 @@
 # Blockstream Jade / Jade Plus — Complete Setup Guide
 *Bitcoin Butlers Master Concierge*
-*Last verified: Feb 2026 | Firmware: v1.0.38+ (anti-rollback, Q4 2025)*
+*Last verified: Feb 2026 | Firmware: v1.0.39 (Feb 2026)*
 
 ---
 
