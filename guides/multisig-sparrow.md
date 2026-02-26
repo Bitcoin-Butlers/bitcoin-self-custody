@@ -222,21 +222,6 @@ The security of multisig comes from physical separation of keys.
 
 ---
 
-## Bull Bitcoin Integration
-
-Bull Bitcoin is a non-custodial Bitcoin exchange — you buy Bitcoin and it's sent directly to YOUR wallet. No exchange custody.
-
-### DCA into Your Multisig
-1. In Sparrow: **Receive** tab → generate a new address.
-2. In Bull Bitcoin: Set up a recurring buy (DCA).
-3. Set the withdrawal address to your multisig address.
-4. Bitcoin is purchased and sent directly to your multisig vault.
-5. No Bitcoin ever sits on an exchange.
-
-> **Address reuse warning:** For privacy, generate a new address for each purchase. Bull Bitcoin supports multiple withdrawal addresses — rotate them.
-
----
-
 ## Recovery Scenarios
 
 ### Scenario 1: One Device Lost/Stolen

@@ -17,33 +17,32 @@ No tracking. No paywalls. No affiliate links.
 
 ### Signing Devices & Hardware Wallets
 
-| Guide | Device | Difficulty |
-|-------|--------|------------|
-| [ColdCard Mk4](guides/coldcard-mk4.md) | Coinkite ColdCard Mk4 | Intermediate |
-| [ColdCard Q](guides/coldcard-q.md) | Coinkite ColdCard Q | Intermediate |
-| [Passport](guides/passport.md) | Foundation Passport | Beginner |
-| [Jade](guides/jade.md) | Blockstream Jade & Jade Plus | Beginner |
-| [SeedSigner](guides/seedsigner.md) | SeedSigner & SeedSigner+ | Intermediate |
+| Guide | Device |
+|-------|--------|
+| [ColdCard Mk4](guides/coldcard-mk4.md) | Coinkite ColdCard Mk4 |
+| [ColdCard Q](guides/coldcard-q.md) | Coinkite ColdCard Q |
+| [Passport](guides/passport.md) | Foundation Passport |
+| [Jade](guides/jade.md) | Blockstream Jade & Jade Plus |
+| [SeedSigner](guides/seedsigner.md) | SeedSigner & SeedSigner+ |
 
 ### Software Wallets
 
-| Guide | Software | Difficulty |
-|-------|----------|------------|
-| [Sparrow Wallet](guides/sparrow-wallet.md) | Sparrow Desktop | Intermediate |
+| Guide | Software |
+|-------|----------|
+| [Sparrow Wallet](guides/sparrow-wallet.md) | Sparrow Desktop |
 
 ### Backup & Security
 
-| Guide | Topic | Difficulty |
-|-------|-------|------------|
-| [Steel Backup](guides/steel-backup.md) | Metal seed backup plates | Beginner |
-| [Seed Generation](guides/seed-generation.md) | 5 methods compared | Intermediate |
+| Guide | Topic |
+|-------|-------|
+| [Steel Backup](guides/steel-backup.md) | Metal seed backup plates |
+| [Seed Generation](guides/seed-generation.md) | 5 methods compared |
 
 ### Advanced
 
-| Guide | Topic | Difficulty |
-|-------|-------|------------|
-| [Multisig with Sparrow](guides/multisig-sparrow.md) | 2-of-3 multisig setup | Advanced |
-| [DCA with Bull Bitcoin](guides/bull-bitcoin.md) | Non-KYC Bitcoin purchases | Beginner |
+| Guide | Topic |
+|-------|-------|
+| [Multisig with Sparrow](guides/multisig-sparrow.md) | 2-of-3 multisig setup |
 
 ## Checklists
 
@@ -55,7 +54,7 @@ No tracking. No paywalls. No affiliate links.
 
 ## Roadmap
 
-- [x] Device setup guides (10 guides)
+- [x] Device setup guides (9 guides)
 - [x] Backup and security checklists
 - [ ] Web-based hardware wallet emulators (practice without a device)
 - [ ] Video walkthroughs

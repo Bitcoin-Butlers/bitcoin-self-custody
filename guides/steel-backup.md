@@ -74,7 +74,7 @@ Steel survives:
 
 ## Multi-Sig Steel Backup
 
-*For wallets that require multiple keys to sign (e.g., 2-of-3 multisig via Sparrow or Bull Bitcoin)*
+*For wallets that require multiple keys to sign (e.g., 2-of-3 multisig via Sparrow)*
 
 ### What You're Backing Up
 A multisig wallet has more information than a single-sig wallet:
