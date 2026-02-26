@@ -1,6 +1,6 @@
 # ColdCard Q — Complete Setup Guide
 *Bitcoin Butlers Master Concierge*
-*Last verified: Feb 2026 | Firmware: v1.3.3Q (ColdCard Q)*
+*Last verified: Feb 2026 | Firmware: v1.3.5Q (ColdCard Q)*
 
 ---
 
@@ -24,7 +24,7 @@ The ColdCard Q is Coinkite's flagship device with several upgrades:
 | Keyboard | Number pad only | Full QWERTY + numbers |
 | Display | Small monochrome | Large color display |
 | QR Scanner | None | Built-in camera (reads QR codes) |
-| NFC | None | Built-in (can be permanently disabled) |
+| NFC | Yes (built-in) | Yes (built-in, can be permanently disabled) |
 | Power | USB-C only | USB-C OR 3x AAA batteries |
 | MicroSD | 1 slot | 2 slots + storage under battery door |
 | Price | Lower | Higher |
@@ -100,7 +100,7 @@ Same process as the Mk4 — two-part PIN with anti-phishing words.
 ## Step 4: Create Your Wallet (Seed Generation)
 
 1. Select **New Wallet** from the menu.
-2. The ColdCard Q generates a 24-word seed phrase.
+2. The ColdCard Q generates a 12 or 24-word seed phrase (24 recommended).
 3. Words appear on the large color display — easier to read than the Mk4.
 
 ### Write Down Your Seed Words

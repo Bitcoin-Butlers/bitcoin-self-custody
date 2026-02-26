@@ -82,7 +82,7 @@ The ColdCard PIN has two parts: a **prefix** and a **suffix**. Example: `1234-56
 You have two options: let the ColdCard generate your seed, or add your own entropy via dice rolls.
 
 1. You'll see a menu. Select **New Wallet**.
-2. The ColdCard generates a 24-word seed phrase using its hardware random number generator.
+2. The ColdCard generates a 12 or 24-word seed phrase (24 recommended) using its hardware random number generator.
 3. The words appear on screen, one page at a time.
 
 ### Alternative: Dice Roll Entropy

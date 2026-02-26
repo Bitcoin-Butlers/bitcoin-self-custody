@@ -58,8 +58,7 @@ No tracking. No paywalls. No affiliate links.
 - [x] Backup and security checklists
 - [ ] Web-based hardware wallet emulators (practice without a device)
 - [ ] Video walkthroughs
-- [ ] Translations (Spanish, Portuguese, German)
-- [ ] Taproot and Miniscript guides
+- [ ] Translations (community-driven or automated)
 
 ## Contributing
 
