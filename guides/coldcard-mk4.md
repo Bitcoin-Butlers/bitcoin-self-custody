@@ -4,6 +4,10 @@
 
 ---
 
+> **🖥️ Want to explore the interface first?** The [ColdCard simulator](../emulators/coldcard/) lets you run the real firmware on your desktop.
+
+---
+
 ## What You'll Need
 - ColdCard Mk4 (in sealed tamper-evident bag)
 - USB-C cable (power-only recommended) OR USB wall charger

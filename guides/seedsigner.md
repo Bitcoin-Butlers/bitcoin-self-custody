@@ -4,6 +4,10 @@
 
 ---
 
+> **🖥️ Don't have a SeedSigner yet?** [Try the web emulator](../emulators/seedsigner/) — run the real firmware in your browser and practice before you buy.
+
+---
+
 ## What You'll Need
 
 ### For a Pre-Built SeedSigner (Bitcoin Butlers Kit)

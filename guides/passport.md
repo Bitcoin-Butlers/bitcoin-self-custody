@@ -4,6 +4,10 @@
 
 ---
 
+> **🖥️ Want to explore the interface first?** The [Passport simulator](../emulators/passport/) runs the official firmware on your desktop.
+
+---
+
 ## What You'll Need
 - Foundation Passport Core (in sealed outer box)
 - USB-C cable (included)

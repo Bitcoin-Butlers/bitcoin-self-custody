@@ -73,8 +73,10 @@ Practice with real device firmware in your browser. No hardware needed.
 - [x] Device setup guides (5 devices + Sparrow + backup + seed gen + multisig)
 - [x] Backup and security checklists
 - [x] SeedSigner web emulator with webcam QR scanning
-- [x] ColdCard + Jade emulator documentation
-- [ ] Passport emulator (none exists yet, researching)
+- [x] ColdCard, Jade, and Passport emulator documentation + setup automation
+- [x] Passport Docker build (no local toolchain required)
+- [x] Guide ↔ emulator cross-links
+- [x] Mobile touch support + keyboard help overlay + fullscreen mode
 - [ ] Interactive tutorials inside emulators
 - [ ] Video walkthroughs
 - [ ] Translations

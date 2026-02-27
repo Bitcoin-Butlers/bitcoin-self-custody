@@ -4,6 +4,10 @@
 
 ---
 
+> **🖥️ Want to explore the interface first?** The [Jade emulator](../emulators/jade/) runs the official firmware in Docker with a web UI.
+
+---
+
 ## What You'll Need
 - Blockstream Jade or Jade Plus
 - USB-C cable (included)

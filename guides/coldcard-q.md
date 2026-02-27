@@ -4,6 +4,10 @@
 
 ---
 
+> **🖥️ Want to explore the interface first?** The [ColdCard simulator](../emulators/coldcard/) lets you run the real firmware on your desktop.
+
+---
+
 ## What You'll Need
 - ColdCard Q (in sealed tamper-evident bag)
 - 3x AAA batteries OR USB-C cable with wall charger

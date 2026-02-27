@@ -143,6 +143,46 @@ HTML_PAGE = """<!DOCTYPE html>
   }
   .status.connected { color: #10B981; }
   a { color: #FBDC7B; }
+  .toolbar {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .toolbar button {
+    background: #2a2a2a;
+    border: 1px solid #444;
+    border-radius: 6px;
+    color: #999;
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    cursor: pointer;
+  }
+  .toolbar button:hover { background: #3a3a3a; color: #f5f5f5; }
+  .overlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 240px; height: 240px;
+    background: rgba(0,0,0,0.88);
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    padding: 16px;
+    font-size: 0.75rem;
+    line-height: 1.8;
+    z-index: 10;
+    border-radius: 4px;
+  }
+  .overlay.visible { display: flex; }
+  .overlay kbd {
+    background: #333;
+    border: 1px solid #555;
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-family: monospace;
+    font-size: 0.7rem;
+    color: #FBDC7B;
+  }
+  .device { position: relative; }
   .camera-container {
     position: relative;
     width: 240px;
@@ -175,6 +215,14 @@ HTML_PAGE = """<!DOCTYPE html>
   <h1>SeedSigner Emulator</h1>
   <div class="device">
     <canvas id="screen" width="240" height="240"></canvas>
+    <div class="overlay" id="help-overlay">
+      <div><kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd> Navigate</div>
+      <div><kbd>Enter</kbd> Select</div>
+      <div><kbd>1</kbd> Key 1 (top)</div>
+      <div><kbd>2</kbd> Key 2 (middle)</div>
+      <div><kbd>3</kbd> Key 3 (bottom)</div>
+      <div style="margin-top:8px;color:#666">Press <kbd>?</kbd> to close</div>
+    </div>
     <div class="controls">
       <div class="dpad">
         <div class="empty"></div>
@@ -199,10 +247,10 @@ HTML_PAGE = """<!DOCTYPE html>
     <canvas id="camera-canvas" style="display:none"></canvas>
     <span class="camera-label">📷 Camera active</span>
   </div>
-  <p class="hint">
-    Keyboard: Arrow keys to navigate, Enter to select, 1/2/3 for side buttons.
-    Camera activates automatically when SeedSigner requests QR scanning.
-  </p>
+  <div class="toolbar">
+    <button id="btn-help" title="Keyboard shortcuts">? Help</button>
+    <button id="btn-fullscreen" title="Fullscreen">⛶ Fullscreen</button>
+  </div>
   <p class="status" id="status">Connecting...</p>
   <p class="hint" style="margin-top: 1rem;">
     <a href="https://github.com/Bitcoin-Butlers/bitcoin-self-custody" target="_blank">Bitcoin Self-Custody Docs</a>
@@ -258,8 +306,30 @@ function sendKey(key) {
   }
 }
 
+// Help overlay
+const helpOverlay = document.getElementById('help-overlay');
+function toggleHelp() { helpOverlay.classList.toggle('visible'); }
+document.getElementById('btn-help').addEventListener('click', toggleHelp);
+
+// Fullscreen
+document.getElementById('btn-fullscreen').addEventListener('click', () => {
+  const el = document.querySelector('.emulator');
+  if (document.fullscreenElement) {
+    document.exitFullscreen();
+  } else if (el.requestFullscreen) {
+    el.requestFullscreen();
+  } else if (el.webkitRequestFullscreen) {
+    el.webkitRequestFullscreen();
+  }
+});
+// Hide fullscreen button if not supported
+if (!document.fullscreenEnabled && !document.webkitFullscreenEnabled) {
+  document.getElementById('btn-fullscreen').style.display = 'none';
+}
+
 // Keyboard controls
 document.addEventListener('keydown', (e) => {
+  if (e.key === '?') { toggleHelp(); return; }
   const validKeys = ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter','1','2','3'];
   if (validKeys.includes(e.key)) {
     e.preventDefault();

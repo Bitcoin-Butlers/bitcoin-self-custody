@@ -105,6 +105,22 @@ The simulator runs the actual Passport firmware (MicroPython) on your desktop. H
 - **Color** (`just sim color`) — Passport Batch 2+ with 240x320 color display
 - **Mono** (`just sim mono`) — Founder's Edition with monochrome display
 
+## Docker (No Toolchain Required)
+
+If you don't want to install Rust and the ARM cross-compiler locally:
+
+```bash
+# Build the container (takes ~10 min first time)
+docker build -t passport-sim .
+
+# Run with X11 forwarding (Linux)
+docker run -it --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix passport-sim
+
+# Run with XQuartz (macOS)
+xhost + 127.0.0.1
+docker run -it --rm -e DISPLAY=host.docker.internal:0 passport-sim
+```
+
 ## Limitations
 
 - **Desktop only** — requires SDL2 window (no browser mode yet)
