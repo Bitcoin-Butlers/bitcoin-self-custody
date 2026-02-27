@@ -523,6 +523,37 @@ const tutorials = [
       { text: "Check out 'Advanced' for network settings (mainnet vs testnet) and other power-user options.", keys: ['↓', 'Enter'], tip: "For learning, testnet is safer. For real Bitcoin, always use mainnet." },
       { text: "You've explored the settings! Press key 3 repeatedly to return to the main menu.", keys: ['3'], tip: "Now you know where everything is when you get your real device." },
     ]
+  },
+  {
+    id: 'sign-transaction',
+    name: 'Sign a Transaction',
+    description: 'Load a seed and sign a PSBT via QR code.',
+    steps: [
+      { text: "This tutorial walks through signing a transaction using a seed phrase. First, go to 'Seeds' from the main menu.", keys: ['↓', 'Enter'], tip: "In real use, you'd load your existing seed. Here we'll create a temporary one." },
+      { text: "Select 'Create a seed' and generate a 12-word seed (same as the first tutorial).", keys: ['Enter'], tip: "Remember: this is a test seed. Never use emulator seeds for real Bitcoin." },
+      { text: "After generating and verifying your seed, SeedSigner saves it in memory for this session.", keys: ['Enter'], tip: "SeedSigner never stores seeds permanently. When you power off, the seed is gone." },
+      { text: "Now go back to the main menu. You should see a new option: 'Scan'.", keys: ['3', '3'], tip: "The Scan option appears once you have a seed loaded." },
+      { text: "Select 'Scan'. SeedSigner will activate the camera to scan a QR code.", keys: ['Enter'], tip: "In the emulator, your webcam will activate. On a real device, the built-in camera turns on." },
+      { text: "In your wallet app (Bull Bitcoin wallet for single-sig, or Sparrow for multisig), create a transaction and show the QR code. Hold it up to your webcam.", keys: [], tip: "If you don't have a wallet set up yet, that's OK. You can try this step later. For now, press key 3 to go back." },
+      { text: "SeedSigner reads the PSBT (Partially Signed Bitcoin Transaction), shows you the details, and asks you to confirm.", keys: ['↑', '↓'], tip: "Always verify: the recipient address, the amount, and the fee. On a real device, this is your last chance to catch errors." },
+      { text: "After confirming, SeedSigner signs the transaction and displays a QR code. Scan this with your wallet app to broadcast.", keys: ['Enter'], tip: "The signed transaction never touches the internet until your wallet broadcasts it. That's the air gap in action." },
+      { text: "You've completed an air-gapped transaction signing! This is how Bitcoin self-custody works in practice.", keys: [], tip: "The full flow: Wallet creates TX → QR to SeedSigner → SeedSigner signs → QR back to wallet → wallet broadcasts." },
+    ]
+  },
+  {
+    id: 'export-xpub',
+    name: 'Export Public Key to Wallet',
+    description: 'Connect SeedSigner to your wallet app.',
+    steps: [
+      { text: "First, load or create a seed (see the 'Generate a Seed Phrase' tutorial if you haven't).", keys: [], tip: "You need an active seed before you can export its public key." },
+      { text: "From the main menu, go to 'Seeds' and select your loaded seed.", keys: ['↓', 'Enter'], tip: "" },
+      { text: "Select 'Export Xpub' from the seed options.", keys: ['↓', 'Enter'], tip: "Xpub = extended public key. It lets your wallet generate receive addresses and track your balance WITHOUT the ability to spend." },
+      { text: "Choose the wallet type. For a standard single-sig wallet, select 'Single Sig'. For multisig, select 'Multisig'.", keys: ['Enter'], tip: "Single sig = one key needed to spend (use Bull Bitcoin wallet). Multisig = multiple keys needed (use Sparrow)." },
+      { text: "Choose the script type. Select 'Native Segwit' (the default and most common).", keys: ['Enter'], tip: "Native Segwit (bc1q...) has the lowest transaction fees." },
+      { text: "SeedSigner displays a QR code containing your xpub. Open your wallet app and scan this QR code to import the public key.", keys: [], tip: "In Bull Bitcoin wallet: scan the QR during wallet setup. In Sparrow: File → New Wallet → Connected Hardware Wallet → Scan." },
+      { text: "Your wallet now has your public key and can generate receive addresses. SeedSigner is only needed when you want to SPEND.", keys: [], tip: "This is the air-gapped model: your wallet watches, SeedSigner signs." },
+      { text: "Done! You can receive Bitcoin to the addresses your wallet generates, and sign spending transactions with SeedSigner.", keys: [], tip: "For extra security, verify that the first receive address matches on both your wallet and SeedSigner." },
+    ]
   }
 ];
 

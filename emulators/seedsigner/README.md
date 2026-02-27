@@ -51,8 +51,10 @@ This means you're interacting with the real SeedSigner code, not a simulation. M
 
 Click **📖 Tutorial** to access built-in guided walkthroughs:
 
-- **Generate a Seed Phrase** — Create a 12-word seed from scratch, step by step
+- **Generate a Seed Phrase** — Create a 12-word seed from scratch
 - **Explore Settings** — Learn what each setting does
+- **Sign a Transaction** — Load a seed and sign a PSBT via QR code
+- **Export Public Key to Wallet** — Connect SeedSigner to Bull Bitcoin wallet or Sparrow
 
 Tutorials show you what to press at each step while you interact with the real firmware.
 
