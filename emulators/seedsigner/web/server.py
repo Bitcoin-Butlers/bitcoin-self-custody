@@ -20,15 +20,8 @@ SCRIPT_DIR = Path(__file__).parent.resolve()
 SEEDSIGNER_SRC = SCRIPT_DIR.parent / "seedsigner-emu" / "seedsigner" / "src"
 sys.path.insert(0, str(SEEDSIGNER_SRC))
 
-# Patch: replace the tkinter display with our web display BEFORE any imports
-WEB_DISPLAY_DIR = str(SCRIPT_DIR)
-EMULATOR_DIR = str(SEEDSIGNER_SRC / "seedsigner" / "emulator")
-
-import shutil
-shutil.copy(
-    os.path.join(WEB_DISPLAY_DIR, "webDisplay.py"),
-    os.path.join(EMULATOR_DIR, "desktopDisplay.py"),
-)
+# Patches are applied by setup.sh via patches/apply.py
+# If running directly, ensure patches were applied first
 
 try:
     import websockets
@@ -150,6 +143,31 @@ HTML_PAGE = """<!DOCTYPE html>
   }
   .status.connected { color: #10B981; }
   a { color: #FBDC7B; }
+  .camera-container {
+    position: relative;
+    width: 240px;
+    height: 180px;
+    border: 1px solid #333;
+    border-radius: 8px;
+    overflow: hidden;
+    display: none;
+  }
+  .camera-container.active { display: block; }
+  .camera-container video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .camera-label {
+    position: absolute;
+    bottom: 4px;
+    left: 8px;
+    font-size: 0.65rem;
+    color: #10B981;
+    background: rgba(0,0,0,0.7);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
 </style>
 </head>
 <body>
@@ -176,8 +194,14 @@ HTML_PAGE = """<!DOCTYPE html>
       </div>
     </div>
   </div>
+  <div class="camera-container" id="camera-container">
+    <video id="camera" autoplay playsinline muted></video>
+    <canvas id="camera-canvas" style="display:none"></canvas>
+    <span class="camera-label">📷 Camera active</span>
+  </div>
   <p class="hint">
-    Keyboard: Arrow keys to navigate, Enter to select, 1/2/3 for side buttons
+    Keyboard: Arrow keys to navigate, Enter to select, 1/2/3 for side buttons.
+    Camera activates automatically when SeedSigner requests QR scanning.
   </p>
   <p class="status" id="status">Connecting...</p>
   <p class="hint" style="margin-top: 1rem;">
@@ -208,6 +232,14 @@ function connect() {
       const img = new Image();
       img.onload = () => ctx.drawImage(img, 0, 0, 240, 240);
       img.src = 'data:image/png;base64,' + data.data;
+    } else if (data.type === 'camera_status') {
+      if (data.active && !cameraWasActive) {
+        cameraWasActive = true;
+        startCamera();
+      } else if (!data.active && cameraWasActive) {
+        cameraWasActive = false;
+        stopCamera();
+      }
     }
   };
 
@@ -250,6 +282,50 @@ for (const [id, key] of Object.entries(btnMap)) {
   document.getElementById(id).addEventListener('mousedown', () => sendKey(key));
 }
 
+// Camera handling
+const cameraVideo = document.getElementById('camera');
+const cameraCanvas = document.getElementById('camera-canvas');
+const cameraContainer = document.getElementById('camera-container');
+const cameraCtx = cameraCanvas.getContext('2d');
+let cameraStream = null;
+let cameraInterval = null;
+let cameraWasActive = false;
+
+async function startCamera() {
+  if (cameraStream) return;
+  try {
+    cameraStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'environment', width: 640, height: 480 },
+      audio: false,
+    });
+    cameraVideo.srcObject = cameraStream;
+    cameraContainer.classList.add('active');
+    cameraCanvas.width = 640;
+    cameraCanvas.height = 480;
+
+    // Send frames at ~10fps
+    cameraInterval = setInterval(() => {
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        cameraCtx.drawImage(cameraVideo, 0, 0, 640, 480);
+        const dataUrl = cameraCanvas.toDataURL('image/jpeg', 0.7);
+        const base64 = dataUrl.split(',')[1];
+        ws.send(JSON.stringify({ type: 'camera_frame', data: base64 }));
+      }
+    }, 100);
+  } catch (e) {
+    console.warn('Camera access denied or unavailable:', e);
+  }
+}
+
+function stopCamera() {
+  if (cameraInterval) { clearInterval(cameraInterval); cameraInterval = null; }
+  if (cameraStream) {
+    cameraStream.getTracks().forEach(t => t.stop());
+    cameraStream = null;
+  }
+  cameraContainer.classList.remove('active');
+}
+
 connect();
 </script>
 </body>
@@ -272,6 +348,13 @@ async def handle_websocket(websocket):
                         'data': frame,
                     }))
                     last_frame = frame
+
+                # Tell browser if SeedSigner wants camera
+                from seedsigner.hardware.camera import is_camera_active
+                await websocket.send(json.dumps({
+                    'type': 'camera_status',
+                    'active': is_camera_active(),
+                }))
             await asyncio.sleep(0.05)  # 20fps max
 
     stream_task = asyncio.create_task(stream_frames())
@@ -282,6 +365,12 @@ async def handle_websocket(websocket):
             if data['type'] == 'key':
                 from seedsigner.emulator.desktopDisplay import desktopDisplay
                 desktopDisplay.handle_key(data['key'])
+            elif data['type'] == 'camera_frame':
+                # Browser sending a webcam frame
+                import base64
+                from seedsigner.hardware.camera import set_camera_frame
+                frame_bytes = base64.b64decode(data['data'])
+                set_camera_frame(frame_bytes)
     except websockets.exceptions.ConnectionClosed:
         pass
     finally:
@@ -293,28 +382,23 @@ async def handle_index(request):
 
 
 def patch_seedsigner():
-    """Patch SeedSigner source for desktop compatibility."""
-    # Stub out picamera (Pi-only hardware)
+    """Patch SeedSigner runtime for desktop compatibility."""
+    # Stub out Pi-only hardware modules
     import types
-    picamera_mod = types.ModuleType('picamera')
-    picamera_array = types.ModuleType('picamera.array')
-    picamera_mod.PiCamera = type('PiCamera', (), {'__init__': lambda *a, **k: None})
-    picamera_array.PiRGBArray = type('PiRGBArray', (), {'__init__': lambda *a, **k: None})
-    picamera_mod.array = picamera_array
-    sys.modules['picamera'] = picamera_mod
-    sys.modules['picamera.array'] = picamera_array
-
-    # Patch Renderer to add is_screenshot_generator attribute if missing
-    renderer_path = SEEDSIGNER_SRC / "seedsigner" / "gui" / "renderer.py"
-    if renderer_path.exists():
-        content = renderer_path.read_text()
-        if 'is_screenshot_generator' not in content:
-            content = content.replace(
-                'if self.display_type == DISPLAY_TYPE__ST7789:',
-                'self.is_screenshot_generator = False\n        if self.display_type == DISPLAY_TYPE__ST7789:',
-                1
-            )
-            renderer_path.write_text(content)
+    for mod_name in ['picamera', 'picamera.array', 'spidev', 'RPi', 'RPi.GPIO']:
+        sys.modules[mod_name] = types.ModuleType(mod_name)
+    # picamera needs specific attributes
+    sys.modules['picamera'].PiCamera = type('PiCamera', (), {'__init__': lambda *a, **k: None})
+    sys.modules['picamera.array'].PiRGBArray = type('PiRGBArray', (), {'__init__': lambda *a, **k: None})
+    sys.modules['picamera'].array = sys.modules['picamera.array']
+    # spidev needs SpiDev class
+    sys.modules['spidev'].SpiDev = type('SpiDev', (), {
+        '__init__': lambda *a, **k: None,
+        'open': lambda *a, **k: None,
+        'xfer2': lambda *a, **k: [],
+        'close': lambda *a, **k: None,
+    })
+    # File-level patches are handled by patches/apply.py during setup
 
 
 def start_seedsigner():
