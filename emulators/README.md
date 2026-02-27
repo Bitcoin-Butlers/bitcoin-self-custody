@@ -1,14 +1,15 @@
 # Hardware Wallet Emulators
 
-Practice Bitcoin self-custody without owning the hardware. These emulators run actual device firmware on your desktop.
+Practice Bitcoin self-custody without owning the hardware. These emulators run actual device firmware on your computer.
 
 ## Available Emulators
 
-| Device | Type | Platform | Setup Effort |
-|--------|------|----------|-------------|
-| [SeedSigner](seedsigner/) | Desktop app (Python + tkinter) | macOS, Linux, Windows | **Easy** — run `setup.sh` |
+| Device | Type | Platform | Setup |
+|--------|------|----------|-------|
+| [SeedSigner](seedsigner/) | **Web (browser)** | macOS, Linux | **Easy** — `setup.sh` + open browser |
+| [Passport](passport/) | Desktop (SDL) | macOS, Linux | Medium (Rust + C toolchain) |
+| [ColdCard](coldcard/) | Desktop (SDL) | macOS, Linux | Hard (C toolchain) |
 | [Jade](jade/) | Docker + web UI | Linux (Docker) | Medium |
-| [ColdCard](coldcard/) | Desktop app (SDL) | macOS, Linux | Hard (C toolchain required) |
 
 ## Quick Start: SeedSigner (Easiest)
 
@@ -16,9 +17,10 @@ Practice Bitcoin self-custody without owning the hardware. These emulators run a
 cd emulators/seedsigner
 bash setup.sh    # one-time setup
 bash run.sh      # launch emulator
+# Open http://localhost:8888
 ```
 
-Arrow keys to navigate, Enter to select, 1/2/3 for physical buttons.
+Arrow keys to navigate, Enter to select, 1/2/3 for side buttons. Webcam activates automatically for QR scanning.
 
 ## Why Emulators?
 
@@ -27,18 +29,13 @@ Arrow keys to navigate, Enter to select, 1/2/3 for physical buttons.
 - **Stay current.** Emulators run real firmware, so they update with the device.
 - **Develop and test.** Build wallet integrations without physical hardware.
 
-## What's NOT Here Yet
-
-- **Passport** — no emulator exists for Foundation Passport. If you're interested in building one, open an issue.
-- **Browser-based versions** — all current emulators are desktop apps. Web-based versions are on the roadmap.
-
 ## Contributing
 
 We'd love help with:
-- Dockerizing the ColdCard simulator for easier setup
-- Building a Passport emulator (MicroPython on STM32, LVGL UI)
-- Wrapping desktop emulators in web frontends (noVNC, WebSocket canvas)
-- Testing on Windows
+- Testing emulators on different platforms
+- Web-wrapping desktop emulators (Passport, ColdCard) for browser access
+- Dockerizing build processes for easier setup
+- Writing interactive tutorials
 
 ## Safety
 
