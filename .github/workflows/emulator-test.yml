@@ -1,0 +1,60 @@
+name: Emulator Smoke Test
+
+on:
+  push:
+    branches: [main]
+    paths: ['emulators/**']
+  pull_request:
+    branches: [main]
+    paths: ['emulators/**']
+
+jobs:
+  seedsigner:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-tk libzbar0
+
+      - name: Run setup
+        working-directory: emulators/seedsigner
+        run: bash setup.sh
+
+      - name: Start emulator and verify HTTP
+        working-directory: emulators/seedsigner
+        run: |
+          bash run.sh &
+          SERVER_PID=$!
+
+          # Wait for HTTP server
+          for i in $(seq 1 30); do
+            if curl -s http://localhost:8888 | grep -q "SeedSigner"; then
+              echo "✅ HTTP server responding"
+              break
+            fi
+            sleep 1
+          done
+
+          # Verify response
+          RESPONSE=$(curl -s http://localhost:8888)
+          if echo "$RESPONSE" | grep -q "SeedSigner"; then
+            echo "✅ Emulator page served successfully"
+          else
+            echo "❌ Emulator page not serving"
+            exit 1
+          fi
+
+          # Check page size is reasonable (>5KB)
+          SIZE=$(echo "$RESPONSE" | wc -c)
+          echo "Page size: $SIZE bytes"
+          if [ "$SIZE" -lt 5000 ]; then
+            echo "❌ Page suspiciously small"
+            exit 1
+          fi
+
+          echo "✅ All checks passed"
+          kill $SERVER_PID 2>/dev/null || true

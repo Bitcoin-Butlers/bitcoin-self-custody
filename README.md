@@ -1,21 +1,37 @@
 # Bitcoin Self-Custody Documentation
 
-Free, open-source guides for securing your own Bitcoin. Device in hand, step by step.
+Free, open-source guides and emulators for securing your own Bitcoin. Device in hand, step by step.
 
 [![License: CC BY-SA 4.0](https://img.shields.io/badge/Docs-CC%20BY--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-sa/4.0/)
 [![License: MIT](https://img.shields.io/badge/Code-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Emulator Test](https://github.com/Bitcoin-Butlers/bitcoin-self-custody/actions/workflows/emulator-test.yml/badge.svg)](https://github.com/Bitcoin-Butlers/bitcoin-self-custody/actions/workflows/emulator-test.yml)
 
 ## What This Is
 
-A community-maintained collection of setup guides, backup checklists, and inheritance planning resources for Bitcoin self-custody. Every guide is written to follow along with your device in hand.
+Setup guides, backup checklists, and **browser-based hardware wallet emulators** for Bitcoin self-custody. Practice signing transactions, generating seeds, and navigating device menus without buying hardware first.
 
 No tracking. No paywalls. No affiliate links.
 
 **Maintained by [Bitcoin Butlers](https://bitcoinbutlers.com)** — a platform connecting self-custody experts with people who need hands-on help.
 
-## Guides
+## 🖥️ Emulators
 
-### Signing Devices & Hardware Wallets
+Practice with real device firmware in your browser. No hardware needed.
+
+| Device | Type | Status |
+|--------|------|--------|
+| [SeedSigner](emulators/seedsigner/) | Web (browser) | ✅ Working — webcam QR scanning |
+| [ColdCard Mk4/Q](emulators/coldcard/) | SDL (desktop) | 📖 Setup docs |
+| [Jade](emulators/jade/) | Docker (web UI) | 📖 Setup docs |
+| Passport | — | 🔬 Research |
+
+**SeedSigner web emulator** runs the actual firmware in your browser via WebSocket. Navigate menus with arrow keys, scan QR codes with your webcam. [Get started →](emulators/seedsigner/)
+
+<!-- TODO: Add screenshot/GIF of emulator running -->
+
+## 📖 Guides
+
+### Signing Devices
 
 | Guide | Device |
 |-------|--------|
@@ -25,7 +41,7 @@ No tracking. No paywalls. No affiliate links.
 | [Jade](guides/jade.md) | Blockstream Jade & Jade Plus |
 | [SeedSigner](guides/seedsigner.md) | SeedSigner & SeedSigner+ |
 
-### Software Wallets
+### Software
 
 | Guide | Software |
 |-------|----------|
@@ -44,7 +60,7 @@ No tracking. No paywalls. No affiliate links.
 |-------|-------|
 | [Multisig with Sparrow](guides/multisig-sparrow.md) | 2-of-3 multisig setup |
 
-## Checklists
+## ✅ Checklists
 
 | Checklist | For |
 |-----------|-----|
@@ -54,28 +70,30 @@ No tracking. No paywalls. No affiliate links.
 
 ## Roadmap
 
-- [x] Device setup guides (9 guides)
+- [x] Device setup guides (5 devices + Sparrow + backup + seed gen + multisig)
 - [x] Backup and security checklists
-- [x] Hardware wallet emulators — SeedSigner (easy), Jade (Docker), ColdCard (advanced)
-- [ ] Browser-based emulators (no install required)
+- [x] SeedSigner web emulator with webcam QR scanning
+- [x] ColdCard + Jade emulator documentation
+- [ ] Passport emulator (none exists yet, researching)
+- [ ] Interactive tutorials inside emulators
 - [ ] Video walkthroughs
-- [ ] Translations (community-driven or automated)
+- [ ] Translations
 
 ## Contributing
 
 We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 **Ways to help:**
-- Fix errors or outdated information
+- Fix errors or outdated info
+- Test emulators on different platforms
 - Add screenshots or diagrams
-- Translate guides into other languages
-- Improve beginner-friendliness
-- Add new device guides
+- Translate guides
+- Build new emulator integrations
 
 ## License
 
-- **Documentation** (everything in `guides/` and `checklists/`): [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
-- **Code** (everything in `emulators/` and any scripts): [MIT](LICENSE)
+- **Documentation** (guides, checklists): [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+- **Code** (emulators, scripts): [MIT](LICENSE)
 
 ## Need Hands-On Help?
 
