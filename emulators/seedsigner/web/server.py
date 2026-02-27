@@ -48,6 +48,14 @@ HTML_PAGE = """<!DOCTYPE html>
 <meta charset="utf-8">
 <title>SeedSigner Emulator</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<meta name="description" content="Run SeedSigner in your browser. Practice Bitcoin self-custody without hardware.">
+<meta property="og:title" content="SeedSigner Web Emulator">
+<meta property="og:description" content="Run real SeedSigner firmware in your browser. Navigate menus, generate seeds, scan QR codes with your webcam. No hardware needed.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://github.com/Bitcoin-Butlers/bitcoin-self-custody">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SeedSigner Web Emulator">
+<meta name="twitter:description" content="Practice Bitcoin self-custody in your browser. Real firmware, no hardware.">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -313,6 +321,7 @@ HTML_PAGE = """<!DOCTYPE html>
       <div><kbd>1</kbd> Key 1 (top)</div>
       <div><kbd>2</kbd> Key 2 (middle)</div>
       <div><kbd>3</kbd> Key 3 (bottom)</div>
+      <div><kbd>Esc</kbd> Back (same as key 3)</div>
       <div style="margin-top:8px;color:#666">Press <kbd>?</kbd> to close</div>
     </div>
     <div class="controls">
@@ -445,6 +454,7 @@ if (!document.fullscreenEnabled && !document.webkitFullscreenEnabled) {
 // Keyboard controls
 document.addEventListener('keydown', (e) => {
   if (e.key === '?') { toggleHelp(); return; }
+  if (e.key === 'Escape') { e.preventDefault(); sendKey('3'); return; }
   const validKeys = ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter','1','2','3'];
   if (validKeys.includes(e.key)) {
     e.preventDefault();

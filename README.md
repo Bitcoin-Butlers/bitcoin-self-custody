@@ -31,6 +31,12 @@ Practice with real device firmware in your browser. No hardware needed.
 
 ## 📖 Guides
 
+### Getting Started
+
+| Guide | For |
+|-------|-----|
+| [Choosing a Device](guides/choosing-a-device.md) | **Start here.** Compare all 5 signing devices side by side. |
+
 ### Signing Devices
 
 | Guide | Device |
