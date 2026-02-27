@@ -47,6 +47,15 @@ The emulator runs the actual SeedSigner firmware (Python) on your desktop, with 
 
 This means you're interacting with the real SeedSigner code, not a simulation. Menu flows, seed generation, and signing logic are identical to the physical device.
 
+## Tutorials
+
+Click **📖 Tutorial** to access built-in guided walkthroughs:
+
+- **Generate a Seed Phrase** — Create a 12-word seed from scratch, step by step
+- **Explore Settings** — Learn what each setting does
+
+Tutorials show you what to press at each step while you interact with the real firmware.
+
 ## Limitations
 
 - **No camera/QR scanning** — the emulator can't access your webcam for QR code input (yet)

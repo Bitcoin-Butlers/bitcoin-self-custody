@@ -77,7 +77,7 @@ Practice with real device firmware in your browser. No hardware needed.
 - [x] Passport Docker build (no local toolchain required)
 - [x] Guide ↔ emulator cross-links
 - [x] Mobile touch support + keyboard help overlay + fullscreen mode
-- [ ] Interactive tutorials inside emulators
+- [x] Interactive tutorials (Generate a Seed Phrase, Explore Settings)
 - [ ] Video walkthroughs
 - [ ] Translations
 

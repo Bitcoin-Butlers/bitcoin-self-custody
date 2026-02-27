@@ -158,6 +158,97 @@ HTML_PAGE = """<!DOCTYPE html>
     cursor: pointer;
   }
   .toolbar button:hover { background: #3a3a3a; color: #f5f5f5; }
+  .toolbar button.active { background: #FBDC7B; color: #000; }
+  .main-layout {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+  }
+  .tutorial-panel {
+    background: #1a1a1a;
+    border: 2px solid #333;
+    border-radius: 16px;
+    padding: 20px;
+    width: 260px;
+    display: none;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .tutorial-panel.visible { display: flex; }
+  .tutorial-title {
+    color: #FBDC7B;
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+  .tutorial-step-count {
+    color: #666;
+    font-size: 0.7rem;
+  }
+  .tutorial-instruction {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    min-height: 80px;
+  }
+  .tutorial-keys {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .tutorial-keys kbd {
+    background: #333;
+    border: 1px solid #555;
+    border-radius: 3px;
+    padding: 2px 8px;
+    font-family: monospace;
+    font-size: 0.8rem;
+    color: #FBDC7B;
+  }
+  .tutorial-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .tutorial-nav button {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #444;
+    border-radius: 6px;
+    background: #2a2a2a;
+    color: #f5f5f5;
+    cursor: pointer;
+    font-size: 0.8rem;
+  }
+  .tutorial-nav button:hover { background: #3a3a3a; }
+  .tutorial-nav button:disabled { opacity: 0.3; cursor: default; }
+  .tutorial-tip {
+    font-size: 0.7rem;
+    color: #666;
+    font-style: italic;
+  }
+  .tutorial-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .tutorial-menu button {
+    text-align: left;
+    padding: 10px 12px;
+    border: 1px solid #333;
+    border-radius: 8px;
+    background: #222;
+    color: #f5f5f5;
+    cursor: pointer;
+    font-size: 0.85rem;
+  }
+  .tutorial-menu button:hover { border-color: #FBDC7B; }
+  .tutorial-menu .tutorial-label {
+    color: #666;
+    font-size: 0.7rem;
+  }
+  @media (max-width: 600px) {
+    .main-layout { flex-direction: column; align-items: center; }
+    .tutorial-panel { width: 100%; max-width: 340px; }
+  }
   .overlay {
     position: absolute;
     top: 0; left: 0;
@@ -213,6 +304,7 @@ HTML_PAGE = """<!DOCTYPE html>
 <body>
 <div class="emulator">
   <h1>SeedSigner Emulator</h1>
+  <div class="main-layout">
   <div class="device">
     <canvas id="screen" width="240" height="240"></canvas>
     <div class="overlay" id="help-overlay">
@@ -242,6 +334,28 @@ HTML_PAGE = """<!DOCTYPE html>
       </div>
     </div>
   </div>
+  <div class="tutorial-panel" id="tutorial-panel">
+    <div id="tutorial-menu-view">
+      <div class="tutorial-title">📖 Tutorials</div>
+      <p style="font-size:0.8rem;color:#999;margin:4px 0 12px">Learn by doing. Follow along step by step.</p>
+      <div class="tutorial-menu" id="tutorial-menu"></div>
+    </div>
+    <div id="tutorial-step-view" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div class="tutorial-title" id="tutorial-name"></div>
+        <button style="background:none;border:none;color:#666;cursor:pointer;font-size:1rem" id="tutorial-close">✕</button>
+      </div>
+      <div class="tutorial-step-count" id="tutorial-progress"></div>
+      <div class="tutorial-instruction" id="tutorial-text"></div>
+      <div class="tutorial-keys" id="tutorial-keys"></div>
+      <div class="tutorial-tip" id="tutorial-tip"></div>
+      <div class="tutorial-nav">
+        <button id="tutorial-prev">← Back</button>
+        <button id="tutorial-next">Next →</button>
+      </div>
+    </div>
+  </div>
+  </div>
   <div class="camera-container" id="camera-container">
     <video id="camera" autoplay playsinline muted></video>
     <canvas id="camera-canvas" style="display:none"></canvas>
@@ -249,6 +363,7 @@ HTML_PAGE = """<!DOCTYPE html>
   </div>
   <div class="toolbar">
     <button id="btn-help" title="Keyboard shortcuts">? Help</button>
+    <button id="btn-tutorial" title="Interactive tutorials">📖 Tutorial</button>
     <button id="btn-fullscreen" title="Fullscreen">⛶ Fullscreen</button>
   </div>
   <p class="status" id="status">Connecting...</p>
@@ -410,6 +525,106 @@ function stopCamera() {
   }
   cameraContainer.classList.remove('active');
 }
+
+// Tutorial system
+const tutorials = [
+  {
+    id: 'generate-seed',
+    name: 'Generate a Seed Phrase',
+    description: 'Create a new 12-word seed phrase from scratch.',
+    steps: [
+      { text: "You should see the SeedSigner main menu. Use the arrow keys or on-screen buttons to navigate.", keys: [], tip: "If the screen says 'Waiting for SeedSigner...', wait a few seconds for the firmware to load." },
+      { text: "Navigate down to 'Seeds' and press Enter to select it.", keys: ['↓', 'Enter'], tip: "Seeds is the second item in the main menu." },
+      { text: "You'll see the Seeds menu. Select 'Create a seed' by pressing Enter.", keys: ['Enter'], tip: "" },
+      { text: "Choose '12 words' or '24 words'. For this tutorial, select 12 words.", keys: ['Enter'], tip: "12 words is standard for most use cases. 24 words adds extra entropy but isn't strictly necessary." },
+      { text: "SeedSigner needs randomness to generate your seed. Select 'Calculator' for the simplest method.", keys: ['Enter'], tip: "On a real device, you'd use dice rolls or the camera for better entropy. The calculator method uses the device's built-in randomness." },
+      { text: "Your seed phrase is being generated! SeedSigner will show you 12 words, one screen at a time.", keys: ['Enter'], tip: "On a real device, you'd write each word on paper or stamp it into steel. NEVER type seed words into a computer." },
+      { text: "Press Enter to advance through each word. Read them carefully.", keys: ['Enter'], tip: "The order matters. Word #1 must stay word #1." },
+      { text: "After viewing all words, SeedSigner will quiz you to verify you wrote them down correctly.", keys: ['↑', '↓', 'Enter'], tip: "This verification step exists because getting even one word wrong means losing your Bitcoin forever." },
+      { text: "Complete the verification quiz by selecting the correct word for each position.", keys: ['↑', '↓', 'Enter'], tip: "Take your time. On a real device, check your written backup." },
+      { text: "Congratulations! You've generated a seed phrase. On a real SeedSigner, you'd now export the public key to a wallet like Sparrow.", keys: [], tip: "⚠️ This was practice. Never use a seed generated in an emulator for real Bitcoin." },
+    ]
+  },
+  {
+    id: 'explore-settings',
+    name: 'Explore Settings',
+    description: 'Learn what each setting does.',
+    steps: [
+      { text: "From the main menu, navigate to 'Settings' and press Enter.", keys: ['↓', 'Enter'], tip: "Settings is near the bottom of the main menu." },
+      { text: "Browse through the settings categories. Each controls a different aspect of the device.", keys: ['↑', '↓', 'Enter'], tip: "" },
+      { text: "Try 'Display' — you can change the screen brightness and orientation.", keys: ['Enter'], tip: "On a real device, higher brightness drains the battery faster." },
+      { text: "Press key 3 (or the back button) to go back to the settings menu.", keys: ['3'], tip: "Key 3 is always 'back' in SeedSigner." },
+      { text: "Check out 'Advanced' for network settings (mainnet vs testnet) and other power-user options.", keys: ['↓', 'Enter'], tip: "For learning, testnet is safer. For real Bitcoin, always use mainnet." },
+      { text: "You've explored the settings! Press key 3 repeatedly to return to the main menu.", keys: ['3'], tip: "Now you know where everything is when you get your real device." },
+    ]
+  }
+];
+
+const tutorialPanel = document.getElementById('tutorial-panel');
+const tutorialMenu = document.getElementById('tutorial-menu');
+const tutorialMenuView = document.getElementById('tutorial-menu-view');
+const tutorialStepView = document.getElementById('tutorial-step-view');
+const tutorialName = document.getElementById('tutorial-name');
+const tutorialProgress = document.getElementById('tutorial-progress');
+const tutorialText = document.getElementById('tutorial-text');
+const tutorialKeys = document.getElementById('tutorial-keys');
+const tutorialTip = document.getElementById('tutorial-tip');
+const tutorialPrev = document.getElementById('tutorial-prev');
+const tutorialNext = document.getElementById('tutorial-next');
+const tutorialClose = document.getElementById('tutorial-close');
+const tutorialBtn = document.getElementById('btn-tutorial');
+
+let currentTutorial = null;
+let currentStep = 0;
+
+// Build tutorial menu
+tutorials.forEach(t => {
+  const btn = document.createElement('button');
+  btn.innerHTML = `${t.name}<br><span class="tutorial-label">${t.description}</span>`;
+  btn.addEventListener('click', () => startTutorial(t));
+  tutorialMenu.appendChild(btn);
+});
+
+function toggleTutorial() {
+  tutorialPanel.classList.toggle('visible');
+  tutorialBtn.classList.toggle('active');
+  if (!tutorialPanel.classList.contains('visible')) {
+    currentTutorial = null;
+    tutorialMenuView.style.display = '';
+    tutorialStepView.style.display = 'none';
+  }
+}
+
+function startTutorial(t) {
+  currentTutorial = t;
+  currentStep = 0;
+  tutorialMenuView.style.display = 'none';
+  tutorialStepView.style.display = '';
+  tutorialName.textContent = t.name;
+  renderStep();
+}
+
+function renderStep() {
+  const step = currentTutorial.steps[currentStep];
+  tutorialProgress.textContent = `Step ${currentStep + 1} of ${currentTutorial.steps.length}`;
+  tutorialText.textContent = step.text;
+  tutorialKeys.innerHTML = step.keys.map(k => `<kbd>${k}</kbd>`).join('');
+  tutorialTip.textContent = step.tip || '';
+  tutorialPrev.disabled = currentStep === 0;
+  tutorialNext.textContent = currentStep === currentTutorial.steps.length - 1 ? 'Done ✓' : 'Next →';
+}
+
+tutorialBtn.addEventListener('click', toggleTutorial);
+tutorialClose.addEventListener('click', () => {
+  currentTutorial = null;
+  tutorialMenuView.style.display = '';
+  tutorialStepView.style.display = 'none';
+});
+tutorialPrev.addEventListener('click', () => { if (currentStep > 0) { currentStep--; renderStep(); } });
+tutorialNext.addEventListener('click', () => {
+  if (currentStep < currentTutorial.steps.length - 1) { currentStep++; renderStep(); }
+  else { tutorialClose.click(); }
+});
 
 connect();
 </script>
