@@ -47,7 +47,7 @@ HTML_PAGE = """<!DOCTYPE html>
 <head>
 <meta charset="utf-8">
 <title>SeedSigner Emulator</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -112,8 +112,8 @@ HTML_PAGE = """<!DOCTYPE html>
     justify-content: center;
   }
   .dpad button:hover { background: #3a3a3a; }
-  .dpad button:active { background: #FBDC7B; color: #000; }
-  .dpad .empty { border: none; background: transparent; cursor: default; }
+  .dpad button:active, .dpad button.pressed { background: #FBDC7B; color: #000; }
+  .dpad .empty { border: none; background: transparent; cursor: default; pointer-events: none; }
   .side-buttons {
     display: flex;
     flex-direction: column;
@@ -130,7 +130,7 @@ HTML_PAGE = """<!DOCTYPE html>
     cursor: pointer;
   }
   .side-buttons button:hover { background: #3a3a3a; }
-  .side-buttons button:active { background: #FBDC7B; color: #000; }
+  .side-buttons button:active, .side-buttons button.pressed { background: #FBDC7B; color: #000; }
   .hint {
     color: #666;
     font-size: 0.8rem;
@@ -267,7 +267,7 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-// Button click controls
+// Button controls (mouse + touch)
 const btnMap = {
   'btn-up': 'ArrowUp',
   'btn-down': 'ArrowDown',
@@ -279,8 +279,23 @@ const btnMap = {
   'btn-3': '3',
 };
 for (const [id, key] of Object.entries(btnMap)) {
-  document.getElementById(id).addEventListener('mousedown', () => sendKey(key));
+  const btn = document.getElementById(id);
+  btn.addEventListener('mousedown', () => sendKey(key));
+  btn.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    btn.classList.add('pressed');
+    sendKey(key);
+  });
+  btn.addEventListener('touchend', () => btn.classList.remove('pressed'));
 }
+
+// Loading state
+ctx.fillStyle = '#1a1a1a';
+ctx.fillRect(0, 0, 240, 240);
+ctx.fillStyle = '#666';
+ctx.font = '14px system-ui';
+ctx.textAlign = 'center';
+ctx.fillText('Waiting for SeedSigner...', 120, 120);
 
 // Camera handling
 const cameraVideo = document.getElementById('camera');
