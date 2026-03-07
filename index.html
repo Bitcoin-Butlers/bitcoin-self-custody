@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bitcoin Self-Custody Tutorials</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0a0a;
+    color: rgba(255,248,230,0.85);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    font-size: 15px;
+  }
+
+  /* Nav */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(10,10,10,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(251,220,123,0.08);
+    padding: 0 24px;
+  }
+  .nav-inner {
+    max-width: 1100px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 56px;
+  }
+  .nav-brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px; font-weight: 400; font-style: italic;
+    background: linear-gradient(90deg, #FF9125, #FBDC7B, #FDA24A);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    cursor: pointer;
+  }
+  .nav-links { display: flex; gap: 8px; flex-wrap: wrap; }
+  .nav-links button {
+    background: none; border: 1px solid transparent;
+    color: rgba(255,248,230,0.5); font-size: 13px; font-weight: 400;
+    padding: 6px 12px; border-radius: 6px; cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .nav-links button:hover { color: rgba(255,248,230,0.85); }
+  .nav-links button.active {
+    color: #FBDC7B; border-color: rgba(251,220,123,0.3);
+    background: rgba(251,220,123,0.05);
+  }
+
+  /* Mobile nav toggle */
+  .nav-toggle { display: none; background: none; border: none; color: #FBDC7B; font-size: 24px; cursor: pointer; }
+  @media (max-width: 768px) {
+    .nav-toggle { display: block; }
+    .nav-links { display: none; position: absolute; top: 56px; left: 0; right: 0; background: rgba(10,10,10,0.98); padding: 16px; flex-direction: column; border-bottom: 1px solid rgba(251,220,123,0.08); }
+    .nav-links.open { display: flex; }
+  }
+
+  /* Layout */
+  main {
+    max-width: 800px; margin: 0 auto;
+    padding: 80px 24px 60px;
+  }
+
+  /* Home */
+  .home-hero {
+    text-align: center;
+    padding: 60px 0 40px;
+  }
+  .home-hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 42px; font-weight: 400; font-style: italic;
+    margin-bottom: 16px;
+  }
+  .home-hero h1 span {
+    background: linear-gradient(90deg, #FF9125, #FBDC7B, #FDA24A);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .home-hero p {
+    font-size: 16px; color: rgba(255,248,230,0.6); max-width: 520px; margin: 0 auto;
+  }
+  .home-tagline {
+    font-size: 13px; letter-spacing: 3px; color: rgba(251,220,123,0.5);
+    margin-top: 24px; text-transform: uppercase;
+  }
+
+  /* Card grid */
+  .card-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px; margin: 32px 0;
+  }
+  .card {
+    background: rgba(251,220,123,0.02);
+    border: 1px solid rgba(251,220,123,0.08);
+    border-radius: 12px; padding: 24px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .card:hover {
+    border-color: rgba(251,220,123,0.25);
+    background: rgba(251,220,123,0.04);
+  }
+  .card h3 { font-size: 15px; font-weight: 600; color: #f5f5f5; margin-bottom: 6px; }
+  .card p { font-size: 13px; color: rgba(255,248,230,0.55); line-height: 1.5; }
+  .card .badge {
+    display: inline-block; margin-top: 10px;
+    font-size: 11px; font-weight: 500; letter-spacing: 1px;
+    color: #FBDC7B; background: rgba(251,220,123,0.08);
+    padding: 3px 10px; border-radius: 4px; text-transform: uppercase;
+  }
+
+  .section-label {
+    font-size: 11px; font-weight: 500; letter-spacing: 4px;
+    text-transform: uppercase; color: rgba(251,220,123,0.5);
+    margin: 48px 0 12px;
+  }
+
+  /* Guide content (rendered markdown) */
+  .guide-content { display: none; }
+  .guide-content.active { display: block; }
+
+  .guide-content h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px; font-weight: 400; font-style: italic;
+    margin-bottom: 8px; line-height: 1.2;
+    color: #f5f5f5;
+  }
+  .guide-content h2 {
+    font-size: 20px; font-weight: 600; color: #FBDC7B;
+    margin: 36px 0 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid rgba(251,220,123,0.1);
+  }
+  .guide-content h3 {
+    font-size: 16px; font-weight: 600; color: #f5f5f5;
+    margin: 24px 0 8px;
+  }
+  .guide-content h4 {
+    font-size: 14px; font-weight: 600; color: rgba(251,220,123,0.8);
+    margin: 16px 0 6px;
+  }
+  .guide-content p { margin-bottom: 14px; }
+  .guide-content a { color: #FBDC7B; text-decoration: none; }
+  .guide-content a:hover { text-decoration: underline; }
+  .guide-content strong { font-weight: 600; color: #f5f5f5; }
+  .guide-content em { font-style: italic; color: rgba(255,248,230,0.7); }
+  .guide-content ul, .guide-content ol { margin: 0 0 14px 20px; }
+  .guide-content li { margin-bottom: 6px; }
+  .guide-content blockquote {
+    border-left: 3px solid rgba(251,220,123,0.3);
+    padding: 12px 20px; margin: 16px 0;
+    background: rgba(251,220,123,0.03);
+    border-radius: 0 8px 8px 0;
+    color: rgba(255,248,230,0.75);
+  }
+  .guide-content code {
+    background: rgba(251,220,123,0.08);
+    padding: 2px 6px; border-radius: 4px;
+    font-size: 13px; color: #FBDC7B;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+  .guide-content pre {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(251,220,123,0.08);
+    border-radius: 8px; padding: 16px;
+    overflow-x: auto; margin: 16px 0;
+  }
+  .guide-content pre code {
+    background: none; padding: 0;
+    color: rgba(255,248,230,0.8);
+  }
+  .guide-content table {
+    width: 100%; border-collapse: collapse; margin: 16px 0;
+  }
+  .guide-content th {
+    background: rgba(251,220,123,0.06);
+    color: #FBDC7B; font-weight: 600; font-size: 13px;
+    padding: 10px 14px; text-align: left;
+    border-bottom: 1px solid rgba(251,220,123,0.15);
+  }
+  .guide-content td {
+    padding: 10px 14px; font-size: 14px;
+    border-bottom: 1px solid rgba(251,220,123,0.06);
+  }
+  .guide-content hr {
+    border: none;
+    border-top: 1px solid rgba(251,220,123,0.08);
+    margin: 32px 0;
+  }
+  .guide-content img { max-width: 100%; border-radius: 8px; }
+
+  /* Back button */
+  .back-btn {
+    display: inline-block; margin-bottom: 24px;
+    background: none; border: 1px solid rgba(251,220,123,0.15);
+    color: rgba(255,248,230,0.6); font-size: 13px;
+    padding: 6px 16px; border-radius: 6px; cursor: pointer;
+    font-family: 'Inter', sans-serif; transition: all 0.15s;
+  }
+  .back-btn:hover { color: #FBDC7B; border-color: rgba(251,220,123,0.4); }
+
+  /* Emulator embed */
+  .emulator-embed {
+    margin: 32px 0;
+    border: 1px solid rgba(251,220,123,0.12);
+    border-radius: 16px;
+    overflow: hidden;
+    background: #111;
+  }
+  .emulator-embed iframe {
+    width: 100%; height: 520px; border: none;
+  }
+  .emulator-label {
+    padding: 12px 20px;
+    font-size: 12px; font-weight: 500; letter-spacing: 2px;
+    text-transform: uppercase; color: rgba(251,220,123,0.5);
+    border-bottom: 1px solid rgba(251,220,123,0.08);
+  }
+  @media (max-width: 600px) {
+    .emulator-embed iframe { height: 640px; }
+  }
+
+  /* Footer */
+  footer {
+    text-align: center; padding: 40px 24px;
+    font-size: 13px; color: rgba(255,248,230,0.3);
+    border-top: 1px solid rgba(251,220,123,0.05);
+    margin-top: 60px;
+  }
+  footer a { color: rgba(251,220,123,0.5); text-decoration: none; }
+  footer a:hover { color: #FBDC7B; }
+
+  /* Checkbox styling for checklists */
+  .guide-content input[type="checkbox"] {
+    accent-color: #FBDC7B;
+    margin-right: 8px;
+    transform: scale(1.1);
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-brand" onclick="showHome()">Bitcoin Butlers</div>
+    <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">&#9776;</button>
+    <div class="nav-links">
+      <button onclick="showHome()" class="active" data-nav="home">Home</button>
+      <button onclick="showGuide('choosing-a-device')" data-nav="choosing-a-device">Devices</button>
+      <button onclick="showGuide('seedsigner')" data-nav="seedsigner">SeedSigner</button>
+      <button onclick="showGuide('coldcard-mk4')" data-nav="coldcard-mk4">ColdCard</button>
+      <button onclick="showGuide('passport')" data-nav="passport">Passport</button>
+      <button onclick="showGuide('jade')" data-nav="jade">Jade</button>
+      <button onclick="showGuide('sparrow-wallet')" data-nav="sparrow-wallet">Sparrow</button>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <!-- Home -->
+  <div id="home">
+    <div class="home-hero">
+      <h1><span>Self-Custody</span> Tutorials</h1>
+      <p>Free, open-source guides for securing your own Bitcoin. Device in hand, step by step. No tracking. No paywalls.</p>
+      <div class="home-tagline">We hold your hand, not your keys</div>
+    </div>
+
+    <div class="section-label">Signing Devices</div>
+    <div class="card-grid">
+      <div class="card" onclick="showGuide('seedsigner')">
+        <h3>SeedSigner</h3>
+        <p>DIY, stateless, air-gapped. Build from parts or buy pre-built.</p>
+        <span class="badge">Emulator</span>
+      </div>
+      <div class="card" onclick="showGuide('coldcard-mk4')">
+        <h3>ColdCard Mk4</h3>
+        <p>Dual secure elements. The original Bitcoin-only signing device.</p>
+      </div>
+      <div class="card" onclick="showGuide('coldcard-q')">
+        <h3>ColdCard Q</h3>
+        <p>Full QWERTY keyboard, camera, large display. Power user device.</p>
+      </div>
+      <div class="card" onclick="showGuide('passport')">
+        <h3>Passport</h3>
+        <p>Premium machined aluminum. QR air-gap. Best looking device.</p>
+      </div>
+      <div class="card" onclick="showGuide('jade')">
+        <h3>Jade / Jade Plus</h3>
+        <p>Budget-friendly, travel-sized. Virtual secure element.</p>
+      </div>
+      <div class="card" onclick="showGuide('choosing-a-device')">
+        <h3>Compare All Devices</h3>
+        <p>Side-by-side comparison to help you choose.</p>
+      </div>
+    </div>
+
+    <div class="section-label">Software</div>
+    <div class="card-grid">
+      <div class="card" onclick="showGuide('sparrow-wallet')">
+        <h3>Sparrow Wallet</h3>
+        <p>Desktop coordinator. Coin control, PSBT signing, multisig.</p>
+      </div>
+      <div class="card" onclick="showGuide('multisig-sparrow')">
+        <h3>Multisig with Sparrow</h3>
+        <p>2-of-3 multisig setup. The gold standard for large amounts.</p>
+      </div>
+    </div>
+
+    <div class="section-label">Backup &amp; Security</div>
+    <div class="card-grid">
+      <div class="card" onclick="showGuide('steel-backup')">
+        <h3>Steel Backup</h3>
+        <p>Stamping vs etching. Single-sig and multisig plate layouts.</p>
+      </div>
+      <div class="card" onclick="showGuide('seed-generation')">
+        <h3>Seed Generation</h3>
+        <p>5 methods compared. Dice, cards, camera entropy, and more.</p>
+      </div>
+    </div>
+
+    <div class="section-label">Checklists</div>
+    <div class="card-grid">
+      <div class="card" onclick="showGuide('checklists/first-setup')">
+        <h3>First Setup</h3>
+        <p>Just got a device? Start here.</p>
+      </div>
+      <div class="card" onclick="showGuide('checklists/backup-verification')">
+        <h3>Backup Verification</h3>
+        <p>Prove your backup works before you need it.</p>
+      </div>
+      <div class="card" onclick="showGuide('checklists/inheritance-planning')">
+        <h3>Inheritance Planning</h3>
+        <p>Make sure your Bitcoin doesn't die with you.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Guide content area -->
+  <div id="guide" class="guide-content"></div>
+</main>
+
+<footer>
+  <a href="https://github.com/Bitcoin-Butlers/bitcoin-self-custody">GitHub</a>
+  &middot; <a href="https://bitcoinbutlers.com">bitcoinbutlers.com</a>
+  &middot; CC BY-SA 4.0 (docs) / MIT (code)
+</footer>
+
+<script>
+const guideEl = document.getElementById('guide');
+const homeEl = document.getElementById('home');
+const cache = {};
+
+// Devices that have emulators
+const emulatorDevices = {
+  'seedsigner': {
+    url: 'emulators/seedsigner/web/index.html',
+    label: 'SeedSigner Emulator'
+  }
+};
+
+function setActiveNav(id) {
+  document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
+  const btn = document.querySelector(`[data-nav="${id}"]`);
+  if (btn) btn.classList.add('active');
+  // Close mobile nav
+  document.querySelector('.nav-links').classList.remove('open');
+}
+
+function showHome() {
+  homeEl.style.display = '';
+  guideEl.classList.remove('active');
+  setActiveNav('home');
+  window.scrollTo(0, 0);
+  history.pushState(null, '', '#');
+}
+
+async function showGuide(slug) {
+  // Determine file path
+  let path;
+  if (slug.startsWith('checklists/')) {
+    path = slug + '.md';
+  } else {
+    path = 'guides/' + slug + '.md';
+  }
+
+  homeEl.style.display = 'none';
+  guideEl.classList.add('active');
+  setActiveNav(slug);
+
+  // Load markdown
+  if (!cache[slug]) {
+    try {
+      const resp = await fetch(path);
+      if (!resp.ok) throw new Error('Not found');
+      cache[slug] = await resp.text();
+    } catch (e) {
+      guideEl.innerHTML = '<button class="back-btn" onclick="showHome()">&larr; Back</button><p>Guide not found.</p>';
+      return;
+    }
+  }
+
+  // Render
+  let html = '<button class="back-btn" onclick="showHome()">&larr; All Tutorials</button>';
+
+  // Add emulator if this device has one
+  if (emulatorDevices[slug]) {
+    const emu = emulatorDevices[slug];
+    html += `<div class="emulator-embed">
+      <div class="emulator-label">${emu.label} &mdash; Try it in your browser</div>
+      <iframe src="${emu.url}" allow="camera" loading="lazy"></iframe>
+    </div>`;
+  }
+
+  html += marked.parse(cache[slug]);
+
+  // Convert markdown checkboxes
+  html = html.replace(/\[ \]/g, '<input type="checkbox">');
+  html = html.replace(/\[x\]/g, '<input type="checkbox" checked>');
+
+  // Rewrite relative emulator links to use showGuide
+  html = html.replace(/href="\.\.\/emulators\/seedsigner\/"/g, 'href="#" onclick="showGuide(\'seedsigner\'); return false;"');
+
+  guideEl.innerHTML = html;
+  window.scrollTo(0, 0);
+  history.pushState(null, '', '#' + slug);
+}
+
+// Handle back/forward
+window.addEventListener('popstate', () => {
+  const hash = location.hash.slice(1);
+  if (hash) showGuide(hash);
+  else showHome();
+});
+
+// Load from hash on page load
+if (location.hash.length > 1) {
+  showGuide(location.hash.slice(1));
+}
+</script>
+</body>
+</html>
