@@ -1,5 +1,4 @@
-# ColdCard Q — Complete Setup Guide
-*Bitcoin Butlers Master Concierge*
+# ColdCard Q - Complete Setup Guide
 *Last verified: Feb 2026 | Firmware: v1.3.5Q (ColdCard Q)*
 
 ---
@@ -13,7 +12,7 @@
 - 3x AAA batteries OR USB-C cable with wall charger
 - MicroSD card (device has two slots + built-in storage under battery door)
 - Pen and the seed word card (included)
-- Steel backup plate (recommended — available in our shop)
+- Steel backup plate (recommended - available in our shop)
 - 15-30 minutes of uninterrupted time
 - A private space with no cameras
 
@@ -42,7 +41,7 @@ The Q is ideal if you want fully air-gapped operation with QR codes (no SD card 
 ### Verify the Package
 1. Inspect the tamper-evident bag for damage or signs of resealing.
 2. Note the **bag number** on the barcode label.
-3. Pull the blue tab to open — "VOID" should appear on the seal.
+3. Pull the blue tab to open - "VOID" should appear on the seal.
 4. Check the tear-off tab width matches the bag, perforations align.
 5. If anything looks wrong, contact support@coinkite.com with photos.
 
@@ -80,7 +79,7 @@ The Q is ideal if you want fully air-gapped operation with QR codes (no SD card 
 
 ## Step 3: Set Your PIN
 
-Same process as the Mk4 — two-part PIN with anti-phishing words.
+Same process as the Mk4 - two-part PIN with anti-phishing words.
 
 ### Choose Your Prefix (First Part)
 1. Enter 2-6 digits using the QWERTY keyboard's number row.
@@ -105,7 +104,7 @@ Same process as the Mk4 — two-part PIN with anti-phishing words.
 
 1. Select **New Wallet** from the menu.
 2. The ColdCard Q generates a 12 or 24-word seed phrase (24 recommended).
-3. Words appear on the large color display — easier to read than the Mk4.
+3. Words appear on the large color display - easier to read than the Mk4.
 
 ### Write Down Your Seed Words
 1. Write each word exactly as shown, numbered 1-24.
@@ -121,11 +120,11 @@ Same process as the Mk4 — two-part PIN with anti-phishing words.
 
 ## Step 5: Backup to Steel (Recommended)
 
-Same as Mk4 — stamp your 24 words (or first 4 letters of each) onto a steel backup plate. Store separately from the device.
+Same as Mk4 - stamp your 24 words (or first 4 letters of each) onto a steel backup plate. Store separately from the device.
 
 ---
 
-## Step 6: Export Wallet — Choose Your Method
+## Step 6: Export Wallet - Choose Your Method
 
 The ColdCard Q gives you three ways to communicate with wallet software:
 
@@ -159,7 +158,7 @@ The ColdCard Q gives you three ways to communicate with wallet software:
 ### Connect via QR (Recommended)
 1. In Sparrow: **File → New Wallet**, name it.
 2. Under Keystores, click **Airgapped Hardware Wallet**.
-3. Click **Scan QR** — your computer's camera opens.
+3. Click **Scan QR** - your computer's camera opens.
 4. On the ColdCard Q, display the wallet export QR.
 5. Hold the Q's screen up to your computer's camera.
 6. Sparrow reads the QR and imports your public keys.
@@ -186,11 +185,11 @@ The ColdCard Q gives you three ways to communicate with wallet software:
 
 ## Step 9: Signing Transactions
 
-### QR Signing (Most Air-Gapped — Q Exclusive)
+### QR Signing (Most Air-Gapped - Q Exclusive)
 1. In Sparrow: Create transaction → **Finalize → Show QR**.
 2. Sparrow displays a QR code on your computer screen.
 3. On the ColdCard Q, press the **QR key** to activate the scanner.
-4. Point the Q at your computer screen — the red strobe light shows where the scanner is aimed.
+4. Point the Q at your computer screen - the red strobe light shows where the scanner is aimed.
 5. The Q reads the transaction. **Verify the address and amount on the Q's screen.**
 6. Press **✔** to sign.
 7. The Q displays a signed QR code.
@@ -260,4 +259,4 @@ Same as Mk4:
 
 ---
 
-*Need help? Book a consultation with a Bitcoin Butler at bitcoinbutlers.com/booking*
+*Tutorial by [Bitcoin Butlers](https://bitcoinbutlers.com) - CC BY-SA 4.0*

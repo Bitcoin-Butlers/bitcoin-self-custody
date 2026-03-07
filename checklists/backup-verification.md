@@ -58,7 +58,7 @@ A backup you've never tested is a backup that might not work. Steel plates get s
 
 ## Common Mistakes
 
-- **Skipping verification entirely** — the most common and most dangerous mistake
-- **Testing with a different passphrase** — if you use a passphrase, verify with the exact same one
-- **Checking only one address** — check at least 3 to rule out coincidence
-- **Verifying on a compromised computer** — use a clean machine or your hardware wallet's built-in verification
+- **Skipping verification entirely** - the most common and most dangerous mistake
+- **Testing with a different passphrase** - if you use a passphrase, verify with the exact same one
+- **Checking only one address** - check at least 3 to rule out coincidence
+- **Verifying on a compromised computer** - use a clean machine or your hardware wallet's built-in verification

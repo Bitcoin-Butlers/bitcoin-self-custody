@@ -19,7 +19,7 @@ DRIVERS_DIR = EMULATOR_DIR / "drivers"
 WEB_DIR = EMULATOR_DIR / "web"
 
 
-# Last tested SeedSigner commit — update when verifying compatibility
+# Last tested SeedSigner commit - update when verifying compatibility
 LAST_TESTED_COMMIT = "5a91af00700d"
 LAST_TESTED_DATE = "2026-02-26"
 
@@ -92,7 +92,7 @@ def apply_patches(seedsigner_src: Path):
         if 'desktopDisplay' not in content:
             old = 'def instantiate_display_driver'
             if old not in content:
-                print("  ❌ ERROR: display_driver.py has changed — cannot find 'def instantiate_display_driver'")
+                print("  ❌ ERROR: display_driver.py has changed - cannot find 'def instantiate_display_driver'")
                 print("     SeedSigner may have refactored DisplayDriverFactory.")
                 print("     Update patches/apply.py to match the new structure.")
                 sys.exit(1)

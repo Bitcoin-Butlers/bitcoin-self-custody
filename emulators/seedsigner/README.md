@@ -51,21 +51,21 @@ This means you're interacting with the real SeedSigner code, not a simulation. M
 
 Click **📖 Tutorial** to access built-in guided walkthroughs:
 
-- **Generate a Seed Phrase** — Create a 12-word seed from scratch
-- **Explore Settings** — Learn what each setting does
-- **Sign a Transaction** — Load a seed and sign a PSBT via QR code
-- **Export Public Key to Wallet** — Connect SeedSigner to Bull Bitcoin wallet or Sparrow
+- **Generate a Seed Phrase** - Create a 12-word seed from scratch
+- **Explore Settings** - Learn what each setting does
+- **Sign a Transaction** - Load a seed and sign a PSBT via QR code
+- **Export Public Key to Wallet** - Connect SeedSigner to Bull Bitcoin wallet or Sparrow
 
 Tutorials show you what to press at each step while you interact with the real firmware.
 
 ## Limitations
 
-- **No camera/QR scanning** — the emulator can't access your webcam for QR code input (yet)
-- **Testnet only** — never enter a real seed phrase in an emulator
-- **Display only** — no NFC, no MicroSD simulation
+- **No camera/QR scanning** - the emulator can't access your webcam for QR code input (yet)
+- **Testnet only** - never enter a real seed phrase in an emulator
+- **Display only** - no NFC, no MicroSD simulation
 
 ## Credits
 
-- [SeedSigner](https://github.com/SeedSigner/seedsigner) — the original firmware (MIT license)
-- [enteropositivo/seedsigner-emulator](https://github.com/enteropositivo/seedsigner-emulator) — desktop display driver concept
+- [SeedSigner](https://github.com/SeedSigner/seedsigner) - the original firmware (MIT license)
+- [enteropositivo/seedsigner-emulator](https://github.com/enteropositivo/seedsigner-emulator) - desktop display driver concept
 - Web adaptation by [Bitcoin Butlers](https://bitcoinbutlers.com)

@@ -94,16 +94,16 @@ just sim color
 
 The simulator runs the actual Passport firmware (MicroPython) on your desktop. Hardware components are replaced with software equivalents:
 
-- **Display** — SDL2 window renders the framebuffer
-- **Keypad** — keyboard input mapped to Passport buttons
-- **Camera** — OpenCV captures webcam frames for QR scanning
-- **Secure Element** — software stub (NOT secure, for testing only)
-- **microSD** — reads/writes to `./work/microsd/` folder
+- **Display** - SDL2 window renders the framebuffer
+- **Keypad** - keyboard input mapped to Passport buttons
+- **Camera** - OpenCV captures webcam frames for QR scanning
+- **Secure Element** - software stub (NOT secure, for testing only)
+- **microSD** - reads/writes to `./work/microsd/` folder
 
 ## Display Modes
 
-- **Color** (`just sim color`) — Passport Batch 2+ with 240x320 color display
-- **Mono** (`just sim mono`) — Founder's Edition with monochrome display
+- **Color** (`just sim color`) - Passport Batch 2+ with 240x320 color display
+- **Mono** (`just sim mono`) - Founder's Edition with monochrome display
 
 ## Docker (No Toolchain Required)
 
@@ -123,12 +123,12 @@ docker run -it --rm -e DISPLAY=host.docker.internal:0 passport-sim
 
 ## Limitations
 
-- **Desktop only** — requires SDL2 window (no browser mode yet)
-- **Heavy build** — needs Rust + C cross-compiler toolchain
-- **Testnet only** — never enter a real seed phrase in a simulator
-- **Fake secure element** — not cryptographically secure
+- **Desktop only** - requires SDL2 window (no browser mode yet)
+- **Heavy build** - needs Rust + C cross-compiler toolchain
+- **Testnet only** - never enter a real seed phrase in a simulator
+- **Fake secure element** - not cryptographically secure
 
 ## Credits
 
-- [Foundation Devices](https://foundationdevices.com) — Passport firmware and simulator (GPL-3.0)
+- [Foundation Devices](https://foundationdevices.com) - Passport firmware and simulator (GPL-3.0)
 - Setup automation by [Bitcoin Butlers](https://bitcoinbutlers.com)

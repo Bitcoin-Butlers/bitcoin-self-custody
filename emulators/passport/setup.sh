@@ -73,7 +73,7 @@ if [ -d "$INSTALL_DIR" ]; then
     cd "$INSTALL_DIR" && git pull --ff-only 2>/dev/null || true
 else
     echo "Cloning passport2 (this may take a minute)..."
-    # Full clone needed — build system uses git history for version info
+    # Full clone needed - build system uses git history for version info
     git clone https://github.com/Foundation-Devices/passport2.git "$INSTALL_DIR"
 fi
 

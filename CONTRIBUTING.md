@@ -24,12 +24,12 @@ Thanks for helping make Bitcoin self-custody more accessible.
 ### Structure
 
 Each guide should include:
-1. **What it is** — one paragraph, what the device/software does
-2. **What you need** — hardware, software, accessories
-3. **Setup steps** — numbered, follow-along
-4. **Verify it works** — how to confirm setup succeeded
-5. **Backup** — how to back up and verify the backup
-6. **Common mistakes** — what people get wrong
+1. **What it is** - one paragraph, what the device/software does
+2. **What you need** - hardware, software, accessories
+3. **Setup steps** - numbered, follow-along
+4. **Verify it works** - how to confirm setup succeeded
+5. **Backup** - how to back up and verify the backup
+6. **Common mistakes** - what people get wrong
 
 ### Formatting
 

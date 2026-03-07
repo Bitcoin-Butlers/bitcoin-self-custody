@@ -1,5 +1,4 @@
-# Seed Generation Methods — Complete Guide
-*Bitcoin Butlers Master Concierge*
+# Seed Generation Methods - Complete Guide
 
 ---
 
@@ -7,9 +6,9 @@
 
 Your seed phrase is the master key to your Bitcoin. The quality of randomness (entropy) used to generate it determines its security. There are three approaches:
 
-1. **Let your hardware wallet generate it** — trusting the device's random number generator
-2. **Use physical randomness tools** — dice, cards, or pills that you control
-3. **Camera entropy** — SeedSigner's approach, using visual noise
+1. **Let your hardware wallet generate it** - trusting the device's random number generator
+2. **Use physical randomness tools** - dice, cards, or pills that you control
+3. **Camera entropy** - SeedSigner's approach, using visual noise
 
 Each method has trade-offs between convenience, verifiability, and effort.
 
@@ -18,7 +17,7 @@ Each method has trade-offs between convenience, verifiability, and effort.
 ## Method 1: Hardware Wallet Generation (Easiest)
 
 ### How It Works
-Your signing device (ColdCard, Passport, Jade, etc.) has a built-in hardware random number generator (TRNG/HRNG) that produces the entropy for your seed.
+Your signing device (ColdCard, Passport, Jade, etc.) has a built-in random number generator that creates your seed.
 
 ### Steps
 1. During device setup, select **New Wallet** or **Create New Seed**.
@@ -28,7 +27,7 @@ Your signing device (ColdCard, Passport, Jade, etc.) has a built-in hardware ran
 ### Trust Model
 - You're trusting the device manufacturer built a secure random number generator.
 - Reputable devices (ColdCard, Passport) use certified entropy sources.
-- ColdCard adds environmental noise and user input to the hardware RNG for additional entropy.
+- ColdCard also mixes in your button presses during setup for additional randomness.
 
 ### Best For
 - Most users. If you trust your hardware wallet enough to sign transactions, you can trust its entropy.
@@ -55,7 +54,7 @@ A deck of physical cards, each representing one of the 2,048 BIP-39 words. You s
 
 #### 1. Shuffle the Deck
 1. Spread all cards face-down on a large flat surface.
-2. Mix them thoroughly — push them around, pile them, spread them again.
+2. Mix them thoroughly - push them around, pile them, spread them again.
 3. Gather into a deck.
 4. Riffle shuffle at least **7 times.** Mathematical research shows 7 riffle shuffles produces near-random ordering.
 5. For extra assurance, do a few more overhand shuffles.
@@ -67,7 +66,7 @@ A deck of physical cards, each representing one of the 2,048 BIP-39 words. You s
 4. Write down each word carefully.
 
 #### 3. Calculate the Checksum (24th Word)
-The last word isn't random — it's mathematically derived from the first 23 to ensure the seed is valid.
+The last word isn't random - it's mathematically derived from the first 23 to ensure the seed is valid.
 
 **Option A: SeedSigner**
 1. On SeedSigner: **Seeds → Enter 24 Words**.
@@ -84,7 +83,7 @@ The last word isn't random — it's mathematically derived from the first 23 to 
 1. Download Ian Coleman's BIP39 tool from GitHub (save the HTML file).
 2. Disconnect from the internet.
 3. Open the HTML file in your browser.
-4. Enter 23 words — the tool calculates word 24.
+4. Enter 23 words - the tool calculates word 24.
 5. **Close the browser and clear history when done.**
 
 #### 4. Verify the Complete Seed
@@ -104,7 +103,7 @@ The last word isn't random — it's mathematically derived from the first 23 to 
 
 ### What You'll Need
 - Casino-grade dice (1 or more)
-- BIP-39 word list (printed — available at github.com/bitcoin/bips/blob/master/bip-0039/english.txt)
+- BIP-39 word list (printed - available at github.com/bitcoin/bips/blob/master/bip-0039/english.txt)
 - Paper and pen
 - Calculator or SeedSigner for checksum
 
@@ -158,9 +157,9 @@ This is tedious (~45-60 minutes) but provides mathematically provable randomness
 6. Verify the complete seed on your hardware wallet.
 
 ### Why Pills?
-- **Tactile and fun** — especially good for workshops and education.
+- **Tactile and fun** - especially good for workshops and education.
 - **No electronics** for entropy.
-- **Verifiable** — you can see and feel the randomness.
+- **Verifiable** - you can see and feel the randomness.
 
 ---
 
@@ -171,14 +170,14 @@ SeedSigner captures a photo and hashes the image data to generate entropy.
 
 ### Steps
 1. On SeedSigner: **Seeds → New Seed → Camera**.
-2. Point the camera at something visually complex — tree bark, crumpled paper, a bookshelf, flowing water.
+2. Point the camera at something visually complex - tree bark, crumpled paper, a bookshelf, flowing water.
 3. SeedSigner captures the image, hashes the pixel data, and generates a seed.
 4. Write down the words.
 
 ### Why Camera?
-- **Fast** — seconds vs. minutes for dice.
-- **Good entropy source** — natural scenes have high visual randomness.
-- **Verifiable** — SeedSigner's code is open source, you can audit the hashing algorithm.
+- **Fast** - seconds vs. minutes for dice.
+- **Good entropy source** - natural scenes have high visual randomness.
+- **Verifiable** - SeedSigner's code is open source, you can audit the hashing algorithm.
 
 ---
 
@@ -192,11 +191,12 @@ SeedSigner captures a photo and hashes the image data to generate entropy.
 | Dice (manual binary) | Very High | Maximum | 45 min | Medium |
 | Entropia Pills | High | High | 10 min | None |
 | Camera (SeedSigner) | High | High (open source) | 1 min | None |
+| Codex32 (pen + paper) | Very High | Maximum | 1-3 hrs | High |
 
 ### Our Recommendations
 - **Beginners:** Hardware wallet generation or Seed Picker Cards
-- **Intermediate:** Dice rolls on SeedSigner (99 rolls — good balance of verifiability and speed)
-- **Advanced/Paranoid:** Manual dice-to-binary conversion (maximum trust minimization)
+- **Intermediate:** Dice rolls on SeedSigner (99 rolls - good balance of verifiability and speed)
+- **Advanced/Paranoid:** Codex32 (zero electronic trust for generation and verification) or manual dice-to-binary conversion
 - **Workshops/Education:** Seed Picker Cards or Entropia Pills (interactive, visual)
 
 ---
@@ -206,11 +206,11 @@ SeedSigner captures a photo and hashes the image data to generate entropy.
 1. **Work in a private space.** No cameras, no smart speakers, no other people watching.
 2. **Never photograph your seed words.** Not on your phone. Not "just for now."
 3. **Never type your seed into a computer or phone.** The only exception: an offline, air-gapped tool for checksum calculation.
-4. **Verify your seed works** by importing into your hardware wallet before sending any Bitcoin to it.
+4. **Verify your seed works** - wipe your device, re-enter your seed words manually, and confirm the same xpub and first receive address appear.
 5. **Back up to steel immediately.** Paper is temporary. Steel is permanent.
-6. **Destroy paper copies** once steel backup is verified.
-7. **Test recovery** before depositing significant funds. Set up a new device, import the seed, verify the same addresses appear.
+6. **Burn your paper copies** once steel backup is verified. Ash is unreadable, shredded paper isn't.
+7. **Test recovery** before depositing significant funds. Wipe, re-enter seed, verify same addresses.
 
 ---
 
-*Need help choosing? Book a consultation with a Bitcoin Butler at bitcoinbutlers.com/booking*
+*Tutorial by [Bitcoin Butlers](https://bitcoinbutlers.com) - CC BY-SA 4.0*

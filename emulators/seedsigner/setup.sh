@@ -1,6 +1,6 @@
 #!/bin/bash
 # SeedSigner Web Emulator Setup
-# Run SeedSigner in your browser — no hardware needed
+# Run SeedSigner in your browser - no hardware needed
 
 set -e
 

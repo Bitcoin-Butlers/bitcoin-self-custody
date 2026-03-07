@@ -87,9 +87,9 @@ async def handle_websocket(websocket):
                 frame_bytes = base64.b64decode(data['data'])
                 set_camera_frame(frame_bytes)
             elif data['type'] == 'reset':
-                # Kill the server process — run.sh will restart it,
+                # Kill the server process - run.sh will restart it,
                 # browser reconnects automatically via WebSocket
-                print("Reset requested — restarting server...")
+                print("Reset requested - restarting server...")
                 threading.Timer(0.1, lambda: os._exit(1)).start()
     except websockets.exceptions.ConnectionClosed:
         pass

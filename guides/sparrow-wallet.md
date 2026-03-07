@@ -1,5 +1,4 @@
-# Sparrow Wallet — Complete Setup Guide
-*Bitcoin Butlers Master Concierge*
+# Sparrow Wallet - Complete Setup Guide
 
 ---
 
@@ -104,7 +103,7 @@ Under **Keystores**, you'll add your signing device.
 *Works with: ColdCard Q, Passport, Jade Plus, SeedSigner*
 
 1. Click **Airgapped Hardware Wallet**.
-2. Click **Scan** — your computer's camera opens.
+2. Click **Scan** - your computer's camera opens.
 3. On your device: export the wallet/xpub as a QR code.
 4. Hold the device screen up to your computer's camera.
 5. Sparrow reads the QR (may take a few seconds for animated QRs).
@@ -121,20 +120,20 @@ Under **Keystores**, you'll add your signing device.
 
 1. Click **Connected Hardware Wallet**.
 2. Connect your device via USB and unlock it.
-3. Click **Scan** — Sparrow detects the device.
+3. Click **Scan** - Sparrow detects the device.
 4. Select it and import.
 
 ---
 
 ## Step 5: Verify the Connection
 
-This step is critical — it confirms Sparrow and your hardware wallet are in sync.
+This step is critical - it confirms Sparrow and your hardware wallet are in sync.
 
 1. Go to the **Receive** tab in Sparrow.
-2. Click **Get Next Address** — an address appears.
+2. Click **Get Next Address** - an address appears.
 3. On your hardware wallet, go to **Address Explorer** (or equivalent).
 4. Find the same derivation path address.
-5. **The addresses must match.** If they don't, something is wrong — do not use the wallet.
+5. **The addresses must match.** If they don't, something is wrong - do not use the wallet.
 
 ---
 
@@ -171,7 +170,7 @@ This step is critical — it confirms Sparrow and your hardware wallet are in sy
 ### Sign the Transaction
 
 #### Air-Gapped (QR)
-1. Click **Show QR** — Sparrow displays an animated QR.
+1. Click **Show QR** - Sparrow displays an animated QR.
 2. Scan with your hardware wallet.
 3. Verify and sign on the device.
 4. The device shows a signed QR.
@@ -283,4 +282,4 @@ Run an Electrum server on top of Bitcoin Core:
 
 ---
 
-*Need help? Book a consultation with a Bitcoin Butler at bitcoinbutlers.com/booking*
+*Tutorial by [Bitcoin Butlers](https://bitcoinbutlers.com) - CC BY-SA 4.0*

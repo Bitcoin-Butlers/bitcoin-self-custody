@@ -1,5 +1,4 @@
-# Blockstream Jade / Jade Plus — Complete Setup Guide
-*Bitcoin Butlers Master Concierge*
+# Blockstream Jade / Jade Plus - Complete Setup Guide
 *Last verified: Feb 2026 | Firmware: v1.0.39 (Feb 2026)*
 
 ---
@@ -32,7 +31,7 @@
 **Key insight:** Jade uses a unique security model called "Virtual Secure Element." Instead of a traditional secure element chip, Jade stores an encrypted version of your seed and requires a PIN server (Blockstream's or self-hosted) to decrypt it. This means:
 - The device alone doesn't hold your unencrypted seed
 - A PIN unlock requires briefly communicating with a server (via Bluetooth/USB or QR code for Jade Plus)
-- You can also use Jade in **stateless mode** (like SeedSigner) — enter seed manually each time
+- You can also use Jade in **stateless mode** (like SeedSigner) - enter seed manually each time
 
 ---
 
@@ -51,7 +50,7 @@
 2. You'll see the Blockstream Jade logo, then the setup screen.
 3. Choose your setup path:
 
-### Quick Setup (Easiest — Jade or Jade Plus)
+### Quick Setup (Easiest - Jade or Jade Plus)
 - Guided by Blockstream Green app on your phone
 - Creates wallet, sets PIN, pairs device automatically
 - Communication via USB or Bluetooth
@@ -76,7 +75,7 @@
 ### Generate a New Seed
 1. Select **Create New Wallet**.
 2. In Advanced Setup, choose phrase length: **12 words** or **24 words** (we recommend 24).
-3. Jade generates a seed phrase using its hardware random number generator.
+3. Jade generates a seed phrase using its built-in random number generator.
 4. The words are displayed on screen.
 
 ### Write Down Your Recovery Phrase
@@ -90,9 +89,9 @@
 
 ### Optional: Export SeedQR (Advanced Setup)
 1. After seed generation, you'll be offered to export a SeedQR.
-2. This is a QR code encoding your seed — for quick loading on Jade Plus or SeedSigner.
+2. This is a QR code encoding your seed - for quick loading on Jade Plus or SeedSigner.
 3. Draw or stamp the QR carefully onto paper or metal.
-4. **Treat this QR with the same security as your written seed words** — it IS your seed.
+4. **Treat this QR with the same security as your written seed words** - it IS your seed.
 
 ---
 
@@ -106,18 +105,18 @@
 
 ### QR PIN Unlock (Jade Plus Air-Gapped)
 1. Choose **QR** as your connection method.
-2. Set up QR PIN Unlock — a fully air-gapped unlock method.
+2. Set up QR PIN Unlock - a fully air-gapped unlock method.
 3. When you power on Jade Plus, it displays a QR code.
 4. You scan this QR with Blockstream Green (or another compatible app).
 5. The app communicates with the PIN server and displays a response QR.
 6. You scan the response QR with Jade Plus's camera.
-7. Jade Plus unlocks — all without any cable or wireless connection.
+7. Jade Plus unlocks - all without any cable or wireless connection.
 
 ### Stateless Mode (No PIN)
 1. Skip the PIN setup.
 2. Your wallet is forgotten on every reboot.
 3. You'll need to scan a SeedQR or manually enter your recovery phrase each session.
-4. Identical to SeedSigner's approach — maximum security, less convenience.
+4. Identical to SeedSigner's approach - maximum security, less convenience.
 
 ---
 
@@ -216,7 +215,7 @@ JadeLink is an optional accessory that enables QR PIN Unlock without needing a p
 If the Virtual Secure Element model bothers you, use Jade in stateless mode:
 - Skip PIN setup
 - Load seed via SeedQR each session
-- Device stores nothing — identical security model to SeedSigner
+- Device stores nothing - identical security model to SeedSigner
 
 ---
 
@@ -237,9 +236,9 @@ If the Virtual Secure Element model bothers you, use Jade in stateless mode:
 | Bluetooth won't pair | Toggle Bluetooth off/on on your phone. Forget the device in phone settings and re-pair. |
 | QR PIN Unlock fails | Ensure Green app is connected to the internet (it needs the PIN server). Check QR is fully visible and well-lit. |
 | Green app doesn't detect Jade | Try a different USB cable. Restart both app and device. |
-| "PIN server unreachable" | Check your internet connection. If persistent, Blockstream's server may be down — use Sparrow via USB as alternative. |
+| "PIN server unreachable" | Check your internet connection. If persistent, Blockstream's server may be down - use Sparrow via USB as alternative. |
 | Forgot PIN | No recovery via PIN. Use your 24-word recovery phrase to set up a new wallet on Jade or any other device. |
 
 ---
 
-*Need help? Book a consultation with a Bitcoin Butler at bitcoinbutlers.com/booking*
+*Tutorial by [Bitcoin Butlers](https://bitcoinbutlers.com) - CC BY-SA 4.0*

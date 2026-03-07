@@ -1,5 +1,4 @@
-# Multisig Setup with Sparrow Wallet — Complete Guide
-*Bitcoin Butlers Master Concierge*
+# Multisig Setup with Sparrow Wallet - Complete Guide
 
 ---
 
@@ -16,7 +15,7 @@ Multi-signature (multisig) means your Bitcoin requires multiple keys to spend. I
 ### Why Multisig?
 - **No single point of failure.** One stolen device ≠ stolen Bitcoin.
 - **Geographic distribution.** Keys in different locations survive house fire, theft, or natural disaster.
-- **Inheritance friendly.** Give one key to a trusted party — they can't spend alone but can help heirs.
+- **Inheritance friendly.** Give one key to a trusted party - they can't spend alone but can help heirs.
 
 ### When Is Multisig Overkill?
 - Small amounts (under ~$50K)
@@ -29,14 +28,14 @@ Multi-signature (multisig) means your Bitcoin requires multiple keys to spend. I
 ## What You'll Need
 
 ### Hardware (2-of-3 Example)
-- **3 different signing devices** — we recommend mixing manufacturers:
+- **3 different signing devices** - we recommend mixing manufacturers:
   - Example: ColdCard Mk4 + Foundation Passport + SeedSigner
   - Using different manufacturers protects against a firmware vulnerability in one brand
 - **3 steel backup plates** (multisig set)
 - **MicroSD cards** for each device that supports them
 
 ### Software
-- **Sparrow Wallet** on your computer (coordinator — creates the wallet, builds transactions)
+- **Sparrow Wallet** on your computer (coordinator - creates the wallet, builds transactions)
 - Each device must be set up individually first (see individual device guides)
 
 ### Time
@@ -90,7 +89,7 @@ Each device needs to share its public key (xpub) with Sparrow. This does NOT exp
 2. Name it (e.g., "Cold Storage Vault" or "2-of-3 Savings").
 3. Under **Policy Type**, select **Multi Signature**.
 4. Set **M of N**: **2** of **3** (or your chosen quorum).
-5. Choose **Script Type**: **Native SegWit (P2WSH)** — lowest fees, best compatibility.
+5. Choose **Script Type**: **Native SegWit (P2WSH)** - lowest fees, best compatibility.
 
 ### Add Keystore 1 (Device A)
 1. Click **Keystore 1** tab.
@@ -113,7 +112,7 @@ Each device needs to share its public key (xpub) with Sparrow. This does NOT exp
 
 ### Apply
 1. Click **Apply** to create the wallet.
-2. Sparrow may ask for a wallet password — this encrypts the wallet file on your computer (optional but recommended).
+2. Sparrow may ask for a wallet password - this encrypts the wallet file on your computer (optional but recommended).
 3. The wallet is now created.
 
 ---
@@ -127,7 +126,7 @@ This is the most important step. You must verify that all devices agree on the w
 
 ### ColdCard
 - Go to **Address Explorer**.
-- The multisig addresses should appear (after you've registered the multisig wallet on the ColdCard — see below).
+- The multisig addresses should appear (after you've registered the multisig wallet on the ColdCard - see below).
 
 ### Registering the Multisig on ColdCard
 1. In Sparrow: **File → Export Wallet → ColdCard Multisig**.
@@ -140,7 +139,7 @@ This is the most important step. You must verify that all devices agree on the w
 - Each device has its own method for registering or verifying multisig addresses.
 - In Sparrow: **File → Export Wallet → [Device Type]** to generate the registration file or QR.
 
-**All 3 devices must show the same receive address.** If any device shows a different address, the wallet is misconfigured — do not use it.
+**All 3 devices must show the same receive address.** If any device shows a different address, the wallet is misconfigured - do not use it.
 
 ---
 
@@ -150,7 +149,7 @@ The wallet descriptor is the blueprint for your multisig wallet. Without it, see
 
 1. In Sparrow: **File → Export Wallet → Output Descriptor**.
 2. Save this file.
-3. **Include the descriptor on every steel backup plate** (see Steel Backup Guide — Multisig section).
+3. **Include the descriptor on every steel backup plate** (see Steel Backup Guide - Multisig section).
 4. Also save to MicroSD cards stored with each device.
 
 ---
@@ -198,7 +197,7 @@ Spending from a multisig wallet requires signatures from 2 of your 3 devices.
 1. Click **Broadcast Transaction**.
 2. Done. The transaction is sent to the Bitcoin network.
 
-> **Note:** You don't need Device 3 for a 2-of-3. Any 2 devices can sign. This is the power of multisig — redundancy.
+> **Note:** You don't need Device 3 for a 2-of-3. Any 2 devices can sign. This is the power of multisig - redundancy.
 
 ---
 
@@ -261,4 +260,4 @@ If all devices are gone but you have 2 of 3 steel plates (with seed + descriptor
 
 ---
 
-*Need help setting up multisig? This is exactly what Bitcoin Butlers consultations are for. Book at bitcoinbutlers.com/booking*
+*Tutorial by [Bitcoin Butlers](https://bitcoinbutlers.com) - CC BY-SA 4.0*

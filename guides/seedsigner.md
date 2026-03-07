@@ -1,10 +1,9 @@
-# SeedSigner — Complete Setup Guide
-*Bitcoin Butlers Master Concierge*
-*Last verified: Feb 2026 | Latest release: "Bigger Picture" (Jun 2025) — larger display support, 7 languages*
+# SeedSigner - Complete Setup Guide
+*Last verified: Feb 2026 | Latest release: "Bigger Picture" (Jun 2025) - larger display support, 7 languages*
 
 ---
 
-> **🖥️ Don't have a SeedSigner yet?** [Try the web emulator](../emulators/seedsigner/) — run the real firmware in your browser and practice before you buy.
+> **🖥️ Don't have a SeedSigner yet?** [Try the web emulator](../emulators/seedsigner/) - run the real firmware in your browser and practice before you buy.
 
 ---
 
@@ -13,7 +12,7 @@
 ### For a Pre-Built SeedSigner (Bitcoin Butlers Kit)
 - SeedSigner device (pre-assembled with case)
 - MicroSD card (pre-loaded with SeedSigner OS)
-- Mini HDMI cable (not needed — display is built in)
+- Mini HDMI cable (not needed - display is built in)
 - USB-C or Micro-USB power cable (depending on Pi model)
 - Wall charger or USB power bank
 - Pen and paper (or steel backup plate)
@@ -21,11 +20,11 @@
 - A private space with no cameras
 
 ### For a DIY SeedSigner Build
-- Raspberry Pi Zero (v1.3 recommended — NO WiFi)
-- Waveshare 1.3" LCD Hat (240×240 display) — or optional larger display (supported since "Bigger Picture" release, Jun 2025)
+- Raspberry Pi Zero (v1.3 recommended - NO WiFi)
+- Waveshare 1.3" LCD Hat (240×240 display) - or optional larger display (supported since "Bigger Picture" release, Jun 2025)
 - Pi Camera (Aokin/Arducam 5MP OV5647)
 - 3D-printed case or open-frame mount
-- MicroSD card (8GB+ — loaded with SeedSigner OS)
+- MicroSD card (8GB+ - loaded with SeedSigner OS)
 - Micro-USB power cable
 - Soldering iron + headers (if Pi Zero doesn't have pre-soldered headers)
 
@@ -37,11 +36,11 @@ SeedSigner is fundamentally different from every other signing device:
 
 | Feature | SeedSigner |
 |---------|-----------|
-| Storage | **NONE** — device stores nothing. Seed is entered every time. |
+| Storage | **NONE** - device stores nothing. Seed is entered every time. |
 | Cost | ~$50 DIY, ~$100-150 pre-built |
 | WiFi/Bluetooth | None (Pi Zero v1.3 has no wireless hardware) |
 | Communication | QR codes only (camera + display) |
-| Open source | 100% — hardware, software, and case designs |
+| Open source | 100% - hardware, software, and case designs |
 | Firmware | Runs from MicroSD card on boot |
 
 **The key concept:** SeedSigner is a "stateless" signing device. It never remembers your seed. You enter it (via QR or manually) each time you need to sign. When you unplug it, everything is gone. This means:
@@ -69,7 +68,7 @@ Follow Step 1 below to assemble and flash the OS.
 2. Download **Balena Etcher** (balena.io/etcher) or use **Raspberry Pi Imager**.
 3. Insert your MicroSD card into your computer.
 4. Flash the SeedSigner `.img` file to the card.
-5. **Wait for verification** — Etcher/Imager verifies the write was successful. Don't skip this.
+5. **Wait for verification** - Etcher/Imager verifies the write was successful. Don't skip this.
 6. Eject the MicroSD card.
 
 ### Assemble the Hardware
@@ -79,7 +78,7 @@ Follow Step 1 below to assemble and flash the OS.
 4. Insert the flashed MicroSD card into the Pi Zero.
 5. Fit into your 3D-printed case (if using one).
 
-> **Why Pi Zero v1.3?** It has NO WiFi or Bluetooth hardware. This isn't a software disable — the chips physically don't exist. Air-gap by hardware design.
+> **Why Pi Zero v1.3?** It has NO WiFi or Bluetooth hardware. This isn't a software disable - the chips physically don't exist. Air-gap by hardware design.
 
 ---
 
@@ -89,7 +88,7 @@ Follow Step 1 below to assemble and flash the OS.
 2. The device boots from the MicroSD card. Takes 30-60 seconds.
 3. You'll see the SeedSigner main menu on the small LCD display.
 
-> **Navigation:** Use the joystick (up/down/left/right/press) and the three buttons on the LCD hat. The interface is simple — joystick navigates, press confirms.
+> **Navigation:** Use the joystick (up/down/left/right/press) and the three buttons on the LCD hat. The interface is simple - joystick navigates, press confirms.
 
 ---
 
@@ -99,7 +98,7 @@ SeedSigner offers multiple entropy methods:
 
 ### Option A: Camera Entropy (Recommended)
 1. Select **Seeds → New Seed → Camera (image capture)**
-2. Point the camera at something with high visual entropy — a busy scene, tree bark, crumpled paper, etc.
+2. Point the camera at something with high visual entropy - a busy scene, tree bark, crumpled paper, etc.
 3. SeedSigner captures the image and hashes it to generate randomness.
 4. A 12 or 24-word seed phrase is displayed.
 
@@ -107,7 +106,7 @@ SeedSigner offers multiple entropy methods:
 1. Select **Seeds → New Seed → Dice (99 rolls)**
 2. Roll a die 99 times, entering each result.
 3. SeedSigner uses the dice entropy to generate your seed.
-4. This method is maximally verifiable — you control every bit of randomness.
+4. This method is maximally verifiable - you control every bit of randomness.
 
 ### Option C: Import Existing Seed
 1. Select **Seeds → Scan SeedQR** to scan a SeedQR backup.
@@ -136,7 +135,7 @@ A SeedQR is your seed words encoded as a compact QR code on paper or metal. It l
 4. To test: power cycle the device, then select **Seeds → Scan SeedQR** and scan your drawn QR.
 5. Verify the seed words match.
 
-> **CompactSeedQR** is a denser format — smaller QR, same data. Better for stamping onto metal. Standard SeedQR is easier to hand-draw.
+> **CompactSeedQR** is a denser format - smaller QR, same data. Better for stamping onto metal. Standard SeedQR is easier to hand-draw.
 
 > **Steel SeedQR:** For maximum durability, stamp the QR pattern onto a steel plate. Some steel backup manufacturers offer QR-compatible plates.
 
@@ -144,7 +143,7 @@ A SeedQR is your seed words encoded as a compact QR code on paper or metal. It l
 
 ## Step 6: Backup to Steel
 
-Same as other devices — stamp your 24 words (or first 4 letters) onto a steel backup plate. Store separately from the SeedSigner.
+Same as other devices - stamp your 24 words (or first 4 letters) onto a steel backup plate. Store separately from the SeedSigner.
 
 ---
 
@@ -183,7 +182,7 @@ Same as other devices — stamp your 24 words (or first 4 letters) onto a steel 
 1. In Sparrow: Create transaction → **Finalize → Show QR**.
 2. **Power on SeedSigner** and load your seed (scan SeedQR or enter words).
 3. Select **Scan → Scan QR** on SeedSigner.
-4. Point the camera at Sparrow's screen — it reads the animated QR.
+4. Point the camera at Sparrow's screen - it reads the animated QR.
 5. **Verify the recipient address and amount on SeedSigner's screen.**
 6. Confirm to sign.
 7. SeedSigner displays a signed QR code.
@@ -220,22 +219,22 @@ More languages are being added via community translation on Transifex. Right-to-
 ## Security Model
 
 ### What SeedSigner IS:
-- A signing tool — it signs transactions and that's it
-- Stateless — stores nothing, remembers nothing
-- Air-gapped — QR codes only, no WiFi/BT/USB data
-- Verifiable — fully open source hardware and software
+- A signing tool - it signs transactions and that's it
+- Stateless - stores nothing, remembers nothing
+- Air-gapped - QR codes only, no WiFi/BT/USB data
+- Verifiable - fully open source hardware and software
 
 ### What SeedSigner is NOT:
-- A storage device — your seed lives in your physical backup only
-- A daily wallet — loading seed each time is intentionally slow
-- A single point of failure — commodity hardware, easily replaceable
+- A storage device - your seed lives in your physical backup only
+- A daily wallet - loading seed each time is intentionally slow
+- A single point of failure - commodity hardware, easily replaceable
 
 ### Best Practices:
-- **Always verify the OS image** — check SHA256 hash against GitHub release
-- **Use Pi Zero v1.3** (no WiFi) — don't use Pi 3/4/Zero W
+- **Always verify the OS image** - check SHA256 hash against GitHub release
+- **Use Pi Zero v1.3** (no WiFi) - don't use Pi 3/4/Zero W
 - **SeedQR on steel** for fastest, most durable seed loading
-- **Power off after signing** — seed cleared from memory
-- **Keep a spare SeedSigner ready** — if one breaks, load seed onto another immediately
+- **Power off after signing** - seed cleared from memory
+- **Keep a spare SeedSigner ready** - if one breaks, load seed onto another immediately
 
 ---
 
@@ -251,4 +250,4 @@ More languages are being added via community translation on Transifex. Right-to-
 
 ---
 
-*Need help? Book a consultation with a Bitcoin Butler at bitcoinbutlers.com/booking*
+*Tutorial by [Bitcoin Butlers](https://bitcoinbutlers.com) - CC BY-SA 4.0*

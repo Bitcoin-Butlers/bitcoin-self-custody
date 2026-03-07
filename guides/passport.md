@@ -1,5 +1,4 @@
-# Foundation Passport Core — Complete Setup Guide
-*Bitcoin Butlers Master Concierge*
+# Foundation Passport Core - Complete Setup Guide
 *Last verified: Feb 2026 | This guide covers Passport Core (current model), not older Batch 1/2.*
 
 ---
@@ -12,7 +11,7 @@
 - Foundation Passport Core (in sealed outer box)
 - USB-C cable (included)
 - Industrial MicroSD card (included)
-- MicroSD card adapter: Lightning (iPhone) or USB-C (Android) — included
+- MicroSD card adapter: Lightning (iPhone) or USB-C (Android) - included
 - Pen and the backup card (included)
 - Steel backup plate for seed words (recommended)
 - Smartphone with Envoy app (recommended but optional)
@@ -28,7 +27,7 @@ The Foundation Passport Core is designed around a mobile-first workflow with the
 | Feature | Passport Core |
 |---------|--------------|
 | Communication | QR codes (camera built in) + MicroSD |
-| Companion app | Envoy (iOS/Android) — guides you through everything |
+| Companion app | Envoy (iOS/Android) - guides you through everything |
 | Backup method | Encrypted MicroSD backup + 20-digit Backup Code (in addition to seed words) |
 | PIN | 6-12 characters (letters AND numbers) |
 | Security | 21 wrong PIN attempts = device permanently bricked |
@@ -44,7 +43,7 @@ The Foundation Passport Core is designed around a mobile-first workflow with the
 1. Check the blue security seal on the outer box. It has a unique alphanumeric code.
 2. Valid batch codes start with: B799, B862, B863, B1026, B1032, B1269, B1423, B1541, B1585, B1589, B1606, B1721, B1722.
 3. The seal cannot be removed without leaving "Void" and "Opened" residue.
-4. **Cut through the seal** with scissors (don't peel — cutting preserves the evidence if someone resealed it).
+4. **Cut through the seal** with scissors (don't peel - cutting preserves the evidence if someone resealed it).
 
 #### Device Box
 1. Inside you'll find a shrink-wrapped box in bubble wrap.
@@ -67,7 +66,7 @@ Envoy is Foundation's companion app. It walks you through every step and manages
 
 1. **iPhone:** Search "Envoy Foundation" in the App Store.
 2. **Android:** Search "Envoy Foundation" on Google Play, or download the APK from foundation.xyz.
-3. Open Envoy — it will guide you through pairing with your Passport.
+3. Open Envoy - it will guide you through pairing with your Passport.
 
 > **Manual setup without Envoy** is possible (docs.foundation.xyz/passport/manual-setup) but Envoy makes everything significantly easier.
 
@@ -81,7 +80,7 @@ This verifies your device is genuine and hasn't been tampered with in transit.
 1. In Envoy, tap **Set Up Passport**.
 2. Envoy will ask you to scan a QR code displayed on your Passport.
 3. The app communicates with Foundation's server to verify the device's Secure Element has an authentic supply chain key.
-4. If validation passes, you're good. If it fails, **stop and contact Foundation** — the device may have been compromised.
+4. If validation passes, you're good. If it fails, **stop and contact Foundation** - the device may have been compromised.
 
 ### Without Envoy (Manual)
 1. Go to **validate.foundation.xyz** in your browser.
@@ -92,7 +91,7 @@ This verifies your device is genuine and hasn't been tampered with in transit.
 ## Step 3: Set Your PIN
 
 1. The device prompts you to create a PIN.
-2. Enter **6-12 characters** — can be numbers AND letters (upper and lowercase).
+2. Enter **6-12 characters** - can be numbers AND letters (upper and lowercase).
 3. Confirm by entering it again.
 
 ### PIN Rules
@@ -102,7 +101,7 @@ This verifies your device is genuine and hasn't been tampered with in transit.
 - No recovery if forgotten. Plan accordingly.
 
 ### Optional: Security Words
-Advanced users can enable **Security Words** (Settings → Advanced → Security Words). Similar to ColdCard's anti-phishing words — unique words displayed on login to verify device hasn't been swapped.
+Advanced users can enable **Security Words** (Settings → Advanced → Security Words). Similar to ColdCard's anti-phishing words - unique words displayed on login to verify device hasn't been swapped.
 
 ---
 
@@ -110,7 +109,7 @@ Advanced users can enable **Security Words** (Settings → Advanced → Security
 
 1. In Envoy, you'll be prompted if a firmware update is available.
 2. Envoy downloads the update and transfers it via QR code or MicroSD.
-3. Passport only installs firmware signed by **2 of 4** Foundation developer keys — unsigned firmware is rejected.
+3. Passport only installs firmware signed by **2 of 4** Foundation developer keys - unsigned firmware is rejected.
 4. The device verifies, installs, and reboots.
 
 > **Advanced users** can manually download firmware from Foundation's GitHub, verify PGP signatures, and install via MicroSD.
@@ -137,7 +136,7 @@ Advanced users can enable **Security Words** (Settings → Advanced → Security
 3. You can also view seed words later: **Settings → Advanced → View Seed Words**.
 4. **Never photograph the seed words.**
 
-> **Why both backups?** The encrypted MicroSD is Passport-specific. The seed words are universal BIP-39 — they work with any compatible wallet if you ever switch devices.
+> **Why both backups?** The encrypted MicroSD is Passport-specific. The seed words are universal BIP-39 - they work with any compatible wallet if you ever switch devices.
 
 ---
 
@@ -147,7 +146,7 @@ Advanced users can enable **Security Words** (Settings → Advanced → Security
 1. In Envoy, tap **Connect Passport**.
 2. Passport displays a QR code with your public key information.
 3. Scan it with Envoy.
-4. Envoy creates a watch-only wallet — you can see balances and create transactions without the Passport connected.
+4. Envoy creates a watch-only wallet - you can see balances and create transactions without the Passport connected.
 
 ### Via MicroSD
 1. On Passport: **Export Wallet** → save to MicroSD.
@@ -223,4 +222,4 @@ If you prefer desktop wallet software:
 
 ---
 
-*Need help? Book a consultation with a Bitcoin Butler at bitcoinbutlers.com/booking*
+*Tutorial by [Bitcoin Butlers](https://bitcoinbutlers.com) - CC BY-SA 4.0*

@@ -12,7 +12,7 @@ Setup guides, backup checklists, and **browser-based hardware wallet emulators**
 
 No tracking. No paywalls. No affiliate links.
 
-**Maintained by [Bitcoin Butlers](https://bitcoinbutlers.com)** — a platform connecting self-custody experts with people who need hands-on help.
+**Maintained by [Bitcoin Butlers](https://bitcoinbutlers.com)** - a platform connecting self-custody experts with people who need hands-on help.
 
 ## 🖥️ Emulators
 
@@ -20,10 +20,10 @@ Practice with real device firmware in your browser. No hardware needed.
 
 | Device | Type | Status |
 |--------|------|--------|
-| [SeedSigner](emulators/seedsigner/) | Web (browser) | ✅ Working — webcam QR scanning |
+| [SeedSigner](emulators/seedsigner/) | Web (browser) | ✅ Working - webcam QR scanning |
 | [ColdCard Mk4/Q](emulators/coldcard/) | SDL (desktop) | 📖 Setup docs |
 | [Jade](emulators/jade/) | Docker (web UI) | 📖 Setup docs |
-| Passport | — | 🔬 Research |
+| Passport | - | 🔬 Research |
 
 **SeedSigner web emulator** runs the actual firmware in your browser via WebSocket. Navigate menus with arrow keys, scan QR codes with your webcam. [Get started →](emulators/seedsigner/)
 

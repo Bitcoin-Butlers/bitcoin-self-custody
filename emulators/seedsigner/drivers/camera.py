@@ -20,7 +20,7 @@ class CameraConnectionError(Exception):
     pass
 
 
-# Global frame buffer — the WebSocket server writes here,
+# Global frame buffer - the WebSocket server writes here,
 # the camera driver reads from here
 _camera_frame = None
 _camera_lock = Lock()
@@ -120,7 +120,7 @@ class Camera(Singleton):
             return frame
         else:
             if frame is not None:
-                # No rotation needed — webcams are already upright (unlike Pi Camera)
+                # No rotation needed - webcams are already upright (unlike Pi Camera)
                 return Image.fromarray(frame.astype('uint8'), 'RGB')
         return None
 

@@ -14,7 +14,7 @@ source venv/bin/activate
 # On arm64 Macs with x86_64 Homebrew (zbar), run everything under Rosetta
 RUN_PREFIX=""
 if [ "$(uname -m)" = "arm64" ] && file /usr/local/lib/libzbar.dylib 2>/dev/null | grep -q x86_64; then
-    echo "Detected x86_64 zbar on arm64 Mac — running via Rosetta"
+    echo "Detected x86_64 zbar on arm64 Mac - running via Rosetta"
     RUN_PREFIX="arch -x86_64"
 fi
 

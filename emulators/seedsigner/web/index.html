@@ -476,7 +476,7 @@ if (!document.fullscreenEnabled && !document.webkitFullscreenEnabled) {
   document.getElementById('btn-fullscreen').style.display = 'none';
 }
 
-// Reset button — kills server process, run.sh restarts it, page stays alive
+// Reset button - kills server process, run.sh restarts it, page stays alive
 document.getElementById('btn-reset').addEventListener('click', () => {
   resetting = true;
   stopCamera();

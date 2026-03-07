@@ -1,5 +1,4 @@
-# ColdCard Mk4 — Complete Setup Guide
-*Bitcoin Butlers Master Concierge*
+# ColdCard Mk4 - Complete Setup Guide
 *Last verified: Feb 2026 | Firmware: v5.4.5 (Nov 2025)*
 
 ---
@@ -13,7 +12,7 @@
 - USB-C cable (power-only recommended) OR USB wall charger
 - Industrial MicroSD card (included or purchased separately)
 - Pen and the seed word card (included)
-- Steel backup plate (recommended — available in our shop)
+- Steel backup plate (recommended - available in our shop)
 - 15-30 minutes of uninterrupted time
 - A private space with no cameras
 
@@ -23,7 +22,7 @@
 
 ### Verify the Package
 1. Inspect the tamper-evident bag. Look for cuts, tears, or signs of resealing.
-2. Note the **bag number** printed on the barcode label — you'll verify this against the device later.
+2. Note the **bag number** printed on the barcode label - you'll verify this against the device later.
 3. Pull the blue tab to open. The word "VOID" should appear on the seal.
 4. Inside you'll find a serialized tear-off tab. Hold it against the bag to verify the width matches and perforations align.
 5. If anything looks wrong, do not use the device. Contact support@coinkite.com with photos.
@@ -39,7 +38,7 @@
 ## Step 1: Power On
 
 1. Plug a USB-C cable into the top of the ColdCard.
-2. Connect the other end to a **wall charger or USB power bank** (not a computer — you don't need data yet).
+2. Connect the other end to a **wall charger or USB power bank** (not a computer - you don't need data yet).
 3. The screen will light up automatically.
 
 > **Why not a computer?** The ColdCard works air-gapped. Connecting to a computer introduces unnecessary risk during setup. You'll only connect to a computer (or use SD card) later when pairing with wallet software.
@@ -77,7 +76,7 @@ The ColdCard PIN has two parts: a **prefix** and a **suffix**. Example: `1234-56
 - **Use at least 4+4 digits** (e.g., 1234-5678). Shorter PINs are vulnerable to brute force.
 - **Do NOT use birthdays, addresses, or obvious numbers.**
 - **There is no recovery if you forget your PIN.** No backdoor, no reset, no help. Write it down and store it separately from your seed words.
-- Optional: Set a **duress PIN** later (Settings → PIN Options → Duress PIN). This wipes the device if entered — anti-theft protection.
+- Optional: Set a **duress PIN** later (Settings → PIN Options → Duress PIN). This wipes the device if entered - anti-theft protection.
 
 ---
 
@@ -86,15 +85,15 @@ The ColdCard PIN has two parts: a **prefix** and a **suffix**. Example: `1234-56
 You have two options: let the ColdCard generate your seed, or add your own entropy via dice rolls.
 
 1. You'll see a menu. Select **New Wallet**.
-2. The ColdCard generates a 12 or 24-word seed phrase (24 recommended) using its hardware random number generator.
+2. The ColdCard generates a 12 or 24-word seed phrase (24 recommended) using its built-in random number generator.
 3. The words appear on screen, one page at a time.
 
 ### Alternative: Dice Roll Entropy
-If you want to verify the randomness yourself instead of trusting the hardware RNG:
+If you want to verify the randomness yourself instead of trusting the device:
 1. From the menu, select **New Wallet → Dice Rolls** (or **Import Existing → Dice Rolls**).
 2. Roll a casino-grade die and enter each result. ColdCard recommends **99 rolls** for full entropy.
 3. The device combines your dice entropy with its own RNG to generate the seed.
-4. This gives you verifiable randomness — you controlled the input.
+4. This gives you verifiable randomness - you controlled the input.
 
 ### Write Down Your Seed Words
 1. Using the included card or a piece of paper, write each word **exactly as shown**, numbered 1-24.
@@ -118,7 +117,7 @@ Before moving to steel, create an encrypted backup on MicroSD as an additional s
 1. Insert a MicroSD card.
 2. Navigate to: **Advanced/Tools → Backups → Backup System**.
 3. The ColdCard creates an encrypted backup file (AES-256) on the MicroSD.
-4. It generates a 12-word backup password — **write this down separately from your seed words.**
+4. It generates a 12-word backup password - **write this down separately from your seed words.**
 5. To restore from this backup: insert the MicroSD on a new ColdCard → **Import Existing → Restore Backup** → enter the 12-word password.
 
 > **Why both seed words AND encrypted backup?** The seed words are your universal recovery (works on any BIP-39 wallet). The encrypted MicroSD backup restores your ColdCard-specific settings (multisig configs, address explorer settings, etc.) in addition to the seed.
@@ -133,7 +132,7 @@ Paper degrades. Fire, water, and time destroy it. A steel backup plate protects 
 1. Using the included letter stamps or the guide on the plate, stamp each word (or the first 4 letters of each word) into the steel.
 2. Number each word slot 1-24.
 3. Verify by reading back all 24 words from the steel.
-4. Store the steel plate in a secure location — fire safe, safety deposit box, or hidden location.
+4. Store the steel plate in a secure location - fire safe, safety deposit box, or hidden location.
 5. **Store it separately from your ColdCard.** If someone finds both, they have your Bitcoin.
 
 ---
@@ -162,10 +161,10 @@ Sparrow is the recommended desktop wallet for ColdCard users.
 2. Name your wallet (e.g., "ColdCard Main").
 3. Under **Keystores**, click **Connected Hardware Wallet** if using USB, or **Airgapped Hardware Wallet** if using SD card.
 
-#### Option A: Air-Gapped (SD Card — Recommended)
+#### Option A: Air-Gapped (SD Card - Recommended)
 1. Click **Import File** and select the JSON file from your MicroSD card.
 2. Sparrow imports your public keys and creates a watch-only wallet.
-3. You can now see your balance and generate receive addresses — without the ColdCard connected.
+3. You can now see your balance and generate receive addresses - without the ColdCard connected.
 
 #### Option B: USB Connection
 1. Connect ColdCard to your computer via USB-C.
@@ -175,7 +174,7 @@ Sparrow is the recommended desktop wallet for ColdCard users.
 
 ### Verify the Connection
 1. In Sparrow, go to the **Receive** tab.
-2. Click **Get Next Address** — an address appears on screen.
+2. Click **Get Next Address** - an address appears on screen.
 3. On the ColdCard, go to **Address Explorer** and verify the address matches.
 4. If the addresses match, setup is complete. Your ColdCard and Sparrow are paired.
 
@@ -265,11 +264,11 @@ Split your seed across multiple ColdCards so no single device holds the complete
 5. The device verifies the signature and installs the update.
 
 ### Security Best Practices
-- **Never share your seed words with anyone** — not Bitcoin Butlers, not Coinkite, not "support."
+- **Never share your seed words with anyone** - not Bitcoin Butlers, not Coinkite, not "support."
 - **Verify addresses on the ColdCard screen** before every transaction.
-- **Keep firmware updated** — security patches matter.
+- **Keep firmware updated** - security patches matter.
 - **Test your backup** periodically by verifying seed words in Address Explorer match your Sparrow wallet.
-- **Use a passphrase** (BIP-39) for additional security if desired — but only if you can remember it. A forgotten passphrase is as bad as a forgotten PIN.
+- **Use a passphrase** (BIP-39) for additional security if desired - but only if you can remember it. A forgotten passphrase is as bad as a forgotten PIN.
 
 ---
 
@@ -285,4 +284,4 @@ Split your seed across multiple ColdCards so no single device holds the complete
 
 ---
 
-*Need help? Book a consultation with a Bitcoin Butler at bitcoinbutlers.com/booking*
+*Tutorial by [Bitcoin Butlers](https://bitcoinbutlers.com) - CC BY-SA 4.0*

@@ -33,32 +33,16 @@
     height: 56px;
   }
   .nav-brand {
+    display: flex; align-items: center; gap: 10px;
     font-family: 'Playfair Display', serif;
     font-size: 18px; font-weight: 400; font-style: italic;
     background: linear-gradient(90deg, #FF9125, #FBDC7B, #FDA24A);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     cursor: pointer;
+    text-decoration: none;
   }
-  .nav-links { display: flex; gap: 8px; flex-wrap: wrap; }
-  .nav-links button {
-    background: none; border: 1px solid transparent;
-    color: rgba(255,248,230,0.5); font-size: 13px; font-weight: 400;
-    padding: 6px 12px; border-radius: 6px; cursor: pointer;
-    font-family: 'Inter', sans-serif;
-    transition: color 0.15s, border-color 0.15s;
-  }
-  .nav-links button:hover { color: rgba(255,248,230,0.85); }
-  .nav-links button.active {
-    color: #FBDC7B; border-color: rgba(251,220,123,0.3);
-    background: rgba(251,220,123,0.05);
-  }
-
-  /* Mobile nav toggle */
-  .nav-toggle { display: none; background: none; border: none; color: #FBDC7B; font-size: 24px; cursor: pointer; }
-  @media (max-width: 768px) {
-    .nav-toggle { display: block; }
-    .nav-links { display: none; position: absolute; top: 56px; left: 0; right: 0; background: rgba(10,10,10,0.98); padding: 16px; flex-direction: column; border-bottom: 1px solid rgba(251,220,123,0.08); }
-    .nav-links.open { display: flex; }
+  .nav-brand img {
+    width: 28px; height: 28px; border-radius: 4px;
   }
 
   /* Layout */
@@ -114,11 +98,33 @@
     padding: 3px 10px; border-radius: 4px; text-transform: uppercase;
   }
 
+  .home-section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 42px; font-weight: 400; font-style: italic;
+    text-align: center;
+    margin: 48px 0 4px;
+  }
+  .home-section-title span {
+    background: linear-gradient(90deg, #FF9125, #FBDC7B, #FDA24A);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+
   .section-label {
     font-size: 11px; font-weight: 500; letter-spacing: 4px;
     text-transform: uppercase; color: rgba(251,220,123,0.5);
-    margin: 48px 0 12px;
+    margin: 28px 0 12px;
   }
+  .section-subtitle {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px; font-weight: 400; font-style: italic;
+    text-align: center;
+    margin: 40px 0 8px;
+  }
+  .section-subtitle span {
+    background: linear-gradient(90deg, #FF9125, #FBDC7B, #FDA24A);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .home-section-title + .section-subtitle { margin-top: 16px; }
 
   /* Guide content (rendered markdown) */
   .guide-content { display: none; }
@@ -193,16 +199,111 @@
     margin: 32px 0;
   }
   .guide-content img { max-width: 100%; border-radius: 8px; }
-
-  /* Back button */
-  .back-btn {
-    display: inline-block; margin-bottom: 24px;
-    background: none; border: 1px solid rgba(251,220,123,0.15);
-    color: rgba(255,248,230,0.6); font-size: 13px;
-    padding: 6px 16px; border-radius: 6px; cursor: pointer;
-    font-family: 'Inter', sans-serif; transition: all 0.15s;
+  /* Device selector dropdown */
+  .device-selector {
+    margin: 20px 0;
   }
-  .back-btn:hover { color: #FBDC7B; border-color: rgba(251,220,123,0.4); }
+  .device-selector select {
+    appearance: none;
+    background: rgba(251,220,123,0.06);
+    border: 1px solid rgba(251,220,123,0.2);
+    color: #FBDC7B;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px; font-weight: 500;
+    padding: 12px 40px 12px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+    max-width: 320px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23FBDC7B' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+  }
+  .device-selector select:hover {
+    border-color: rgba(251,220,123,0.4);
+  }
+  .device-selector select:focus,
+  .device-selector select:active {
+    outline: none;
+    border-color: rgba(251,220,123,0.5);
+    box-shadow: 0 0 0 2px rgba(251,220,123,0.1);
+  }
+  .device-selector select option {
+    background: #1a1a1a;
+    color: #f5f5f5;
+  }
+  .device-panel {
+    border: 1px solid rgba(251,220,123,0.1);
+    border-radius: 10px;
+    background: rgba(251,220,123,0.02);
+    padding: 20px 24px;
+    margin: 16px 0;
+  }
+  .device-panel[hidden] { display: none; }
+
+  /* Glossary tooltips */
+  .glossary-term {
+    border-bottom: 1px dotted rgba(251,220,123,0.4);
+    cursor: help;
+    position: relative;
+  }
+  .glossary-term:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1a1a1a;
+    border: 1px solid rgba(251,220,123,0.2);
+    color: rgba(255,248,230,0.85);
+    font-size: 13px;
+    font-weight: 300;
+    padding: 8px 12px;
+    border-radius: 6px;
+    white-space: normal;
+    width: max-content;
+    max-width: 280px;
+    z-index: 200;
+    line-height: 1.4;
+    margin-top: 6px;
+    pointer-events: none;
+  }
+  @media (max-width: 600px) {
+    .glossary-term:hover::after {
+      left: 0; transform: none;
+      max-width: 220px;
+    }
+  }
+
+  /* Guide header with back button + title */
+  .guide-header {
+    display: flex; align-items: center; gap: 16px;
+    margin-bottom: 28px;
+  }
+  .back-btn {
+    display: flex; align-items: center; justify-content: center;
+    width: 36px; height: 36px; flex-shrink: 0;
+    background: none; border: none;
+    color: rgba(255,248,230,0.6); font-size: 18px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .back-btn:hover { color: #FBDC7B; }
+  .guide-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px; font-weight: 400; font-style: italic;
+    line-height: 1.2;
+  }
+  .guide-title .category {
+    background: linear-gradient(90deg, #FF9125, #FBDC7B, #FDA24A);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .guide-title .name {
+    color: #f5f5f5;
+  }
+  @media (max-width: 600px) {
+    .guide-title { font-size: 24px; }
+  }
 
   /* Emulator embed */
   .emulator-embed {
@@ -247,17 +348,10 @@
 
 <nav>
   <div class="nav-inner">
-    <div class="nav-brand" onclick="showHome()">Bitcoin Butlers</div>
-    <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">&#9776;</button>
-    <div class="nav-links">
-      <button onclick="showHome()" class="active" data-nav="home">Home</button>
-      <button onclick="showGuide('choosing-a-device')" data-nav="choosing-a-device">Devices</button>
-      <button onclick="showGuide('seedsigner')" data-nav="seedsigner">SeedSigner</button>
-      <button onclick="showGuide('coldcard-mk4')" data-nav="coldcard-mk4">ColdCard</button>
-      <button onclick="showGuide('passport')" data-nav="passport">Passport</button>
-      <button onclick="showGuide('jade')" data-nav="jade">Jade</button>
-      <button onclick="showGuide('sparrow-wallet')" data-nav="sparrow-wallet">Sparrow</button>
-    </div>
+    <a class="nav-brand" onclick="showHome(); return false;" href="#">
+      <img src="assets/logo.png" alt="Bitcoin Butlers" onerror="this.style.display='none'">
+      Bitcoin Butlers
+    </a>
   </div>
 </nav>
 
@@ -270,28 +364,58 @@
       <div class="home-tagline">We hold your hand, not your keys</div>
     </div>
 
+    <h1 class="home-section-title"><span>Seeds</span></h1>
+
+    <h2 class="section-subtitle"><span>Generation</span></h2>
+    <div class="card-grid">
+      <div class="card" onclick="showGuide('gen-hardware-wallet')">
+        <h3>Hardware Wallet</h3>
+        <p>Let your device generate the seed. Easiest, requires trust in the manufacturer.</p>
+      </div>
+      <div class="card" onclick="showGuide('gen-seed-picker')">
+        <h3>Seed Picker Cards</h3>
+        <p>Shuffle a physical deck of BIP-39 words. Verifiable, no electronics needed.</p>
+      </div>
+      <div class="card" onclick="showGuide('gen-dice-rolls')">
+        <h3>Dice Rolls</h3>
+        <p>99 rolls on SeedSigner or manual binary. Maximum verifiability.</p>
+      </div>
+      <div class="card" onclick="showGuide('gen-entropia-pills')">
+        <h3>Entropia Pills</h3>
+        <p>3D-printed capsules with BIP-39 words. Tactile and educational.</p>
+      </div>
+      <div class="card" onclick="showGuide('gen-camera-entropy')">
+        <h3>Camera Entropy</h3>
+        <p>SeedSigner hashes a photo for entropy. Fast and open source.</p>
+      </div>
+      <div class="card" onclick="showGuide('gen-codex32')">
+        <h3>Codex32</h3>
+        <p>Generate, verify, and split your seed entirely by hand. Zero electronic trust.</p>
+      </div>
+    </div>
+
+    <h2 class="section-subtitle"><span>In Use</span></h2>
+
     <div class="section-label">Signing Devices</div>
     <div class="card-grid">
       <div class="card" onclick="showGuide('seedsigner')">
-        <h3>SeedSigner</h3>
+        <h3>SeedSigner+</h3>
         <p>DIY, stateless, air-gapped. Build from parts or buy pre-built.</p>
         <span class="badge">Emulator</span>
       </div>
-      <div class="card" onclick="showGuide('coldcard-mk4')">
-        <h3>ColdCard Mk4</h3>
-        <p>Dual secure elements. The original Bitcoin-only signing device.</p>
-      </div>
       <div class="card" onclick="showGuide('coldcard-q')">
         <h3>ColdCard Q</h3>
-        <p>Full QWERTY keyboard, camera, large display. Power user device.</p>
+        <p>Full QWERTY keyboard, camera, large display. Dual secure elements.</p>
+        <span class="badge">Emulator</span>
+      </div>
+      <div class="card" onclick="showGuide('jade')">
+        <h3>Jade Plus</h3>
+        <p>Budget-friendly, travel-sized. Virtual secure element.</p>
+        <span class="badge">Emulator</span>
       </div>
       <div class="card" onclick="showGuide('passport')">
         <h3>Passport</h3>
         <p>Premium machined aluminum. QR air-gap. Best looking device.</p>
-      </div>
-      <div class="card" onclick="showGuide('jade')">
-        <h3>Jade / Jade Plus</h3>
-        <p>Budget-friendly, travel-sized. Virtual secure element.</p>
       </div>
       <div class="card" onclick="showGuide('choosing-a-device')">
         <h3>Compare All Devices</h3>
@@ -305,21 +429,25 @@
         <h3>Sparrow Wallet</h3>
         <p>Desktop coordinator. Coin control, PSBT signing, multisig.</p>
       </div>
+      <div class="card" onclick="showGuide('bull-bitcoin')">
+        <h3>Bull Bitcoin</h3>
+        <p>Single-sig hot wallet. Non-custodial. Buy, sell, and spend.</p>
+      </div>
       <div class="card" onclick="showGuide('multisig-sparrow')">
         <h3>Multisig with Sparrow</h3>
         <p>2-of-3 multisig setup. The gold standard for large amounts.</p>
       </div>
     </div>
 
-    <div class="section-label">Backup &amp; Security</div>
+    <h2 class="section-subtitle"><span>At Rest</span></h2>
     <div class="card-grid">
       <div class="card" onclick="showGuide('steel-backup')">
-        <h3>Steel Backup</h3>
-        <p>Stamping vs etching. Single-sig and multisig plate layouts.</p>
+        <h3>Single-Sig Steel Backup</h3>
+        <p>Stamp your 24 words into steel. Fire-proof, flood-proof, forever.</p>
       </div>
-      <div class="card" onclick="showGuide('seed-generation')">
-        <h3>Seed Generation</h3>
-        <p>5 methods compared. Dice, cards, camera entropy, and more.</p>
+      <div class="card" onclick="showGuide('steel-backup')">
+        <h3>Multi-Sig Steel Backup</h3>
+        <p>Seed phrases + wallet descriptor on distributed plates. 2-of-3 recovery.</p>
       </div>
     </div>
 
@@ -359,27 +487,37 @@ const cache = {};
 const emulatorDevices = {
   'seedsigner': {
     url: 'emulators/seedsigner/web/index.html',
-    label: 'SeedSigner Emulator'
+    label: 'SeedSigner+ Emulator'
+  },
+  'coldcard-q': {
+    url: 'emulators/coldcard/web/index.html',
+    label: 'ColdCard Q Emulator'
+  },
+  'jade': {
+    url: 'emulators/jade/web/index.html',
+    label: 'Jade Plus Emulator'
   }
 };
 
-function setActiveNav(id) {
-  document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
-  const btn = document.querySelector(`[data-nav="${id}"]`);
-  if (btn) btn.classList.add('active');
-  // Close mobile nav
-  document.querySelector('.nav-links').classList.remove('open');
+let navDepth = 0;
+
+function goBack() {
+  if (navDepth > 0) {
+    history.back();
+  } else {
+    showHome();
+  }
 }
 
 function showHome() {
   homeEl.style.display = '';
   guideEl.classList.remove('active');
-  setActiveNav('home');
+  navDepth = 0;
   window.scrollTo(0, 0);
   history.pushState(null, '', '#');
 }
 
-async function showGuide(slug) {
+async function showGuide(slug, skipHistory) {
   // Determine file path
   let path;
   if (slug.startsWith('checklists/')) {
@@ -390,7 +528,6 @@ async function showGuide(slug) {
 
   homeEl.style.display = 'none';
   guideEl.classList.add('active');
-  setActiveNav(slug);
 
   // Load markdown
   if (!cache[slug]) {
@@ -399,47 +536,203 @@ async function showGuide(slug) {
       if (!resp.ok) throw new Error('Not found');
       cache[slug] = await resp.text();
     } catch (e) {
-      guideEl.innerHTML = '<button class="back-btn" onclick="showHome()">&larr; Back</button><p>Guide not found.</p>';
+      guideEl.innerHTML = '<div class="guide-header"><button class="back-btn" onclick="goBack()">&larr;</button><div class="guide-title"><span class="name">Guide not found</span></div></div>';
       return;
     }
   }
 
+  // Parse the title from the first markdown h1 line: "# Category - Name"
+  const mdLines = cache[slug].split('\n');
+  let titleHtml = '';
+  let mdBody = cache[slug];
+  const h1Match = mdLines[0] && mdLines[0].match(/^#\s+(.+)/);
+  if (h1Match) {
+    const fullTitle = h1Match[1];
+    const dashIdx = fullTitle.indexOf(' - ');
+    if (dashIdx > -1) {
+      const category = fullTitle.slice(0, dashIdx);
+      const name = fullTitle.slice(dashIdx + 3);
+      titleHtml = `<span class="category">${category}</span> <span class="name">${name}</span>`;
+    } else {
+      titleHtml = `<span class="name">${fullTitle}</span>`;
+    }
+    // Remove the h1 line from markdown so it doesn't render twice
+    mdBody = mdLines.slice(1).join('\n');
+  }
+
   // Render
-  let html = '<button class="back-btn" onclick="showHome()">&larr; All Tutorials</button>';
+  let html = `<div class="guide-header"><button class="back-btn" onclick="goBack()">&larr;</button><div class="guide-title">${titleHtml}</div></div>`;
 
   // Add emulator if this device has one
   if (emulatorDevices[slug]) {
     const emu = emulatorDevices[slug];
     html += `<div class="emulator-embed">
-      <div class="emulator-label">${emu.label} &mdash; Try it in your browser</div>
+      <div class="emulator-label">${emu.label} - Try it in your browser</div>
       <iframe src="${emu.url}" allow="camera" loading="lazy"></iframe>
     </div>`;
   }
 
-  html += marked.parse(cache[slug]);
+  html += marked.parse(mdBody);
 
   // Convert markdown checkboxes
   html = html.replace(/\[ \]/g, '<input type="checkbox">');
   html = html.replace(/\[x\]/g, '<input type="checkbox" checked>');
 
-  // Rewrite relative emulator links to use showGuide
-  html = html.replace(/href="\.\.\/emulators\/seedsigner\/"/g, 'href="#" onclick="showGuide(\'seedsigner\'); return false;"');
+  // Rewrite internal links to use hash routing
+  // .md links like "coldcard-mk4.md" or "../guides/coldcard-mk4.md" -> showGuide('coldcard-mk4')
+  html = html.replace(/href="(?:\.\.\/guides\/)?([a-z0-9_-]+)\.md"/gi, (_, slug) => {
+    return `href="#${slug}" onclick="showGuide('${slug}'); return false;"`;
+  });
+  // Emulator links like "../emulators/seedsigner/" -> showGuide('seedsigner')
+  html = html.replace(/href="\.\.\/emulators\/([a-z0-9_-]+)\/?"/gi, (_, device) => {
+    return `href="#${device}" onclick="showGuide('${device}'); return false;"`;
+  });
+  // Internal hash links like "#steel-backup" or "#gen-dice-rolls" -> showGuide('slug')
+  html = html.replace(/href="#([a-z0-9_-]+)"/gi, (match, slug) => {
+    // Skip anchors that already have onclick
+    if (match.includes('onclick')) return match;
+    return `href="#${slug}" onclick="showGuide('${slug}'); return false;"`;
+  });
 
   guideEl.innerHTML = html;
+  convertDetailsToDropdowns(guideEl);
+  applyGlossary(guideEl);
   window.scrollTo(0, 0);
-  history.pushState(null, '', '#' + slug);
+  if (!skipHistory) {
+    navDepth++;
+    history.pushState(null, '', '#' + slug);
+  }
 }
 
 // Handle back/forward
 window.addEventListener('popstate', () => {
+  navDepth = Math.max(0, navDepth - 1);
   const hash = location.hash.slice(1);
-  if (hash) showGuide(hash);
-  else showHome();
+  if (hash) {
+    showGuide(hash, true);
+  } else {
+    homeEl.style.display = '';
+    guideEl.classList.remove('active');
+    navDepth = 0;
+    window.scrollTo(0, 0);
+  }
 });
 
+const glossary = {
+  'seed phrase': 'A list of 12 or 24 words that is the master backup of your Bitcoin wallet. Anyone with these words controls your Bitcoin.',
+  'seed': 'Short for seed phrase. The 12 or 24 words that back up your wallet.',
+  'BIP-39': 'The standard word list used for seed phrases. Contains 2,048 English words. The first 4 letters of each word are unique.',
+  'entropy': 'Randomness. The raw random data used to generate your seed. More entropy means a more secure seed.',
+  'xpub': 'Extended public key. A read-only key that can generate all your wallet addresses. Safe to share with wallet software, but reveals your balance and transaction history.',
+  'checksum': 'The last word in your seed phrase. It is calculated from the other words and proves the seed is valid.',
+  'TRNG': 'True Random Number Generator. A hardware chip that produces randomness from physical noise like electrical fluctuations.',
+  'air-gapped': 'A device that never connects to the internet. It communicates only via QR codes, MicroSD cards, NFC, or manual entry.',
+  'secure element': 'A tamper-resistant chip that stores your seed phrase encrypted. Designed to resist physical attacks.',
+  'virtual secure element': 'A security model used by Jade where the device encrypts your seed locally, but needs a remote server (or your own server) to provide a blinding key for decryption. The server never sees your seed.',
+  'multisig': 'A wallet that requires multiple keys from different devices to authorize a transaction. For example, 2-of-3 means any 2 out of 3 keys must sign. Eliminates single points of failure - no single compromised device can steal your funds.',
+  'single-sig': 'A wallet controlled by one key. Simpler than multisig but has a single point of failure.',
+  'PSBT': 'Partially Signed Bitcoin Transaction. A standard format for passing unsigned or partially signed transactions between devices.',
+  'derivation path': 'A numbering scheme that tells wallet software which addresses to generate from your seed. Different paths produce different addresses from the same seed.',
+  'wallet descriptor': 'A text string that fully describes how to reconstruct a wallet, including all keys, derivation paths, and the signing policy.',
+  'stateless': 'A device that does not store any data between sessions. When powered off, everything is erased.',
+  'hot wallet': 'A wallet on a device connected to the internet (phone, computer). Convenient but less secure than hardware wallets.',
+  'PIN': 'Personal Identification Number. A short code that locks your device. Not the same as your seed phrase.',
+};
+
+function applyGlossary(container) {
+  const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+  const nodes = [];
+  while (walker.nextNode()) nodes.push(walker.currentNode);
+  const sortedTerms = Object.keys(glossary).sort((a, b) => b.length - a.length);
+  const pattern = new RegExp('\\b(' + sortedTerms.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')\\b', 'gi');
+  nodes.forEach(node => {
+    // Skip titles, code, links, and the guide header
+    if (node.parentElement.closest('.glossary-term, code, pre, a, h1, h2, h3, h4, select, summary, .guide-header, .guide-title')) return;
+    const text = node.textContent;
+    if (!pattern.test(text)) return;
+    pattern.lastIndex = 0;
+    const frag = document.createDocumentFragment();
+    let last = 0;
+    let match;
+    while ((match = pattern.exec(text)) !== null) {
+      const term = match[1].toLowerCase();
+      const key = sortedTerms.find(t => t.toLowerCase() === term) || term;
+      if (match.index > last) frag.appendChild(document.createTextNode(text.slice(last, match.index)));
+      const span = document.createElement('span');
+      span.className = 'glossary-term';
+      span.setAttribute('data-tooltip', glossary[key] || glossary[term]);
+      span.textContent = match[0];
+      frag.appendChild(span);
+      last = match.index + match[0].length;
+    }
+    if (last === 0) return;
+    if (last < text.length) frag.appendChild(document.createTextNode(text.slice(last)));
+    node.parentNode.replaceChild(frag, node);
+  });
+}
+
+function convertDetailsToDropdowns(container) {
+  // Find groups of consecutive <details> elements and convert to select + panels
+  const allDetails = container.querySelectorAll('details');
+  if (!allDetails.length) return;
+
+  // Group consecutive details elements
+  const groups = [];
+  let current = [];
+  allDetails.forEach((d, i) => {
+    if (i === 0 || d.previousElementSibling === allDetails[i - 1]) {
+      current.push(d);
+    } else {
+      if (current.length) groups.push([...current]);
+      current = [d];
+    }
+  });
+  if (current.length) groups.push(current);
+
+  groups.forEach((group, gi) => {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'device-selector';
+
+    const select = document.createElement('select');
+    select.id = 'device-select-' + gi;
+
+    const panels = [];
+    group.forEach((details, di) => {
+      const label = details.querySelector('summary').textContent.trim();
+      const opt = document.createElement('option');
+      opt.value = di;
+      opt.textContent = label;
+      select.appendChild(opt);
+
+      const panel = document.createElement('div');
+      panel.className = 'device-panel';
+      panel.id = 'device-panel-' + gi + '-' + di;
+      // Get all content except the summary
+      const clone = details.cloneNode(true);
+      clone.querySelector('summary').remove();
+      panel.innerHTML = clone.innerHTML;
+      if (di > 0) panel.hidden = true;
+      panels.push(panel);
+    });
+
+    select.addEventListener('change', () => {
+      panels.forEach((p, pi) => { p.hidden = pi !== parseInt(select.value); });
+    });
+
+    // Insert before the first details in this group
+    group[0].parentNode.insertBefore(wrapper, group[0]);
+    wrapper.appendChild(select);
+    panels.forEach(p => wrapper.parentNode.insertBefore(p, group[0]));
+
+    // Remove original details elements
+    group.forEach(d => d.remove());
+  });
+}
+
 // Load from hash on page load
+// Load from hash on page load (skipHistory so navDepth stays 0)
 if (location.hash.length > 1) {
-  showGuide(location.hash.slice(1));
+  showGuide(location.hash.slice(1), true);
 }
 </script>
 </body>
