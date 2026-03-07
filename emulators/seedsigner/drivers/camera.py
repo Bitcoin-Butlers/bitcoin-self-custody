@@ -15,6 +15,11 @@ from seedsigner.models.settings import Settings, SettingsConstants
 from seedsigner.models.singleton import Singleton
 
 
+class CameraConnectionError(Exception):
+    """Raised when camera connection fails (never raised in emulator)."""
+    pass
+
+
 # Global frame buffer — the WebSocket server writes here,
 # the camera driver reads from here
 _camera_frame = None
@@ -52,13 +57,14 @@ class WebVideoStream:
         with _camera_lock:
             data = _camera_frame
         if data is None:
-            return None
+            # Return a blank frame so the scan screen doesn't hang
+            return np.zeros((self.resolution[1], self.resolution[0], 3), dtype=np.uint8)
         try:
             img = Image.open(io.BytesIO(data))
             img = img.resize(self.resolution)
             return np.array(img)
         except Exception:
-            return None
+            return np.zeros((self.resolution[1], self.resolution[0], 3), dtype=np.uint8)
 
     def hasCamera(self):
         return True
@@ -114,9 +120,8 @@ class Camera(Singleton):
             return frame
         else:
             if frame is not None:
-                return Image.fromarray(frame.astype('uint8'), 'RGB').rotate(
-                    90 + self._camera_rotation
-                )
+                # No rotation needed — webcams are already upright (unlike Pi Camera)
+                return Image.fromarray(frame.astype('uint8'), 'RGB')
         return None
 
     def stop_video_stream_mode(self):
@@ -130,7 +135,7 @@ class Camera(Singleton):
 
     def capture_frame(self):
         frame = WebVideoStream.single_frame()
-        return Image.fromarray(frame).rotate(90 + self._camera_rotation)
+        return Image.fromarray(frame)
 
     def stop_single_frame_mode(self):
         pass

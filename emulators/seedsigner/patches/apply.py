@@ -111,7 +111,24 @@ def apply_patches(seedsigner_src: Path):
         else:
             print("  ✓ display_driver.py already patched")
 
-    # 6. Stub out picamera imports at module level
+    # 6. Patch pyzbar binary kwarg compatibility
+    decode_qr_path = ss / "models" / "decode_qr.py"
+    if decode_qr_path.exists():
+        content = decode_qr_path.read_text()
+        old_call = "barcodes = pyzbar.decode(image, symbols=[ZBarSymbol.QRCODE], binary=is_binary)"
+        if old_call in content and "TypeError" not in content:
+            new_call = """try:
+            barcodes = pyzbar.decode(image, symbols=[ZBarSymbol.QRCODE], binary=is_binary)
+        except TypeError:
+            # Older pyzbar versions don't support the binary kwarg
+            barcodes = pyzbar.decode(image, symbols=[ZBarSymbol.QRCODE])"""
+            content = content.replace(old_call, new_call, 1)
+            decode_qr_path.write_text(content)
+            print("  ✓ Patched decode_qr.py (pyzbar binary kwarg)")
+        else:
+            print("  ✓ decode_qr.py already compatible")
+
+    # 7. Stub out picamera imports at module level
     # We handle this in server.py by injecting fake picamera modules
 
     print("Patches applied successfully!")

@@ -63,6 +63,10 @@ class desktopDisplay(threading.Thread):
             time.sleep(1)
 
     def ShowImage(self, image, Xstart, Ystart):
+        # Throttle frame rate to ~15fps to prevent screensaver glitching
+        # (Pi Zero is slow enough naturally; desktop CPUs need artificial delay)
+        time.sleep(0.065)
+
         imwidth, imheight = image.size
         if imwidth != self.width or imheight != self.height:
             if self.display_type == DISPLAY_TYPE__ILI9341:
@@ -112,5 +116,5 @@ class desktopDisplay(threading.Thread):
         pin = key_map.get(key)
         if pin:
             GPIO.set_input(pin, GPIO.HIGH)
-            # Brief press
-            threading.Timer(0.15, lambda: GPIO.set_input(pin, GPIO.LOW)).start()
+            # Hold for 250ms to ensure firmware polling loop detects the press
+            threading.Timer(0.25, lambda: GPIO.set_input(pin, GPIO.LOW)).start()

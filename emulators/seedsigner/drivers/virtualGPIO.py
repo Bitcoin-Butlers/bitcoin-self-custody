@@ -100,7 +100,7 @@ class GPIO:
 
         #print(channel)
         channel = str(channel)
-        
+
         if channel not in dictionaryPins:
             #if channel is not setup
             raise Exception('GPIO must be setup before used')
@@ -109,11 +109,10 @@ class GPIO:
             if(objPin.SetMode == "OUT"):
                 #if channel is setup as OUTPUT and used as an INPUT
                 raise Exception('GPIO must be setup as IN')
-       
+
         objPin = dictionaryPins[channel]
 
         if(channel==raisedPin):
-            raisedPin=""
             return GPIO.LOW
         else:
             return GPIO.HIGH
@@ -121,7 +120,9 @@ class GPIO:
 
 
     def cleanup():
-        pass
+        global dictionaryPins, raisedPin
+        dictionaryPins = {}
+        raisedPin = ""
 
     def add_event_detect(channel,edge,callback):
         GPIO.risecallback=callback

@@ -5,13 +5,6 @@
 <title>SeedSigner Emulator</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 <meta name="description" content="Run SeedSigner in your browser. Practice Bitcoin self-custody without hardware.">
-<meta property="og:title" content="SeedSigner Web Emulator">
-<meta property="og:description" content="Run real SeedSigner firmware in your browser. Navigate menus, generate seeds, scan QR codes with your webcam. No hardware needed.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://github.com/Bitcoin-Butlers/bitcoin-self-custody">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="SeedSigner Web Emulator">
-<meta name="twitter:description" content="Practice Bitcoin self-custody in your browser. Real firmware, no hardware.">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -23,141 +16,224 @@
     align-items: center;
     justify-content: center;
     min-height: 100vh;
+    padding: 16px;
   }
   h1 {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     color: #FBDC7B;
     margin-bottom: 1rem;
     text-align: center;
+    letter-spacing: 1px;
   }
-  .emulator {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1.5rem;
-  }
-  .device {
+
+  /* === DEVICE SHELL (pill shape, SeedSigner+ style) === */
+  .device-shell {
     background: #1a1a1a;
     border: 2px solid #333;
-    border-radius: 16px;
-    padding: 24px;
+    border-radius: 48px;
+    padding: 28px 32px;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 16px;
+    gap: 28px;
+    position: relative;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04);
   }
-  #screen {
-    border: 2px solid #444;
-    border-radius: 4px;
-    image-rendering: pixelated;
+  .device-shell::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 49px;
+    background: linear-gradient(160deg, rgba(251,220,123,0.08) 0%, transparent 40%);
+    pointer-events: none;
+    z-index: 0;
   }
-  .controls {
+
+  /* Left: D-pad */
+  .dpad-area {
     display: flex;
-    gap: 2rem;
     align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
   }
   .dpad {
     display: grid;
-    grid-template-columns: 40px 40px 40px;
-    grid-template-rows: 40px 40px 40px;
+    grid-template-columns: 44px 44px 44px;
+    grid-template-rows: 44px 44px 44px;
     gap: 2px;
   }
   .dpad button {
-    width: 40px;
-    height: 40px;
-    border: 1px solid #555;
-    border-radius: 6px;
-    background: #2a2a2a;
-    color: #f5f5f5;
-    font-size: 1.2rem;
+    width: 44px;
+    height: 44px;
+    border: 1px solid #444;
+    border-radius: 8px;
+    background: #252525;
+    color: #999;
+    font-size: 1.1rem;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: background 0.1s, color 0.1s;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
   }
-  .dpad button:hover { background: #3a3a3a; }
+  .dpad button:hover { background: #333; color: #f5f5f5; }
   .dpad button:active, .dpad button.pressed { background: #FBDC7B; color: #000; }
   .dpad .empty { border: none; background: transparent; cursor: default; pointer-events: none; }
-  .side-buttons {
+  .dpad .ok-btn {
+    background: #2a2a2a;
+    border: 2px solid #555;
+    border-radius: 50%;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #FBDC7B;
+  }
+  .dpad .ok-btn:active, .dpad .ok-btn.pressed { background: #FBDC7B; color: #000; }
+
+  /* Center: Screen */
+  .screen-area {
+    position: relative;
+    z-index: 1;
+  }
+  #screen {
+    border: 3px solid #333;
+    border-radius: 8px;
+    image-rendering: pixelated;
+    display: block;
+  }
+
+  /* Right: Side buttons (1, 2, 3) */
+  .side-area {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
+    position: relative;
+    z-index: 1;
   }
-  .side-buttons button {
-    width: 50px;
-    height: 36px;
-    border: 1px solid #555;
-    border-radius: 6px;
-    background: #2a2a2a;
-    color: #f5f5f5;
-    font-size: 0.9rem;
+  .side-area button {
+    width: 52px;
+    height: 40px;
+    border: 1px solid #444;
+    border-radius: 20px;
+    background: #252525;
+    color: #999;
+    font-size: 0.85rem;
+    font-weight: 600;
     cursor: pointer;
+    transition: background 0.1s, color 0.1s;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
   }
-  .side-buttons button:hover { background: #3a3a3a; }
-  .side-buttons button:active, .side-buttons button.pressed { background: #FBDC7B; color: #000; }
-  .hint {
-    color: #666;
-    font-size: 0.8rem;
-    text-align: center;
-    max-width: 400px;
+  .side-area button:hover { background: #333; color: #f5f5f5; }
+  .side-area button:active, .side-area button.pressed { background: #FBDC7B; color: #000; }
+
+  /* Camera feed */
+  .camera-container {
+    width: 240px;
+    height: 180px;
+    border: 1px solid #333;
+    border-radius: 12px;
+    overflow: hidden;
+    display: none;
+    position: relative;
+    margin-top: 12px;
   }
-  .status {
-    font-size: 0.75rem;
-    color: #444;
+  .camera-container.active { display: block; }
+  .camera-container video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
-  .status.connected { color: #10B981; }
-  a { color: #FBDC7B; }
+  .camera-label {
+    position: absolute;
+    bottom: 6px;
+    left: 8px;
+    font-size: 0.65rem;
+    color: #10B981;
+    background: rgba(0,0,0,0.7);
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  /* Toolbar */
   .toolbar {
     display: flex;
     gap: 8px;
-    margin-top: 4px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
   }
   .toolbar button {
-    background: #2a2a2a;
-    border: 1px solid #444;
-    border-radius: 6px;
-    color: #999;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    color: #888;
     font-size: 0.75rem;
-    padding: 4px 10px;
+    padding: 6px 14px;
     cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    -webkit-tap-highlight-color: transparent;
   }
-  .toolbar button:hover { background: #3a3a3a; color: #f5f5f5; }
-  .toolbar button.active { background: #FBDC7B; color: #000; }
+  .toolbar button:hover { background: #2a2a2a; color: #f5f5f5; }
+  .toolbar button.active { background: #FBDC7B; color: #000; border-color: #FBDC7B; }
+  .toolbar .reset-btn { border-color: #552222; color: #cc6666; }
+  .toolbar .reset-btn:hover { background: #331111; color: #ff8888; }
+
+  /* Status */
+  .status { font-size: 0.7rem; color: #444; margin-top: 10px; }
+  .status.connected { color: #10B981; }
+
+  /* Help overlay */
+  .overlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 240px; height: 240px;
+    background: rgba(0,0,0,0.92);
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    padding: 18px;
+    font-size: 0.75rem;
+    line-height: 2;
+    z-index: 10;
+    border-radius: 6px;
+  }
+  .overlay.visible { display: flex; }
+  .overlay kbd {
+    background: #333;
+    border: 1px solid #555;
+    border-radius: 3px;
+    padding: 1px 6px;
+    font-family: monospace;
+    font-size: 0.7rem;
+    color: #FBDC7B;
+  }
+
+  /* Tutorial panel */
   .main-layout {
     display: flex;
-    gap: 1.5rem;
-    align-items: flex-start;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
   }
   .tutorial-panel {
     background: #1a1a1a;
     border: 2px solid #333;
     border-radius: 16px;
     padding: 20px;
-    width: 260px;
+    width: 100%;
+    max-width: 480px;
     display: none;
     flex-direction: column;
     gap: 12px;
   }
   .tutorial-panel.visible { display: flex; }
-  .tutorial-title {
-    color: #FBDC7B;
-    font-size: 0.95rem;
-    font-weight: 600;
-  }
-  .tutorial-step-count {
-    color: #666;
-    font-size: 0.7rem;
-  }
-  .tutorial-instruction {
-    font-size: 0.85rem;
-    line-height: 1.5;
-    min-height: 80px;
-  }
-  .tutorial-keys {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-  }
+  .tutorial-title { color: #FBDC7B; font-size: 0.95rem; font-weight: 600; }
+  .tutorial-step-count { color: #666; font-size: 0.7rem; }
+  .tutorial-instruction { font-size: 0.85rem; line-height: 1.5; min-height: 60px; }
+  .tutorial-keys { display: flex; gap: 6px; flex-wrap: wrap; }
   .tutorial-keys kbd {
     background: #333;
     border: 1px solid #555;
@@ -167,11 +243,7 @@
     font-size: 0.8rem;
     color: #FBDC7B;
   }
-  .tutorial-nav {
-    display: flex;
-    justify-content: space-between;
-    gap: 8px;
-  }
+  .tutorial-nav { display: flex; justify-content: space-between; gap: 8px; }
   .tutorial-nav button {
     flex: 1;
     padding: 8px;
@@ -184,16 +256,8 @@
   }
   .tutorial-nav button:hover { background: #3a3a3a; }
   .tutorial-nav button:disabled { opacity: 0.3; cursor: default; }
-  .tutorial-tip {
-    font-size: 0.7rem;
-    color: #666;
-    font-style: italic;
-  }
-  .tutorial-menu {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
+  .tutorial-tip { font-size: 0.7rem; color: #666; font-style: italic; }
+  .tutorial-menu { display: flex; flex-direction: column; gap: 6px; }
   .tutorial-menu button {
     text-align: left;
     padding: 10px 12px;
@@ -205,137 +269,133 @@
     font-size: 0.85rem;
   }
   .tutorial-menu button:hover { border-color: #FBDC7B; }
-  .tutorial-menu .tutorial-label {
-    color: #666;
+  .tutorial-menu .tutorial-label { color: #666; font-size: 0.7rem; }
+
+  .footer {
+    margin-top: 16px;
     font-size: 0.7rem;
+    color: #444;
+    text-align: center;
   }
-  @media (max-width: 600px) {
-    .main-layout { flex-direction: column; align-items: center; }
-    .tutorial-panel { width: 100%; max-width: 340px; }
+  .footer a { color: #FBDC7B; text-decoration: none; }
+  .footer a:hover { text-decoration: underline; }
+
+  /* === MOBILE LAYOUT (stacked, compact) === */
+  @media (max-width: 599px) {
+    .device-shell {
+      flex-direction: column;
+      border-radius: 24px;
+      padding: 20px;
+      gap: 16px;
+    }
+    .dpad-area { order: 2; }
+    .screen-area { order: 1; }
+    .side-area {
+      order: 3;
+      flex-direction: row;
+      gap: 12px;
+    }
+    .side-area button {
+      width: 60px;
+      height: 36px;
+      border-radius: 18px;
+    }
+    .dpad button { width: 48px; height: 48px; }
+    .dpad .ok-btn { border-radius: 50%; }
   }
-  .overlay {
-    position: absolute;
-    top: 0; left: 0;
-    width: 240px; height: 240px;
-    background: rgba(0,0,0,0.88);
-    display: none;
-    flex-direction: column;
-    justify-content: center;
-    padding: 16px;
-    font-size: 0.75rem;
-    line-height: 1.8;
-    z-index: 10;
-    border-radius: 4px;
-  }
-  .overlay.visible { display: flex; }
-  .overlay kbd {
-    background: #333;
-    border: 1px solid #555;
-    border-radius: 3px;
-    padding: 1px 5px;
-    font-family: monospace;
-    font-size: 0.7rem;
-    color: #FBDC7B;
-  }
-  .device { position: relative; }
-  .camera-container {
-    position: relative;
-    width: 240px;
-    height: 180px;
-    border: 1px solid #333;
-    border-radius: 8px;
-    overflow: hidden;
-    display: none;
-  }
-  .camera-container.active { display: block; }
-  .camera-container video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  .camera-label {
-    position: absolute;
-    bottom: 4px;
-    left: 8px;
-    font-size: 0.65rem;
-    color: #10B981;
-    background: rgba(0,0,0,0.7);
-    padding: 2px 6px;
-    border-radius: 4px;
+
+  /* === TABLET+ (side by side, pill device) === */
+  @media (min-width: 600px) {
+    .device-shell {
+      flex-direction: row;
+    }
   }
 </style>
 </head>
 <body>
-<div class="emulator">
-  <h1>SeedSigner Emulator</h1>
-  <div class="main-layout">
-  <div class="device">
-    <canvas id="screen" width="240" height="240"></canvas>
-    <div class="overlay" id="help-overlay">
-      <div><kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd> Navigate</div>
-      <div><kbd>Enter</kbd> Select</div>
-      <div><kbd>1</kbd> Key 1 (top)</div>
-      <div><kbd>2</kbd> Key 2 (middle)</div>
-      <div><kbd>3</kbd> Key 3 (bottom)</div>
-      <div><kbd>Esc</kbd> Back (same as key 3)</div>
-      <div style="margin-top:8px;color:#666">Press <kbd>?</kbd> to close</div>
-    </div>
-    <div class="controls">
+
+<h1>SeedSigner Emulator</h1>
+
+<div class="main-layout">
+  <div class="device-shell">
+    <!-- D-pad (left) -->
+    <div class="dpad-area">
       <div class="dpad">
         <div class="empty"></div>
         <button id="btn-up">&#9650;</button>
         <div class="empty"></div>
         <button id="btn-left">&#9664;</button>
-        <button id="btn-enter">OK</button>
+        <button id="btn-enter" class="ok-btn">OK</button>
         <button id="btn-right">&#9654;</button>
         <div class="empty"></div>
         <button id="btn-down">&#9660;</button>
         <div class="empty"></div>
       </div>
-      <div class="side-buttons">
-        <button id="btn-1">1</button>
-        <button id="btn-2">2</button>
-        <button id="btn-3">3</button>
+    </div>
+
+    <!-- Screen (center) -->
+    <div class="screen-area">
+      <canvas id="screen" width="240" height="240"></canvas>
+      <div class="overlay" id="help-overlay">
+        <div><kbd>&#8593;</kbd> <kbd>&#8595;</kbd> <kbd>&#8592;</kbd> <kbd>&#8594;</kbd> Navigate</div>
+        <div><kbd>Enter</kbd> Select</div>
+        <div><kbd>1</kbd> Key 1 (top)</div>
+        <div><kbd>2</kbd> Key 2 (middle)</div>
+        <div><kbd>3</kbd> Key 3 (bottom)</div>
+        <div><kbd>Esc</kbd> Back (same as key 3)</div>
+        <div style="margin-top:8px;color:#666">Press <kbd>?</kbd> to close</div>
       </div>
     </div>
+
+    <!-- Side buttons (right) -->
+    <div class="side-area">
+      <button id="btn-1">1</button>
+      <button id="btn-2">2</button>
+      <button id="btn-3">3</button>
+    </div>
   </div>
+
+  <!-- Camera elements hidden visually but active in DOM so frames can be captured -->
+  <video id="camera" autoplay playsinline muted style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;"></video>
+  <canvas id="camera-canvas" style="display:none"></canvas>
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <button id="btn-help">? Help</button>
+    <button id="btn-tutorial">Tutorial</button>
+    <button id="btn-fullscreen">Fullscreen</button>
+    <button id="btn-reset" class="reset-btn">Reset</button>
+  </div>
+
+  <!-- Tutorial panel -->
   <div class="tutorial-panel" id="tutorial-panel">
     <div id="tutorial-menu-view">
-      <div class="tutorial-title">📖 Tutorials</div>
+      <div class="tutorial-title">Tutorials</div>
       <p style="font-size:0.8rem;color:#999;margin:4px 0 12px">Learn by doing. Follow along step by step.</p>
       <div class="tutorial-menu" id="tutorial-menu"></div>
     </div>
     <div id="tutorial-step-view" style="display:none">
       <div style="display:flex;justify-content:space-between;align-items:center">
         <div class="tutorial-title" id="tutorial-name"></div>
-        <button style="background:none;border:none;color:#666;cursor:pointer;font-size:1rem" id="tutorial-close">✕</button>
+        <button style="background:none;border:none;color:#666;cursor:pointer;font-size:1rem" id="tutorial-close">&#10005;</button>
       </div>
       <div class="tutorial-step-count" id="tutorial-progress"></div>
       <div class="tutorial-instruction" id="tutorial-text"></div>
       <div class="tutorial-keys" id="tutorial-keys"></div>
       <div class="tutorial-tip" id="tutorial-tip"></div>
       <div class="tutorial-nav">
-        <button id="tutorial-prev">← Back</button>
-        <button id="tutorial-next">Next →</button>
+        <button id="tutorial-prev">&larr; Back</button>
+        <button id="tutorial-next">Next &rarr;</button>
       </div>
     </div>
   </div>
-  </div>
-  <div class="camera-container" id="camera-container">
-    <video id="camera" autoplay playsinline muted></video>
-    <canvas id="camera-canvas" style="display:none"></canvas>
-    <span class="camera-label">📷 Camera active</span>
-  </div>
-  <div class="toolbar">
-    <button id="btn-help" title="Keyboard shortcuts">? Help</button>
-    <button id="btn-tutorial" title="Interactive tutorials">📖 Tutorial</button>
-    <button id="btn-fullscreen" title="Fullscreen">⛶ Fullscreen</button>
-  </div>
+
   <p class="status" id="status">Connecting...</p>
-  <p class="hint" style="margin-top: 1rem;">
+
+  <div class="footer">
     <a href="https://github.com/Bitcoin-Butlers/bitcoin-self-custody" target="_blank">Bitcoin Self-Custody Docs</a>
-    &middot; Powered by <a href="https://bitcoinbutlers.com" target="_blank">Bitcoin Butlers</a>
-  </p>
+    &middot; <a href="https://bitcoinbutlers.com" target="_blank">Bitcoin Butlers</a>
+  </div>
 </div>
 
 <script>
@@ -345,13 +405,15 @@ const status = document.getElementById('status');
 
 let ws;
 let reconnectTimer;
+let resetting = false;
 
 function connect() {
-  ws = new WebSocket(`ws://${location.hostname}:8889`);
+  ws = new WebSocket('ws://' + location.hostname + ':8889');
 
   ws.onopen = () => {
     status.textContent = 'Connected';
     status.className = 'status connected';
+    resetting = false;
   };
 
   ws.onmessage = (event) => {
@@ -361,19 +423,27 @@ function connect() {
       img.onload = () => ctx.drawImage(img, 0, 0, 240, 240);
       img.src = 'data:image/png;base64,' + data.data;
     } else if (data.type === 'camera_status') {
-      if (data.active && !cameraWasActive) {
-        cameraWasActive = true;
+      if (data.active && !cameraActive) {
+        cameraActive = true;
         startCamera();
-      } else if (!data.active && cameraWasActive) {
-        cameraWasActive = false;
+      } else if (!data.active && cameraActive) {
+        cameraActive = false;
         stopCamera();
       }
     }
   };
 
   ws.onclose = () => {
-    status.textContent = 'Disconnected. Reconnecting...';
+    status.textContent = resetting ? 'Restarting...' : 'Disconnected. Reconnecting...';
     status.className = 'status';
+    if (resetting) {
+      ctx.fillStyle = '#1a1a1a';
+      ctx.fillRect(0, 0, 240, 240);
+      ctx.fillStyle = '#666';
+      ctx.font = '14px system-ui';
+      ctx.textAlign = 'center';
+      ctx.fillText('Restarting SeedSigner...', 120, 120);
+    }
     reconnectTimer = setTimeout(connect, 2000);
   };
 
@@ -382,7 +452,7 @@ function connect() {
 
 function sendKey(key) {
   if (ws && ws.readyState === WebSocket.OPEN) {
-    ws.send(JSON.stringify({ type: 'key', key }));
+    ws.send(JSON.stringify({ type: 'key', key: key }));
   }
 }
 
@@ -393,7 +463,7 @@ document.getElementById('btn-help').addEventListener('click', toggleHelp);
 
 // Fullscreen
 document.getElementById('btn-fullscreen').addEventListener('click', () => {
-  const el = document.querySelector('.emulator');
+  const el = document.querySelector('.main-layout');
   if (document.fullscreenElement) {
     document.exitFullscreen();
   } else if (el.requestFullscreen) {
@@ -402,42 +472,79 @@ document.getElementById('btn-fullscreen').addEventListener('click', () => {
     el.webkitRequestFullscreen();
   }
 });
-// Hide fullscreen button if not supported
 if (!document.fullscreenEnabled && !document.webkitFullscreenEnabled) {
   document.getElementById('btn-fullscreen').style.display = 'none';
 }
+
+// Reset button — kills server process, run.sh restarts it, page stays alive
+document.getElementById('btn-reset').addEventListener('click', () => {
+  resetting = true;
+  stopCamera();
+  cameraActive = false;
+  ctx.fillStyle = '#1a1a1a';
+  ctx.fillRect(0, 0, 240, 240);
+  ctx.fillStyle = '#666';
+  ctx.font = '14px system-ui';
+  ctx.textAlign = 'center';
+  ctx.fillText('Restarting SeedSigner...', 120, 120);
+  status.textContent = 'Restarting...';
+  status.className = 'status';
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    ws.send(JSON.stringify({ type: 'reset' }));
+  }
+});
 
 // Keyboard controls
 document.addEventListener('keydown', (e) => {
   if (e.key === '?') { toggleHelp(); return; }
   if (e.key === 'Escape') { e.preventDefault(); sendKey('3'); return; }
-  const validKeys = ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter','1','2','3'];
-  if (validKeys.includes(e.key)) {
+  const map = {
+    'ArrowUp': 'ArrowUp', 'ArrowDown': 'ArrowDown',
+    'ArrowLeft': 'ArrowLeft', 'ArrowRight': 'ArrowRight',
+    'Enter': 'Enter', '1': '1', '2': '2', '3': '3'
+  };
+  if (map[e.key]) {
     e.preventDefault();
-    sendKey(e.key);
+    sendKey(map[e.key]);
+    // Visual feedback
+    const btnId = {
+      'ArrowUp': 'btn-up', 'ArrowDown': 'btn-down',
+      'ArrowLeft': 'btn-left', 'ArrowRight': 'btn-right',
+      'Enter': 'btn-enter', '1': 'btn-1', '2': 'btn-2', '3': 'btn-3'
+    }[e.key];
+    if (btnId) {
+      const btn = document.getElementById(btnId);
+      btn.classList.add('pressed');
+      setTimeout(() => btn.classList.remove('pressed'), 150);
+    }
   }
 });
 
 // Button controls (mouse + touch)
 const btnMap = {
-  'btn-up': 'ArrowUp',
-  'btn-down': 'ArrowDown',
-  'btn-left': 'ArrowLeft',
-  'btn-right': 'ArrowRight',
+  'btn-up': 'ArrowUp', 'btn-down': 'ArrowDown',
+  'btn-left': 'ArrowLeft', 'btn-right': 'ArrowRight',
   'btn-enter': 'Enter',
-  'btn-1': '1',
-  'btn-2': '2',
-  'btn-3': '3',
+  'btn-1': '1', 'btn-2': '2', 'btn-3': '3',
 };
 for (const [id, key] of Object.entries(btnMap)) {
   const btn = document.getElementById(id);
-  btn.addEventListener('mousedown', () => sendKey(key));
+  btn.addEventListener('mousedown', (e) => {
+    e.preventDefault();
+    sendKey(key);
+    btn.classList.add('pressed');
+  });
+  btn.addEventListener('mouseup', () => btn.classList.remove('pressed'));
+  btn.addEventListener('mouseleave', () => btn.classList.remove('pressed'));
   btn.addEventListener('touchstart', (e) => {
     e.preventDefault();
     btn.classList.add('pressed');
     sendKey(key);
   });
-  btn.addEventListener('touchend', () => btn.classList.remove('pressed'));
+  btn.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    btn.classList.remove('pressed');
+  });
 }
 
 // Loading state
@@ -448,38 +555,48 @@ ctx.font = '14px system-ui';
 ctx.textAlign = 'center';
 ctx.fillText('Waiting for SeedSigner...', 120, 120);
 
-// Camera handling
+// === Camera handling ===
 const cameraVideo = document.getElementById('camera');
 const cameraCanvas = document.getElementById('camera-canvas');
-const cameraContainer = document.getElementById('camera-container');
 const cameraCtx = cameraCanvas.getContext('2d');
 let cameraStream = null;
 let cameraInterval = null;
-let cameraWasActive = false;
+let cameraActive = false;
 
 async function startCamera() {
   if (cameraStream) return;
   try {
-    cameraStream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: 'environment', width: 640, height: 480 },
-      audio: false,
-    });
-    cameraVideo.srcObject = cameraStream;
-    cameraContainer.classList.add('active');
+    // Try rear camera first (mobile), fall back to any camera
+    let stream;
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { ideal: 'environment' }, width: { ideal: 640 }, height: { ideal: 480 } },
+        audio: false,
+      });
+    } catch (e) {
+      // Fallback: any camera (desktop webcam, etc.)
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: { width: { ideal: 640 }, height: { ideal: 480 } },
+        audio: false,
+      });
+    }
+    cameraStream = stream;
+    cameraVideo.srcObject = stream;
     cameraCanvas.width = 640;
     cameraCanvas.height = 480;
 
-    // Send frames at ~10fps
+    // Send frames to the emulator at ~10fps
     cameraInterval = setInterval(() => {
-      if (ws && ws.readyState === WebSocket.OPEN) {
+      if (ws && ws.readyState === WebSocket.OPEN && cameraVideo.readyState >= 2) {
         cameraCtx.drawImage(cameraVideo, 0, 0, 640, 480);
-        const dataUrl = cameraCanvas.toDataURL('image/jpeg', 0.7);
+        const dataUrl = cameraCanvas.toDataURL('image/jpeg', 0.6);
         const base64 = dataUrl.split(',')[1];
         ws.send(JSON.stringify({ type: 'camera_frame', data: base64 }));
       }
     }, 100);
   } catch (e) {
-    console.warn('Camera access denied or unavailable:', e);
+    console.warn('Camera not available:', e.message);
+    // Don't block -- emulator will show black frames and user can press back
   }
 }
 
@@ -489,10 +606,10 @@ function stopCamera() {
     cameraStream.getTracks().forEach(t => t.stop());
     cameraStream = null;
   }
-  cameraContainer.classList.remove('active');
+  cameraVideo.srcObject = null;
 }
 
-// Tutorial system
+// === Tutorial system ===
 const tutorials = [
   {
     id: 'generate-seed',
@@ -500,15 +617,15 @@ const tutorials = [
     description: 'Create a new 12-word seed phrase from scratch.',
     steps: [
       { text: "You should see the SeedSigner main menu. Use the arrow keys or on-screen buttons to navigate.", keys: [], tip: "If the screen says 'Waiting for SeedSigner...', wait a few seconds for the firmware to load." },
-      { text: "Navigate down to 'Seeds' and press Enter to select it.", keys: ['↓', 'Enter'], tip: "Seeds is the second item in the main menu." },
+      { text: "Navigate down to 'Seeds' and press Enter to select it.", keys: ['Down', 'Enter'], tip: "Seeds is the second item in the main menu." },
       { text: "You'll see the Seeds menu. Select 'Create a seed' by pressing Enter.", keys: ['Enter'], tip: "" },
-      { text: "Choose '12 words' or '24 words'. For this tutorial, select 12 words.", keys: ['Enter'], tip: "12 words is standard for most use cases. 24 words adds extra entropy but isn't strictly necessary." },
-      { text: "SeedSigner needs randomness to generate your seed. Select 'Calculator' for the simplest method.", keys: ['Enter'], tip: "On a real device, you'd use dice rolls or the camera for better entropy. The calculator method uses the device's built-in randomness." },
-      { text: "Your seed phrase is being generated! SeedSigner will show you 12 words, one screen at a time.", keys: ['Enter'], tip: "On a real device, you'd write each word on paper or stamp it into steel. NEVER type seed words into a computer." },
+      { text: "Choose '12 words' or '24 words'. For this tutorial, select 12 words.", keys: ['Enter'], tip: "12 words is standard for most use cases." },
+      { text: "SeedSigner needs randomness. Select 'Calculator' for the simplest method.", keys: ['Enter'], tip: "On a real device, you'd use dice rolls or camera for better entropy." },
+      { text: "Your seed phrase is being generated! SeedSigner will show you 12 words.", keys: ['Enter'], tip: "On a real device, write each word on paper. NEVER type seed words into a computer." },
       { text: "Press Enter to advance through each word. Read them carefully.", keys: ['Enter'], tip: "The order matters. Word #1 must stay word #1." },
-      { text: "After viewing all words, SeedSigner will quiz you to verify you wrote them down correctly.", keys: ['↑', '↓', 'Enter'], tip: "This verification step exists because getting even one word wrong means losing your Bitcoin forever." },
-      { text: "Complete the verification quiz by selecting the correct word for each position.", keys: ['↑', '↓', 'Enter'], tip: "Take your time. On a real device, check your written backup." },
-      { text: "Congratulations! You've generated a seed phrase. On a real SeedSigner, you'd now export the public key to a wallet like Sparrow.", keys: [], tip: "⚠️ This was practice. Never use a seed generated in an emulator for real Bitcoin." },
+      { text: "After viewing all words, SeedSigner will quiz you to verify you wrote them down.", keys: ['Up', 'Down', 'Enter'], tip: "This verification catches mistakes before they matter." },
+      { text: "Complete the verification quiz by selecting the correct word for each position.", keys: ['Up', 'Down', 'Enter'], tip: "Take your time." },
+      { text: "Done! You've generated a seed phrase. On a real SeedSigner, you'd now export the public key to a wallet like Sparrow.", keys: [], tip: "This was practice. Never use an emulator seed for real Bitcoin." },
     ]
   },
   {
@@ -516,12 +633,12 @@ const tutorials = [
     name: 'Explore Settings',
     description: 'Learn what each setting does.',
     steps: [
-      { text: "From the main menu, navigate to 'Settings' and press Enter.", keys: ['↓', 'Enter'], tip: "Settings is near the bottom of the main menu." },
-      { text: "Browse through the settings categories. Each controls a different aspect of the device.", keys: ['↑', '↓', 'Enter'], tip: "" },
-      { text: "Try 'Display' — you can change the screen brightness and orientation.", keys: ['Enter'], tip: "On a real device, higher brightness drains the battery faster." },
-      { text: "Press key 3 (or the back button) to go back to the settings menu.", keys: ['3'], tip: "Key 3 is always 'back' in SeedSigner." },
-      { text: "Check out 'Advanced' for network settings (mainnet vs testnet) and other power-user options.", keys: ['↓', 'Enter'], tip: "For learning, testnet is safer. For real Bitcoin, always use mainnet." },
-      { text: "You've explored the settings! Press key 3 repeatedly to return to the main menu.", keys: ['3'], tip: "Now you know where everything is when you get your real device." },
+      { text: "From the main menu, navigate to 'Settings' and press Enter.", keys: ['Down', 'Enter'], tip: "Settings is near the bottom of the main menu." },
+      { text: "Browse through the settings categories.", keys: ['Up', 'Down', 'Enter'], tip: "" },
+      { text: "Try 'Display' to change screen brightness and orientation.", keys: ['Enter'], tip: "" },
+      { text: "Press key 3 (or Esc) to go back.", keys: ['3'], tip: "Key 3 is always 'back' in SeedSigner." },
+      { text: "Check out 'Advanced' for network settings (mainnet vs testnet).", keys: ['Down', 'Enter'], tip: "For learning, testnet is safer." },
+      { text: "Done! Press key 3 to return to the main menu.", keys: ['3'], tip: "" },
     ]
   },
   {
@@ -529,15 +646,14 @@ const tutorials = [
     name: 'Sign a Transaction',
     description: 'Load a seed and sign a PSBT via QR code.',
     steps: [
-      { text: "This tutorial walks through signing a transaction using a seed phrase. First, go to 'Seeds' from the main menu.", keys: ['↓', 'Enter'], tip: "In real use, you'd load your existing seed. Here we'll create a temporary one." },
-      { text: "Select 'Create a seed' and generate a 12-word seed (same as the first tutorial).", keys: ['Enter'], tip: "Remember: this is a test seed. Never use emulator seeds for real Bitcoin." },
-      { text: "After generating and verifying your seed, SeedSigner saves it in memory for this session.", keys: ['Enter'], tip: "SeedSigner never stores seeds permanently. When you power off, the seed is gone." },
-      { text: "Now go back to the main menu. You should see a new option: 'Scan'.", keys: ['3', '3'], tip: "The Scan option appears once you have a seed loaded." },
-      { text: "Select 'Scan'. SeedSigner will activate the camera to scan a QR code.", keys: ['Enter'], tip: "In the emulator, your webcam will activate. On a real device, the built-in camera turns on." },
-      { text: "In your wallet app (Bull Bitcoin wallet for single-sig, or Sparrow for multisig), create a transaction and show the QR code. Hold it up to your webcam.", keys: [], tip: "If you don't have a wallet set up yet, that's OK. You can try this step later. For now, press key 3 to go back." },
-      { text: "SeedSigner reads the PSBT (Partially Signed Bitcoin Transaction), shows you the details, and asks you to confirm.", keys: ['↑', '↓'], tip: "Always verify: the recipient address, the amount, and the fee. On a real device, this is your last chance to catch errors." },
-      { text: "After confirming, SeedSigner signs the transaction and displays a QR code. Scan this with your wallet app to broadcast.", keys: ['Enter'], tip: "The signed transaction never touches the internet until your wallet broadcasts it. That's the air gap in action." },
-      { text: "You've completed an air-gapped transaction signing! This is how Bitcoin self-custody works in practice.", keys: [], tip: "The full flow: Wallet creates TX → QR to SeedSigner → SeedSigner signs → QR back to wallet → wallet broadcasts." },
+      { text: "First, go to 'Seeds' from the main menu and create or load a seed.", keys: ['Down', 'Enter'], tip: "You need an active seed before signing." },
+      { text: "Generate a 12-word seed (same as the first tutorial).", keys: ['Enter'], tip: "This is a test seed." },
+      { text: "After verifying your seed, go back to the main menu.", keys: ['3', '3'], tip: "" },
+      { text: "Select 'Scan'. Your camera will activate to scan a QR code.", keys: ['Enter'], tip: "Your device camera will turn on. Point it at a PSBT QR from your wallet app." },
+      { text: "In your wallet app, create a transaction and show the QR code. Hold it to your camera.", keys: [], tip: "If you don't have a wallet, press key 3 to go back." },
+      { text: "SeedSigner reads the PSBT, shows details, and asks you to confirm.", keys: ['Up', 'Down'], tip: "Always verify: recipient address, amount, and fee." },
+      { text: "After confirming, SeedSigner signs and displays a QR code. Scan this with your wallet to broadcast.", keys: ['Enter'], tip: "The signed transaction never touches the internet until broadcast." },
+      { text: "Done! This is how air-gapped signing works in practice.", keys: [], tip: "Wallet creates TX > QR to SeedSigner > signs > QR back > wallet broadcasts." },
     ]
   },
   {
@@ -545,14 +661,14 @@ const tutorials = [
     name: 'Export Public Key to Wallet',
     description: 'Connect SeedSigner to your wallet app.',
     steps: [
-      { text: "First, load or create a seed (see the 'Generate a Seed Phrase' tutorial if you haven't).", keys: [], tip: "You need an active seed before you can export its public key." },
-      { text: "From the main menu, go to 'Seeds' and select your loaded seed.", keys: ['↓', 'Enter'], tip: "" },
-      { text: "Select 'Export Xpub' from the seed options.", keys: ['↓', 'Enter'], tip: "Xpub = extended public key. It lets your wallet generate receive addresses and track your balance WITHOUT the ability to spend." },
-      { text: "Choose the wallet type. For a standard single-sig wallet, select 'Single Sig'. For multisig, select 'Multisig'.", keys: ['Enter'], tip: "Single sig = one key needed to spend (use Bull Bitcoin wallet). Multisig = multiple keys needed (use Sparrow)." },
-      { text: "Choose the script type. Select 'Native Segwit' (the default and most common).", keys: ['Enter'], tip: "Native Segwit (bc1q...) has the lowest transaction fees." },
-      { text: "SeedSigner displays a QR code containing your xpub. Open your wallet app and scan this QR code to import the public key.", keys: [], tip: "In Bull Bitcoin wallet: scan the QR during wallet setup. In Sparrow: File → New Wallet → Connected Hardware Wallet → Scan." },
-      { text: "Your wallet now has your public key and can generate receive addresses. SeedSigner is only needed when you want to SPEND.", keys: [], tip: "This is the air-gapped model: your wallet watches, SeedSigner signs." },
-      { text: "Done! You can receive Bitcoin to the addresses your wallet generates, and sign spending transactions with SeedSigner.", keys: [], tip: "For extra security, verify that the first receive address matches on both your wallet and SeedSigner." },
+      { text: "First, load or create a seed.", keys: [], tip: "You need an active seed to export its public key." },
+      { text: "From the main menu, go to 'Seeds' and select your loaded seed.", keys: ['Down', 'Enter'], tip: "" },
+      { text: "Select 'Export Xpub' from the seed options.", keys: ['Down', 'Enter'], tip: "Xpub = extended public key. Lets your wallet track balance WITHOUT spending ability." },
+      { text: "Choose 'Single Sig' for a standard wallet, or 'Multisig' for multi-key.", keys: ['Enter'], tip: "Single sig = one key (use Bull Bitcoin wallet). Multisig = multiple keys (use Sparrow)." },
+      { text: "Choose 'Native Segwit' (the default).", keys: ['Enter'], tip: "Native Segwit (bc1q...) has the lowest fees." },
+      { text: "SeedSigner shows a QR code. Scan it with your wallet app to import.", keys: [], tip: "In Sparrow: File > New Wallet > Airgapped Hardware Wallet > Scan." },
+      { text: "Your wallet now has your public key and can generate receive addresses.", keys: [], tip: "SeedSigner is only needed when you want to SPEND." },
+      { text: "Done! Verify the first receive address matches on both wallet and SeedSigner.", keys: [], tip: "" },
     ]
   }
 ];
@@ -574,10 +690,9 @@ const tutorialBtn = document.getElementById('btn-tutorial');
 let currentTutorial = null;
 let currentStep = 0;
 
-// Build tutorial menu
 tutorials.forEach(t => {
   const btn = document.createElement('button');
-  btn.innerHTML = `${t.name}<br><span class="tutorial-label">${t.description}</span>`;
+  btn.innerHTML = t.name + '<br><span class="tutorial-label">' + t.description + '</span>';
   btn.addEventListener('click', () => startTutorial(t));
   tutorialMenu.appendChild(btn);
 });
@@ -603,12 +718,12 @@ function startTutorial(t) {
 
 function renderStep() {
   const step = currentTutorial.steps[currentStep];
-  tutorialProgress.textContent = `Step ${currentStep + 1} of ${currentTutorial.steps.length}`;
+  tutorialProgress.textContent = 'Step ' + (currentStep + 1) + ' of ' + currentTutorial.steps.length;
   tutorialText.textContent = step.text;
-  tutorialKeys.innerHTML = step.keys.map(k => `<kbd>${k}</kbd>`).join('');
+  tutorialKeys.innerHTML = step.keys.map(k => '<kbd>' + k + '</kbd>').join('');
   tutorialTip.textContent = step.tip || '';
   tutorialPrev.disabled = currentStep === 0;
-  tutorialNext.textContent = currentStep === currentTutorial.steps.length - 1 ? 'Done ✓' : 'Next →';
+  tutorialNext.textContent = currentStep === currentTutorial.steps.length - 1 ? 'Done' : 'Next \u2192';
 }
 
 tutorialBtn.addEventListener('click', toggleTutorial);

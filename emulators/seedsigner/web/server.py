@@ -86,6 +86,11 @@ async def handle_websocket(websocket):
                 from seedsigner.hardware.camera import set_camera_frame
                 frame_bytes = base64.b64decode(data['data'])
                 set_camera_frame(frame_bytes)
+            elif data['type'] == 'reset':
+                # Kill the server process — run.sh will restart it,
+                # browser reconnects automatically via WebSocket
+                print("Reset requested — restarting server...")
+                threading.Timer(0.1, lambda: os._exit(1)).start()
     except websockets.exceptions.ConnectionClosed:
         pass
     finally:
@@ -116,17 +121,32 @@ def patch_seedsigner():
     # File-level patches are handled by patches/apply.py during setup
 
 
+ss_thread = None
+
 def start_seedsigner():
     """Start the SeedSigner main loop in a background thread."""
     os.chdir(str(SEEDSIGNER_SRC))
     sys.path.insert(0, str(SEEDSIGNER_SRC))
     patch_seedsigner()
-    # main.py is at src/ root, not inside seedsigner package
+
+    # Force-reload all seedsigner modules so we get a clean state
+    mods_to_remove = [k for k in sys.modules if k.startswith('seedsigner')]
+    for k in mods_to_remove:
+        del sys.modules[k]
+
     import importlib.util
     spec = importlib.util.spec_from_file_location("main", str(SEEDSIGNER_SRC / "main.py"))
     main_module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(main_module)
-    main_module.main()
+    try:
+        main_module.main()
+    except Exception as e:
+        print(f"SeedSigner crashed: {e}")
+        import traceback
+        traceback.print_exc()
+        print("SeedSigner stopped. Press Reset in the browser to restart.")
+
+
 
 
 async def main():
@@ -147,6 +167,7 @@ async def main():
     print("WebSocket server on ws://localhost:8889")
 
     # NOW start SeedSigner in background (this blocks its thread)
+    global ss_thread
     ss_thread = threading.Thread(target=start_seedsigner, daemon=True)
     ss_thread.start()
 
