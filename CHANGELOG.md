@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.0] - 2026-03-06
+
+### Added
+- **6 dedicated seed generation guides** - hardware wallet, seed picker cards, dice rolls, camera entropy, entropia pills, codex32
+- **Codex32 (BIP-93) guide** - pen-and-paper seed generation with hand-verifiable checksums and Shamir splitting
+- **Bull Bitcoin guide** - non-custodial hot wallet setup
+- **Jade emulator setup scripts** - Docker QEMU build with web display
+- **Device-specific GitHub source links** - each device dropdown links to the exact source file for seed generation/handling
+- **Glossary tooltip system** - auto-wraps technical terms with hover definitions (seed phrase, BIP-39, entropy, xpub, checksum, air-gapped, secure element, virtual secure element, multisig, single-sig, PSBT, derivation path, wallet descriptor, stateless, hot wallet, PIN)
+- **Browser history navigation** - back button returns to previous page, not always home
+- **Internal link routing** - .md links, emulator links, and hash links all route through JS
+
+### Changed
+- **Nav simplified** - logo + brand name only, no nav link buttons
+- **Guide titles** - category in gold gradient, name in white, back arrow inline
+- **Device comparison** - removed hardcoded prices, added FOSS vs source-available distinction, substantiated multisig with multi-vendor rationale, removed opinionated recommendation sections
+- **Tooltips show below** text (not above) with z-index 200 to avoid nav overlap
+- **All occurrences** of glossary terms get tooltips (not just first)
+- Removed "Bitcoin Butlers Master Concierge" from all guides
+- Removed all em dashes across entire codebase (replaced with hyphens)
+- Removed all CTA/booking language
+
 ## [0.2.0] - 2026-02-26
 
 ### Added

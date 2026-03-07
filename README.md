@@ -1,6 +1,6 @@
-# Bitcoin Self-Custody Documentation
+# Bitcoin Self-Custody Tutorials
 
-Free, open-source guides and emulators for securing your own Bitcoin. Device in hand, step by step.
+Free, open-source guides and device emulators for securing your own Bitcoin. Step by step, device in hand.
 
 [![License: CC BY-SA 4.0](https://img.shields.io/badge/Docs-CC%20BY--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-sa/4.0/)
 [![License: MIT](https://img.shields.io/badge/Code-MIT-blue.svg)](https://opensource.org/licenses/MIT)
@@ -8,91 +8,113 @@ Free, open-source guides and emulators for securing your own Bitcoin. Device in 
 
 ## What This Is
 
-Setup guides, backup checklists, and **browser-based hardware wallet emulators** for Bitcoin self-custody. Practice signing transactions, generating seeds, and navigating device menus without buying hardware first.
+A complete, beginner-friendly tutorial site for Bitcoin self-custody. Covers seed generation, signing devices, wallet software, steel backups, and multisig - with browser-based device emulators so you can practice before buying hardware.
 
-No tracking. No paywalls. No affiliate links.
+No tracking. No paywalls. No affiliate links. No sales CTAs.
 
-**Maintained by [Bitcoin Butlers](https://bitcoinbutlers.com)** - a platform connecting self-custody experts with people who need hands-on help.
+**Maintained by [Bitcoin Butlers](https://bitcoinbutlers.com)**
 
-## 🖥️ Emulators
+## Live Site
+
+Static tutorial site with hash-based routing, markdown rendering, device-specific dropdown selectors, and glossary tooltips for technical terms. Serve locally:
+
+```bash
+cd bitcoin-self-custody && python3 -m http.server 9000
+# Open http://localhost:9000
+```
+
+## Emulators
 
 Practice with real device firmware in your browser. No hardware needed.
 
 | Device | Type | Status |
 |--------|------|--------|
-| [SeedSigner](emulators/seedsigner/) | Web (browser) | ✅ Working - webcam QR scanning |
-| [ColdCard Mk4/Q](emulators/coldcard/) | SDL (desktop) | 📖 Setup docs |
-| [Jade](emulators/jade/) | Docker (web UI) | 📖 Setup docs |
-| Passport | - | 🔬 Research |
+| [SeedSigner](emulators/seedsigner/) | Web (browser) | Working - webcam QR scanning |
+| [ColdCard Mk4/Q](emulators/coldcard/) | SDL (desktop) | Setup docs |
+| [Jade](emulators/jade/) | Docker (QEMU web UI) | Setup scripts ready |
+| [Passport](emulators/passport/) | Docker (SDL) | Setup docs + Dockerfile |
 
-**SeedSigner web emulator** runs the actual firmware in your browser via WebSocket. Navigate menus with arrow keys, scan QR codes with your webcam. [Get started →](emulators/seedsigner/)
+## Guides
 
-<!-- TODO: Add screenshot/GIF of emulator running -->
+### Seed Generation
 
-## 📖 Guides
+| Guide | Method |
+|-------|--------|
+| [Hardware Wallet](guides/gen-hardware-wallet.md) | Let your device generate the seed |
+| [Seed Picker Cards](guides/gen-seed-picker.md) | Shuffle physical BIP-39 word cards |
+| [Dice Rolls](guides/gen-dice-rolls.md) | 99 rolls for 256-bit entropy |
+| [Camera Entropy](guides/gen-camera-entropy.md) | SeedSigner hashes a photo |
+| [Entropia Pills](guides/gen-entropia-pills.md) | 3D-printed capsules with BIP-39 words |
+| [Codex32](guides/gen-codex32.md) | Pen-and-paper generation with hand-verifiable checksums |
+| [Seed Generation Overview](guides/seed-generation.md) | All 6 methods compared |
 
-### Getting Started
-
-| Guide | For |
-|-------|-----|
-| [Choosing a Device](guides/choosing-a-device.md) | **Start here.** Compare all 5 signing devices side by side. |
+Each guide includes device-specific steps via dropdown selectors (SeedSigner, ColdCard Q, ColdCard Mk4, Jade, Passport) with direct links to each device's open-source code.
 
 ### Signing Devices
 
 | Guide | Device |
 |-------|--------|
-| [ColdCard Mk4](guides/coldcard-mk4.md) | Coinkite ColdCard Mk4 |
+| [SeedSigner](guides/seedsigner.md) | SeedSigner / SeedSigner+ |
 | [ColdCard Q](guides/coldcard-q.md) | Coinkite ColdCard Q |
+| [ColdCard Mk4](guides/coldcard-mk4.md) | Coinkite ColdCard Mk4 |
 | [Passport](guides/passport.md) | Foundation Passport |
-| [Jade](guides/jade.md) | Blockstream Jade & Jade Plus |
-| [SeedSigner](guides/seedsigner.md) | SeedSigner & SeedSigner+ |
+| [Jade](guides/jade.md) | Blockstream Jade / Jade Plus |
+| [Compare Devices](guides/choosing-a-device.md) | All 5 side by side |
 
 ### Software
 
 | Guide | Software |
 |-------|----------|
-| [Sparrow Wallet](guides/sparrow-wallet.md) | Sparrow Desktop |
+| [Sparrow Wallet](guides/sparrow-wallet.md) | Desktop coordinator for single-sig and multisig |
+| [Bull Bitcoin](guides/bull-bitcoin.md) | Non-custodial hot wallet |
+| [Multisig with Sparrow](guides/multisig-sparrow.md) | 2-of-3 multi-vendor multisig |
 
-### Backup & Security
-
-| Guide | Topic |
-|-------|-------|
-| [Steel Backup](guides/steel-backup.md) | Metal seed backup plates |
-| [Seed Generation](guides/seed-generation.md) | 5 methods compared |
-
-### Advanced
+### Backup (At Rest)
 
 | Guide | Topic |
 |-------|-------|
-| [Multisig with Sparrow](guides/multisig-sparrow.md) | 2-of-3 multisig setup |
+| [Steel Backup](guides/steel-backup.md) | Single-sig and multisig steel plate backups |
 
-## ✅ Checklists
+### Checklists
 
 | Checklist | For |
 |-----------|-----|
 | [First Setup](checklists/first-setup.md) | Just got a device? Start here. |
 | [Backup Verification](checklists/backup-verification.md) | Prove your backup works before you need it. |
-| [Inheritance Planning](checklists/inheritance-planning.md) | Make sure your Bitcoin doesn't die with you. |
+| [Inheritance Planning](checklists/inheritance-planning.md) | Make sure your Bitcoin outlives you. |
 
 ## Roadmap
 
-- [x] Device setup guides (5 devices + Sparrow + backup + seed gen + multisig)
-- [x] Backup and security checklists
-- [x] SeedSigner web emulator with webcam QR scanning
-- [x] ColdCard, Jade, and Passport emulator documentation + setup automation
-- [x] Passport Docker build (no local toolchain required)
-- [x] Guide ↔ emulator cross-links
-- [x] Mobile touch support + keyboard help overlay + fullscreen mode
-- [x] Interactive tutorials (Generate a Seed Phrase, Explore Settings)
+### Done
+- [x] 6 seed generation guides with device-specific steps and source code links
+- [x] 5 signing device setup guides
+- [x] Device comparison guide (FOSS vs source-available licensing, multi-vendor multisig)
+- [x] Steel backup guide (single-sig + multisig)
+- [x] Sparrow, Bull Bitcoin, and multisig guides
+- [x] 3 checklists (first setup, backup verification, inheritance)
+- [x] Codex32 (BIP-93) guide with Shamir splitting
+- [x] SeedSigner web emulator (real firmware in browser, webcam QR, mobile touch)
+- [x] ColdCard, Jade, Passport emulator setup docs and automation
+- [x] Tutorial site with BB theming, hash routing, dropdown device selectors
+- [x] Glossary tooltip system for technical terms
+- [x] Internal link routing (all .md and hash links work via JS)
+
+### Next
+- [ ] Jade QEMU web emulator (Docker build ready, needs testing)
+- [ ] ColdCard web emulator (SDL wrapper needed)
+- [ ] Passport web emulator (Docker + noVNC)
+- [ ] Shamir backup guide (beyond Codex32)
+- [ ] Passphrase guide (25th word)
 - [ ] Video walkthroughs
-- [ ] Translations
+- [ ] Translations (Spanish, Portuguese, Japanese priority)
+- [ ] Hosted version (static site + emulator VPS)
 
 ## Contributing
 
-We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 **Ways to help:**
-- Fix errors or outdated info
+- Fix errors or outdated info in guides
 - Test emulators on different platforms
 - Add screenshots or diagrams
 - Translate guides
@@ -102,9 +124,3 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 - **Documentation** (guides, checklists): [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
 - **Code** (emulators, scripts): [MIT](LICENSE)
-
-## Need Hands-On Help?
-
-These guides are designed to be self-sufficient. But if you want a real person walking you through it, [Bitcoin Butlers](https://bitcoinbutlers.com) connects you with experts who show you how, step by step.
-
-We hold your hand, not your keys.
