@@ -5,9 +5,6 @@
 <title>SeedSigner Emulator — Bitcoin Butlers</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 <meta name="description" content="Run SeedSigner in your browser. No hardware, no server, no installation. Practice Bitcoin self-custody for free.">
-<script src="coi-serviceworker.js"></script>
-<meta property="og:title" content="SeedSigner Browser Emulator">
-<meta property="og:description" content="Run real SeedSigner firmware entirely in your browser via WebAssembly. No server needed.">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -20,183 +17,47 @@
     min-height: 100vh;
     padding: 24px 16px;
   }
-
-  .header {
-    text-align: center;
-    margin-bottom: 24px;
-  }
-  .header h1 {
-    font-size: 1.1rem;
-    color: #FBDC7B;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-  }
-  .header p {
-    font-size: 0.8rem;
-    color: rgba(255,248,230,0.5);
-    margin-top: 4px;
-  }
-
-  .emulator {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-  }
-
+  .header { text-align: center; margin-bottom: 24px; }
+  .header h1 { font-size: 1.1rem; color: #FBDC7B; font-weight: 600; letter-spacing: 0.04em; }
+  .header p { font-size: 0.8rem; color: rgba(255,248,230,0.5); margin-top: 4px; }
+  .emulator { display: flex; flex-direction: column; align-items: center; gap: 16px; }
   .device {
-    background: #1a1a1a;
-    border: 2px solid #333;
-    border-radius: 16px;
-    padding: 24px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
+    background: #1a1a1a; border: 2px solid #333; border-radius: 16px;
+    padding: 24px; display: flex; flex-direction: column; align-items: center; gap: 16px;
   }
-
-  #screen {
-    border: 2px solid #444;
-    border-radius: 8px;
-    width: 240px;
-    height: 240px;
-    background: #000;
-    image-rendering: pixelated;
-  }
-
-  /* Loading overlay */
+  #screen { border: 2px solid #444; border-radius: 8px; width: 240px; height: 240px; background: #000; image-rendering: pixelated; }
+  .screen-wrapper { position: relative; }
   .loading-overlay {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.85);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border-radius: 6px;
-    z-index: 10;
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.85); display: flex; flex-direction: column;
+    align-items: center; justify-content: center; border-radius: 6px; z-index: 10;
   }
   .loading-overlay.hidden { display: none; }
-  .loading-text {
-    color: #FBDC7B;
-    font-size: 0.85rem;
-    margin-bottom: 12px;
-    text-align: center;
-    padding: 0 16px;
-  }
-  .progress-bar {
-    width: 180px;
-    height: 4px;
-    background: #333;
-    border-radius: 2px;
-    overflow: hidden;
-  }
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #FF9125, #FBDC7B, #FDA24A);
-    width: 0%;
-    transition: width 0.3s ease;
-  }
-
-  .screen-wrapper {
-    position: relative;
-  }
-
-  /* D-pad and buttons */
-  .controls {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .dpad {
-    display: grid;
-    grid-template-columns: 48px 48px 48px;
-    grid-template-rows: 48px 48px 48px;
-    gap: 4px;
-  }
+  .loading-text { color: #FBDC7B; font-size: 0.85rem; margin-bottom: 12px; text-align: center; padding: 0 16px; }
+  .progress-bar { width: 180px; height: 4px; background: #333; border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, #FF9125, #FBDC7B, #FDA24A); width: 0%; transition: width 0.3s ease; }
+  .dpad { display: grid; grid-template-columns: 48px 48px 48px; grid-template-rows: 48px 48px 48px; gap: 4px; }
   .dpad button {
-    background: #2a2a2a;
-    border: 1px solid #444;
-    border-radius: 8px;
-    color: rgba(255,248,230,0.7);
-    font-size: 1.2rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.1s;
-    -webkit-tap-highlight-color: transparent;
-    user-select: none;
+    background: #2a2a2a; border: 1px solid #444; border-radius: 8px;
+    color: rgba(255,248,230,0.7); font-size: 1.2rem; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    -webkit-tap-highlight-color: transparent; user-select: none;
   }
-  .dpad button:active, .dpad button.pressed {
-    background: #FBDC7B;
-    color: #0a0a0a;
-  }
-  .dpad .center {
-    background: #333;
-    border-radius: 50%;
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-  }
+  .dpad button:active, .dpad button.pressed { background: #FBDC7B; color: #0a0a0a; }
+  .dpad .center { background: #333; border-radius: 50%; font-size: 0.75rem; font-weight: 600; }
   .dpad .empty { visibility: hidden; }
-
-  .action-buttons {
-    display: flex;
-    gap: 12px;
-  }
+  .action-buttons { display: flex; gap: 12px; }
   .action-buttons button {
-    width: 56px;
-    height: 40px;
-    background: #2a2a2a;
-    border: 1px solid #444;
-    border-radius: 8px;
-    color: rgba(255,248,230,0.7);
-    font-size: 0.85rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.1s;
-    -webkit-tap-highlight-color: transparent;
-    user-select: none;
+    width: 56px; height: 40px; background: #2a2a2a; border: 1px solid #444;
+    border-radius: 8px; color: rgba(255,248,230,0.7); font-size: 0.85rem;
+    font-weight: 600; cursor: pointer; -webkit-tap-highlight-color: transparent; user-select: none;
   }
-  .action-buttons button:active, .action-buttons button.pressed {
-    background: #FBDC7B;
-    color: #0a0a0a;
-  }
-
-  .help {
-    font-size: 0.75rem;
-    color: rgba(255,248,230,0.35);
-    text-align: center;
-    max-width: 300px;
-    line-height: 1.5;
-  }
-
-  .footer {
-    margin-top: 32px;
-    text-align: center;
-    font-size: 0.75rem;
-    color: rgba(255,248,230,0.3);
-  }
-  .footer a {
-    color: #FBDC7B;
-    text-decoration: none;
-  }
-
-  .error-msg {
-    color: #ff6b6b;
-    font-size: 0.85rem;
-    text-align: center;
-    max-width: 300px;
-    display: none;
-  }
-
-  @media (max-width: 400px) {
-    .device { padding: 16px; }
-    #screen { width: 200px; height: 200px; }
-  }
+  .action-buttons button:active, .action-buttons button.pressed { background: #FBDC7B; color: #0a0a0a; }
+  .help { font-size: 0.75rem; color: rgba(255,248,230,0.35); text-align: center; max-width: 300px; line-height: 1.5; }
+  .footer { margin-top: 32px; text-align: center; font-size: 0.75rem; color: rgba(255,248,230,0.3); }
+  .footer a { color: #FBDC7B; text-decoration: none; }
+  .error-msg { color: #ff6b6b; font-size: 0.85rem; text-align: center; max-width: 300px; display: none; }
+  @media (max-width: 400px) { .device { padding: 16px; } #screen { width: 200px; height: 200px; } }
 </style>
 </head>
 <body>
@@ -211,41 +72,34 @@
     <div class="screen-wrapper">
       <canvas id="screen" width="240" height="240"></canvas>
       <div class="loading-overlay" id="loading">
-        <div class="loading-text" id="loading-text">Initializing...</div>
-        <div class="progress-bar">
-          <div class="progress-fill" id="progress-fill"></div>
-        </div>
+        <div class="loading-text" id="loading-text">Loading Python runtime...</div>
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
       </div>
     </div>
-
     <div class="controls">
       <div class="dpad">
         <div class="empty"></div>
-        <button id="btn-up" data-key="ArrowUp">▲</button>
+        <button data-key="ArrowUp">▲</button>
         <div class="empty"></div>
-        <button id="btn-left" data-key="ArrowLeft">◀</button>
-        <button id="btn-ok" data-key="Enter" class="center">OK</button>
-        <button id="btn-right" data-key="ArrowRight">▶</button>
+        <button data-key="ArrowLeft">◀</button>
+        <button data-key="Enter" class="center">OK</button>
+        <button data-key="ArrowRight">▶</button>
         <div class="empty"></div>
-        <button id="btn-down" data-key="ArrowDown">▼</button>
+        <button data-key="ArrowDown">▼</button>
         <div class="empty"></div>
       </div>
-
       <div class="action-buttons">
-        <button id="btn-1" data-key="1">1</button>
-        <button id="btn-2" data-key="2">2</button>
-        <button id="btn-3" data-key="3">3</button>
+        <button data-key="1">1</button>
+        <button data-key="2">2</button>
+        <button data-key="3">3</button>
       </div>
     </div>
   </div>
-
   <div class="help">
     Arrow keys to navigate, Enter to select.<br>
     Keys 1, 2, 3 for menu shortcuts.<br>
-    First load downloads ~25MB (cached after).<br>
-    Requires a modern browser with WebAssembly support.
+    First load downloads ~25MB (cached after).
   </div>
-
   <div class="error-msg" id="error-msg"></div>
 </div>
 
@@ -253,6 +107,7 @@
   <a href="https://bitcoinbutlers.com">Bitcoin Butlers</a> — We hold your hand, not your keys.
 </div>
 
+<script src="https://cdn.jsdelivr.net/pyodide/v0.27.5/full/pyodide.js"></script>
 <script>
 const canvas = document.getElementById('screen');
 const ctx = canvas.getContext('2d');
@@ -261,110 +116,28 @@ const loadingText = document.getElementById('loading-text');
 const progressFill = document.getElementById('progress-fill');
 const errorMsg = document.getElementById('error-msg');
 
-let worker = null;
-let keyArray = null;  // SharedArrayBuffer view for key input
-
-// Key name to numeric code mapping
-const KEY_CODES = {
-  'ArrowUp': 1, 'ArrowDown': 2, 'ArrowLeft': 3, 'ArrowRight': 4,
-  'Enter': 5, '1': 6, '2': 7, '3': 8
-};
-
-// Draw initial black screen
 ctx.fillStyle = '#000';
 ctx.fillRect(0, 0, 240, 240);
 
-// Start the worker
-function startWorker() {
-  worker = new Worker('worker.js');
+// Key queue
+let keyQueue = [];
 
-  // Try SharedArrayBuffer if available (for real-time key input)
-  let keyBuffer = null;
-  try {
-    if (typeof SharedArrayBuffer !== 'undefined') {
-      keyBuffer = new SharedArrayBuffer(4);
-      keyArray = new Int32Array(keyBuffer);
-    }
-  } catch(e) {
-    console.warn('SharedArrayBuffer not available, using postMessage for keys');
-  }
-
-  // Tell worker to start, optionally with shared buffer
-  worker.postMessage({ type: 'init', keyBuffer: keyBuffer });
-
-  worker.onmessage = function(e) {
-    const msg = e.data;
-
-    if (msg.type === 'status') {
-      loadingText.textContent = msg.message;
-      if (msg.progress >= 0) {
-        progressFill.style.width = msg.progress + '%';
-      }
-      if (msg.progress === 100) {
-        setTimeout(() => {
-          loadingEl.classList.add('hidden');
-        }, 500);
-      }
-      if (msg.progress === -1) {
-        errorMsg.textContent = msg.message;
-        errorMsg.style.display = 'block';
-      }
-    }
-
-    if (msg.type === 'frame') {
-      const img = new Image();
-      img.onload = function() {
-        ctx.drawImage(img, 0, 0, 240, 240);
-      };
-      img.src = 'data:image/png;base64,' + msg.data;
-    }
-  };
-
-  worker.onerror = function(err) {
-    console.error('Worker error:', err);
-    loadingText.textContent = 'Error: ' + (err.message || 'Worker failed to load');
-    errorMsg.textContent = 'Try opening in Chrome or Firefox desktop. ' + (err.message || '');
-    errorMsg.style.display = 'block';
-  };
-
-  // Timeout: if still initializing after 60s, something's wrong
-  setTimeout(() => {
-    if (!loadingEl.classList.contains('hidden')) {
-      loadingText.textContent = 'Loading is taking longer than expected...';
-      errorMsg.textContent = 'Try refreshing, or open in Chrome/Firefox on desktop.';
-      errorMsg.style.display = 'block';
-    }
-  }, 60000);
-}
-
-// Send key — prefer SharedArrayBuffer, fall back to postMessage
 function sendKey(key) {
-  const code = KEY_CODES[key];
-  if (!code) return;
-  if (keyArray) {
-    Atomics.store(keyArray, 0, code);
-  } else if (worker) {
-    worker.postMessage({ type: 'key', key: key });
-  }
+  keyQueue.push(key);
 }
 
 // Keyboard events
 document.addEventListener('keydown', function(e) {
-  const validKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter', '1', '2', '3'];
-  if (validKeys.includes(e.key)) {
+  const valid = ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter','1','2','3'];
+  if (valid.includes(e.key)) {
     e.preventDefault();
     sendKey(e.key);
-
-    // Visual feedback on buttons
     const btn = document.querySelector(`[data-key="${e.key}"]`);
-    if (btn) {
-      btn.classList.add('pressed');
-      setTimeout(() => btn.classList.remove('pressed'), 150);
-    }
+    if (btn) { btn.classList.add('pressed'); setTimeout(() => btn.classList.remove('pressed'), 150); }
   }
 });
 
-// Touch/click button events
+// Touch/click
 document.querySelectorAll('[data-key]').forEach(btn => {
   function press() {
     sendKey(btn.dataset.key);
@@ -375,8 +148,381 @@ document.querySelectorAll('[data-key]').forEach(btn => {
   btn.addEventListener('touchstart', (e) => { e.preventDefault(); press(); }, { passive: false });
 });
 
-// Start
-startWorker();
+function setProgress(msg, pct) {
+  loadingText.textContent = msg;
+  progressFill.style.width = pct + '%';
+}
+
+// Draw a frame from base64 PNG
+function drawFrame(b64) {
+  const img = new Image();
+  img.onload = () => ctx.drawImage(img, 0, 0, 240, 240);
+  img.src = 'data:image/png;base64,' + b64;
+}
+
+async function main() {
+  try {
+    setProgress('Loading Python runtime...', 10);
+    const pyodide = await loadPyodide({
+      indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.27.5/full/',
+    });
+
+    setProgress('Installing packages...', 30);
+    await pyodide.loadPackage(['micropip', 'Pillow', 'numpy']);
+    
+    const micropip = pyodide.pyimport('micropip');
+    setProgress('Installing Bitcoin libraries...', 45);
+    await micropip.install('embit==0.8.0');
+    await micropip.install('qrcode==7.3.1');
+    await micropip.install('urtypes==1.0.1');
+
+    setProgress('Loading SeedSigner firmware...', 60);
+    const resp = await fetch('seedsigner-bundle.zip');
+    const zipData = await resp.arrayBuffer();
+    pyodide.unpackArchive(zipData, 'zip', { extractDir: '/home/pyodide' });
+
+    setProgress('Patching for browser...', 75);
+
+    // Make keyQueue and drawFrame accessible from Python
+    pyodide.globals.set('_js_key_queue', keyQueue);
+    pyodide.globals.set('_js_draw_frame', drawFrame);
+
+    // Apply all patches
+    await pyodide.runPythonAsync(`
+import sys, types, os
+
+# Stub hardware modules
+for mod_name in ['picamera', 'picamera.array', 'spidev', 'RPi', 'RPi.GPIO']:
+    sys.modules[mod_name] = types.ModuleType(mod_name)
+sys.modules['picamera'].PiCamera = type('PiCamera', (), {'__init__': lambda *a, **k: None})
+sys.modules['picamera.array'].PiRGBArray = type('PiRGBArray', (), {'__init__': lambda *a, **k: None})
+sys.modules['picamera'].array = sys.modules['picamera.array']
+sys.modules['spidev'].SpiDev = type('SpiDev', (), {
+    '__init__': lambda *a, **k: None, 'open': lambda *a, **k: None,
+    'xfer2': lambda *a, **k: [], 'close': lambda *a, **k: None,
+})
+
+# Stub pyzbar
+pyzbar_mod = types.ModuleType('pyzbar')
+pyzbar_decode_mod = types.ModuleType('pyzbar.pyzbar')
+pyzbar_decode_mod.decode = lambda image, symbols=None: []
+pyzbar_mod.pyzbar = pyzbar_decode_mod
+sys.modules['pyzbar'] = pyzbar_mod
+sys.modules['pyzbar.pyzbar'] = pyzbar_decode_mod
+
+# Paths
+sys.path.insert(0, '/home/pyodide/seedsigner')
+
+# virtualGPIO
+emu_dir = '/home/pyodide/seedsigner/emulator'
+os.makedirs(emu_dir, exist_ok=True)
+with open(os.path.join(emu_dir, '__init__.py'), 'w') as f: f.write('')
+
+with open(os.path.join(emu_dir, 'virtualGPIO.py'), 'w') as f:
+    f.write('''
+import time
+dictionaryPins = {}
+raisedPin = ""
+
+class GPIO:
+    LOW = 0; HIGH = 1; OUT = 2; IN = 3
+    PUD_OFF = 4; PUD_DOWN = 5; PUD_UP = 6; BCM = 7; BOARD = 101
+    SLEEP_TIME_S = 0.1; SLEEP_TIME_L = 1.5
+    risecallback = None
+
+    def setmode(mode): pass
+    def setwarnings(flag): pass
+    def setup(channel, state, initial=-1, pull_up_down=-1):
+        global dictionaryPins
+        if str(channel) in dictionaryPins: return
+        if state == GPIO.OUT:
+            dictionaryPins[str(channel)] = PIN("OUT")
+        elif state == GPIO.IN:
+            p = PIN("IN")
+            if pull_up_down == GPIO.PUD_UP: p.In = "1"
+            else: p.In = "0"
+            dictionaryPins[str(channel)] = p
+    def output(channel, outmode):
+        global dictionaryPins
+        c = str(channel)
+        if c in dictionaryPins:
+            dictionaryPins[c].Out = "1" if outmode == GPIO.HIGH else "0"
+    def input(channel):
+        global dictionaryPins, raisedPin
+        c = str(channel)
+        if c == raisedPin:
+            raisedPin = ""
+            return GPIO.LOW
+        return GPIO.HIGH
+    def cleanup(): pass
+    def add_event_detect(channel, edge, callback):
+        GPIO.risecallback = callback
+    def set_input(gpioID, state):
+        global raisedPin
+        if state == GPIO.HIGH:
+            raisedPin = str(gpioID)
+            if GPIO.risecallback: GPIO.risecallback(gpioID)
+        else: raisedPin = ""
+
+class PIN:
+    SetMode = "None"; Out = "0"; pull_up_down = "PUD_OFF"; In = "1"
+    def __init__(self, SetMode):
+        self.SetMode = SetMode; self.Out = "0"
+''')
+
+# Browser display driver
+with open(os.path.join(emu_dir, 'desktopDisplay.py'), 'w') as f:
+    f.write('''
+import io, base64
+
+EMULATOR_VERSION = "2.0-wasm"
+DISPLAY_TYPE__ST7789 = "st7789"
+DISPLAY_TYPE__ILI9341 = "ili9341"
+DISPLAY_TYPE__ILI9486 = "ili9486"
+ALL_DISPLAY_TYPES = [DISPLAY_TYPE__ST7789, DISPLAY_TYPE__ILI9341, DISPLAY_TYPE__ILI9486]
+_instance = None
+
+class desktopDisplay:
+    def __init__(self, display_type=DISPLAY_TYPE__ST7789, width=240, height=240):
+        global _instance
+        self.width = width; self.height = height
+        self.display_type = display_type; self.current_frame = None
+        _instance = self
+
+    def callback(self): pass
+    def run(self): pass
+    def start(self): pass
+
+    def ShowImage(self, image, Xstart, Ystart):
+        imwidth, imheight = image.size
+        if imwidth != self.width or imheight != self.height:
+            image = image.resize((self.width, self.height))
+        buf = io.BytesIO()
+        image.save(buf, format="PNG")
+        self.current_frame = base64.b64encode(buf.getvalue()).decode("ascii")
+        # Send to JavaScript
+        import _js_bridge
+        _js_bridge.send_frame(self.current_frame)
+
+    show_image = ShowImage
+    def update_geometry(self): pass
+    def invert(self, enabled=True): pass
+    def clear(self): pass
+    def get_frame(self): return self.current_frame
+
+    @staticmethod
+    def handle_key(key):
+        from seedsigner.hardware.buttons import HardwareButtons
+        from seedsigner.emulator.virtualGPIO import GPIO
+        key_map = {
+            "ArrowUp": HardwareButtons.KEY_UP_PIN,
+            "ArrowDown": HardwareButtons.KEY_DOWN_PIN,
+            "ArrowLeft": HardwareButtons.KEY_LEFT_PIN,
+            "ArrowRight": HardwareButtons.KEY_RIGHT_PIN,
+            "Enter": HardwareButtons.KEY_PRESS_PIN,
+            "1": HardwareButtons.KEY1_PIN,
+            "2": HardwareButtons.KEY2_PIN,
+            "3": HardwareButtons.KEY3_PIN,
+        }
+        pin = key_map.get(key)
+        if pin is not None:
+            GPIO.set_input(pin, GPIO.HIGH)
+            import time; time.sleep(0.15)
+            GPIO.set_input(pin, GPIO.LOW)
+''')
+
+# JS bridge module
+js_bridge = types.ModuleType('_js_bridge')
+def send_frame(b64):
+    _js_draw_frame(b64)
+def get_key():
+    if len(_js_key_queue) > 0:
+        return _js_key_queue.pop(0)
+    return None
+js_bridge.send_frame = send_frame
+js_bridge.get_key = get_key
+sys.modules['_js_bridge'] = js_bridge
+
+# Camera driver (simplified)
+with open('/home/pyodide/seedsigner/hardware/camera.py', 'w') as f:
+    f.write('''
+import numpy as np
+from PIL import Image
+from seedsigner.models.settings import Settings, SettingsConstants
+from seedsigner.models.singleton import Singleton
+
+class CameraConnectionError(Exception): pass
+
+class WebVideoStream:
+    def __init__(self, resolution=(512, 384), framerate=12, format="bgr"):
+        self.resolution = resolution; self.stopped = False
+    def start(self): return self
+    def read(self): return np.zeros((self.resolution[1], self.resolution[0], 3), dtype=np.uint8)
+    def hasCamera(self): return True
+    def stop(self): self.stopped = True
+    @staticmethod
+    def single_frame(): return np.zeros((480, 640, 3), dtype=np.uint8)
+
+class Camera(Singleton):
+    _video_stream = None; _camera_rotation = None
+    @classmethod
+    def get_instance(cls):
+        if cls._instance is None: cls._instance = cls.__new__(cls)
+        cls._instance._camera_rotation = int(Settings.get_instance().get_value(SettingsConstants.SETTING__CAMERA_ROTATION))
+        return cls._instance
+    def start_video_stream_mode(self, resolution=(512, 384), framerate=12, format="bgr"):
+        if self._video_stream: self.stop_video_stream_mode()
+        self._video_stream = WebVideoStream(resolution=resolution)
+        self._video_stream.start()
+    def read_video_stream(self, as_image=False):
+        if not self._video_stream: raise Exception("No stream")
+        frame = self._video_stream.read()
+        return Image.fromarray(frame.astype("uint8"), "RGB") if as_image else frame
+    def stop_video_stream_mode(self):
+        if self._video_stream: self._video_stream.stop(); self._video_stream = None
+    def start_single_frame_mode(self, resolution=(720, 480)):
+        if self._video_stream: self.stop_video_stream_mode()
+    def capture_frame(self): return Image.fromarray(WebVideoStream.single_frame())
+    def stop_single_frame_mode(self): pass
+''')
+
+# Patch time.sleep to check for keys
+import time as _time
+_original_sleep = _time.sleep
+def _patched_sleep(seconds):
+    import _js_bridge
+    key = _js_bridge.get_key()
+    if key:
+        from seedsigner.emulator.desktopDisplay import desktopDisplay
+        desktopDisplay.handle_key(key)
+    _original_sleep(min(seconds, 0.05))  # Cap sleep at 50ms for responsiveness
+_time.sleep = _patched_sleep
+
+# Patch threading
+import threading
+_orig_init = threading.Thread.__init__
+def _pi(self, *a, **k):
+    k.pop('daemon', None)
+    _orig_init(self, *a, **k)
+threading.Thread.__init__ = _pi
+threading.Thread.start = lambda self: None
+
+print("All patches applied!")
+`);
+
+    setProgress('Starting emulator...', 90);
+
+    // Initialize controller
+    await pyodide.runPythonAsync(`
+import sys, os
+os.chdir('/home/pyodide/seedsigner')
+
+# Clear cached modules
+for k in list(sys.modules.keys()):
+    if k.startswith('seedsigner'):
+        del sys.modules[k]
+
+from seedsigner.controller import Controller
+controller = Controller.get_instance()
+print(f"SeedSigner v{controller.VERSION} loaded!")
+`);
+
+    setProgress('Ready!', 100);
+    setTimeout(() => loadingEl.classList.add('hidden'), 500);
+
+    // Run the main loop — we call controller.start() but break it into async steps
+    // by running one View at a time
+    await pyodide.runPythonAsync(`
+import asyncio
+from seedsigner.controller import Controller
+from seedsigner.models.threads import BaseThread
+from seedsigner.views import MainMenuView, BackStackView, RemoveMicroSDWarningView
+from seedsigner.views.screensaver import OpeningSplashView
+from seedsigner.gui.toast import RemoveSDCardToastManagerThread
+from seedsigner.models.settings import SettingsConstants
+from seedsigner.models.base_decoder import DecodeQR
+
+controller = Controller.get_instance()
+
+# Show splash
+OpeningSplashView().run()
+
+from seedsigner.views.view import Destination
+next_dest = Destination(MainMenuView)
+
+import _js_bridge
+
+# Process keys between views
+def check_keys():
+    key = _js_bridge.get_key()
+    if key:
+        from seedsigner.emulator.desktopDisplay import desktopDisplay
+        desktopDisplay.handle_key(key)
+`);
+
+    // Main loop: run one view at a time, yield to JS between views
+    async function runOneStep() {
+      try {
+        await pyodide.runPythonAsync(`
+import time
+
+# Check for keys
+check_keys()
+
+if next_dest.View_cls is None:
+    from seedsigner.views import MainMenuView
+    next_dest = Destination(MainMenuView)
+
+if next_dest.View_cls == MainMenuView:
+    controller.clear_back_stack()
+    controller.resume_main_flow = None
+    controller.psbt = None
+    controller.psbt_parser = None
+    controller.psbt_seed = None
+
+try:
+    next_dest = next_dest.run()
+except Exception as e:
+    import traceback
+    traceback.print_exc()
+    next_dest = controller.handle_exception(e)
+
+if not next_dest:
+    from seedsigner.views.view import NotYetImplementedView
+    next_dest = Destination(NotYetImplementedView)
+
+if next_dest.skip_current_view and controller.back_stack:
+    controller.back_stack.pop()
+
+clear_history = next_dest.clear_history
+
+if next_dest.View_cls == BackStackView:
+    next_dest = controller.pop_prev_from_back_stack()
+
+if clear_history:
+    controller.clear_back_stack()
+
+if len(controller.back_stack) == 0 or controller.back_stack[-1] != next_dest:
+    controller.back_stack.append(next_dest)
+`);
+      } catch (err) {
+        console.error('View step error:', err);
+      }
+      // Yield to browser, then run next step
+      requestAnimationFrame(() => setTimeout(runOneStep, 10));
+    }
+
+    runOneStep();
+
+  } catch (err) {
+    console.error('Fatal error:', err);
+    loadingText.textContent = 'Error: ' + err.message;
+    errorMsg.textContent = 'Try Chrome or Firefox on desktop. Error: ' + err.message;
+    errorMsg.style.display = 'block';
+  }
+}
+
+main();
 </script>
 </body>
 </html>
