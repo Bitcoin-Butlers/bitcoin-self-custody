@@ -276,14 +276,20 @@ ctx.fillRect(0, 0, 240, 240);
 
 // Start the worker
 function startWorker() {
-  // Create SharedArrayBuffer for key input
-  // keyArray[0] = key code (0 = none, 1-8 = keys)
-  const keyBuffer = new SharedArrayBuffer(4);
-  keyArray = new Int32Array(keyBuffer);
-
   worker = new Worker('worker.js');
 
-  // Send the shared buffer to the worker
+  // Try SharedArrayBuffer if available (for real-time key input)
+  let keyBuffer = null;
+  try {
+    if (typeof SharedArrayBuffer !== 'undefined') {
+      keyBuffer = new SharedArrayBuffer(4);
+      keyArray = new Int32Array(keyBuffer);
+    }
+  } catch(e) {
+    console.warn('SharedArrayBuffer not available, using postMessage for keys');
+  }
+
+  // Tell worker to start, optionally with shared buffer
   worker.postMessage({ type: 'init', keyBuffer: keyBuffer });
 
   worker.onmessage = function(e) {
@@ -316,16 +322,29 @@ function startWorker() {
 
   worker.onerror = function(err) {
     console.error('Worker error:', err);
-    errorMsg.textContent = 'Worker error: ' + err.message;
+    loadingText.textContent = 'Error: ' + (err.message || 'Worker failed to load');
+    errorMsg.textContent = 'Try opening in Chrome or Firefox desktop. ' + (err.message || '');
     errorMsg.style.display = 'block';
   };
+
+  // Timeout: if still initializing after 60s, something's wrong
+  setTimeout(() => {
+    if (!loadingEl.classList.contains('hidden')) {
+      loadingText.textContent = 'Loading is taking longer than expected...';
+      errorMsg.textContent = 'Try refreshing, or open in Chrome/Firefox on desktop.';
+      errorMsg.style.display = 'block';
+    }
+  }, 60000);
 }
 
-// Send key via SharedArrayBuffer
+// Send key — prefer SharedArrayBuffer, fall back to postMessage
 function sendKey(key) {
   const code = KEY_CODES[key];
-  if (code && keyArray) {
+  if (!code) return;
+  if (keyArray) {
     Atomics.store(keyArray, 0, code);
+  } else if (worker) {
+    worker.postMessage({ type: 'key', key: key });
   }
 }
 

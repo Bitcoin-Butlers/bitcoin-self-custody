@@ -98,15 +98,20 @@ except Exception as e:
   }
 }
 
+// Queue for keys received via postMessage (fallback when no SharedArrayBuffer)
+let pendingKeys = [];
+
 // Handle messages from main thread
 self.onmessage = function(e) {
   const data = e.data;
-  if (data.type === 'init' && data.keyBuffer) {
-    keyBuffer = new Int32Array(data.keyBuffer);
-    // Store on self so Python can access it via js.self._keyArray
-    self._keyArray = keyBuffer;
-    // Start initialization after receiving the buffer
+  if (data.type === 'init') {
+    if (data.keyBuffer) {
+      keyBuffer = new Int32Array(data.keyBuffer);
+      self._keyArray = keyBuffer;
+    }
     init();
+  } else if (data.type === 'key') {
+    pendingKeys.push(data.key);
   }
 };
 
@@ -445,7 +450,6 @@ _original_sleep = _time.sleep
 def _patched_sleep(seconds):
     """Sleep that also checks for pending key input from JS."""
     from js import self as js_self
-    import _browser_bridge as bridge
     
     # Check SharedArrayBuffer for pending keys
     try:
@@ -453,12 +457,23 @@ def _patched_sleep(seconds):
         if key_array:
             key_code = int(key_array[0])
             if key_code > 0:
-                key_array[0] = 0  # Clear it
+                key_array[0] = 0
                 key_names = {1: 'ArrowUp', 2: 'ArrowDown', 3: 'ArrowLeft', 4: 'ArrowRight', 5: 'Enter', 6: '1', 7: '2', 8: '3'}
                 key_name = key_names.get(key_code)
                 if key_name:
                     from seedsigner.emulator.desktopDisplay import desktopDisplay
                     desktopDisplay.handle_key(key_name)
+    except:
+        pass
+    
+    # Also check postMessage queue (fallback)
+    try:
+        from js import pendingKeys
+        if pendingKeys and len(pendingKeys) > 0:
+            key_name = str(pendingKeys.shift())
+            if key_name:
+                from seedsigner.emulator.desktopDisplay import desktopDisplay
+                desktopDisplay.handle_key(key_name)
     except:
         pass
     
