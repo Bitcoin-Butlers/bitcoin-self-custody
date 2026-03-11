@@ -486,7 +486,7 @@ const cache = {};
 // Devices that have emulators
 const emulatorDevices = {
   'seedsigner': {
-    url: 'emulators/seedsigner/web/index.html',
+    url: 'emulators/seedsigner/web/pyodide.html',
     label: 'SeedSigner+ Emulator',
     note: 'The emulator runs real SeedSigner firmware through a local Python server. To try it, clone this repo and follow the setup instructions.',
     noteLink: 'https://github.com/Bitcoin-Butlers/bitcoin-self-custody/tree/main/emulators/seedsigner'
@@ -560,18 +560,12 @@ async function showGuide(slug, skipHistory) {
   // Add emulator if this device has one
   if (emulatorDevices[slug]) {
     const emu = emulatorDevices[slug];
-    if (emu.note) {
-      html += `<div class="emulator-embed" style="padding:24px; text-align:center;">
-        <div class="emulator-label">${emu.label}</div>
-        <p style="color:rgba(255,248,230,0.7); margin:12px 0; font-size:14px;">${emu.note}</p>
-        <a href="${emu.noteLink}" style="color:#FBDC7B; font-size:14px;">Setup instructions →</a>
-      </div>`;
-    } else {
-      html += `<div class="emulator-embed">
-        <div class="emulator-label">${emu.label} - Try it in your browser</div>
-        <iframe src="${emu.url}" allow="camera" loading="lazy"></iframe>
-      </div>`;
-    }
+    html += `<div class="emulator-embed" style="padding:24px; text-align:center;">
+      <div class="emulator-label">${emu.label}</div>
+      <p style="color:rgba(255,248,230,0.7); margin:12px 0; font-size:14px;">Run real SeedSigner firmware entirely in your browser. No server, no installation.</p>
+      <a href="${emu.url}" style="display:inline-block; margin-top:8px; padding:10px 24px; background:linear-gradient(90deg, #FF9125, #FBDC7B, #FDA24A); color:#0a0a0a; border-radius:6px; font-weight:600; font-size:14px; text-decoration:none;">Launch Emulator →</a>
+      <p style="color:rgba(255,248,230,0.35); margin-top:8px; font-size:12px;">First load: ~25MB (cached after). Requires modern browser.</p>
+    </div>`;
   }
 
   html += marked.parse(mdBody);

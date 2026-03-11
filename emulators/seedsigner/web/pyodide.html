@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SeedSigner Emulator — Bitcoin Butlers</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<meta name="description" content="Run SeedSigner in your browser. No hardware, no server, no installation. Practice Bitcoin self-custody for free.">
+<script src="coi-serviceworker.js"></script>
+<meta property="og:title" content="SeedSigner Browser Emulator">
+<meta property="og:description" content="Run real SeedSigner firmware entirely in your browser via WebAssembly. No server needed.">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0a0a0a;
+    color: rgb(255, 248, 230);
+    font-family: system-ui, -apple-system, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 24px 16px;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .header h1 {
+    font-size: 1.1rem;
+    color: #FBDC7B;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .header p {
+    font-size: 0.8rem;
+    color: rgba(255,248,230,0.5);
+    margin-top: 4px;
+  }
+
+  .emulator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .device {
+    background: #1a1a1a;
+    border: 2px solid #333;
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  #screen {
+    border: 2px solid #444;
+    border-radius: 8px;
+    width: 240px;
+    height: 240px;
+    background: #000;
+    image-rendering: pixelated;
+  }
+
+  /* Loading overlay */
+  .loading-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.85);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    z-index: 10;
+  }
+  .loading-overlay.hidden { display: none; }
+  .loading-text {
+    color: #FBDC7B;
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+    text-align: center;
+    padding: 0 16px;
+  }
+  .progress-bar {
+    width: 180px;
+    height: 4px;
+    background: #333;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #FF9125, #FBDC7B, #FDA24A);
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+
+  .screen-wrapper {
+    position: relative;
+  }
+
+  /* D-pad and buttons */
+  .controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .dpad {
+    display: grid;
+    grid-template-columns: 48px 48px 48px;
+    grid-template-rows: 48px 48px 48px;
+    gap: 4px;
+  }
+  .dpad button {
+    background: #2a2a2a;
+    border: 1px solid #444;
+    border-radius: 8px;
+    color: rgba(255,248,230,0.7);
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.1s;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+  .dpad button:active, .dpad button.pressed {
+    background: #FBDC7B;
+    color: #0a0a0a;
+  }
+  .dpad .center {
+    background: #333;
+    border-radius: 50%;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+  .dpad .empty { visibility: hidden; }
+
+  .action-buttons {
+    display: flex;
+    gap: 12px;
+  }
+  .action-buttons button {
+    width: 56px;
+    height: 40px;
+    background: #2a2a2a;
+    border: 1px solid #444;
+    border-radius: 8px;
+    color: rgba(255,248,230,0.7);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.1s;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+  .action-buttons button:active, .action-buttons button.pressed {
+    background: #FBDC7B;
+    color: #0a0a0a;
+  }
+
+  .help {
+    font-size: 0.75rem;
+    color: rgba(255,248,230,0.35);
+    text-align: center;
+    max-width: 300px;
+    line-height: 1.5;
+  }
+
+  .footer {
+    margin-top: 32px;
+    text-align: center;
+    font-size: 0.75rem;
+    color: rgba(255,248,230,0.3);
+  }
+  .footer a {
+    color: #FBDC7B;
+    text-decoration: none;
+  }
+
+  .error-msg {
+    color: #ff6b6b;
+    font-size: 0.85rem;
+    text-align: center;
+    max-width: 300px;
+    display: none;
+  }
+
+  @media (max-width: 400px) {
+    .device { padding: 16px; }
+    #screen { width: 200px; height: 200px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>SeedSigner Emulator</h1>
+  <p>Real firmware running in your browser via WebAssembly</p>
+</div>
+
+<div class="emulator">
+  <div class="device">
+    <div class="screen-wrapper">
+      <canvas id="screen" width="240" height="240"></canvas>
+      <div class="loading-overlay" id="loading">
+        <div class="loading-text" id="loading-text">Initializing...</div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="dpad">
+        <div class="empty"></div>
+        <button id="btn-up" data-key="ArrowUp">▲</button>
+        <div class="empty"></div>
+        <button id="btn-left" data-key="ArrowLeft">◀</button>
+        <button id="btn-ok" data-key="Enter" class="center">OK</button>
+        <button id="btn-right" data-key="ArrowRight">▶</button>
+        <div class="empty"></div>
+        <button id="btn-down" data-key="ArrowDown">▼</button>
+        <div class="empty"></div>
+      </div>
+
+      <div class="action-buttons">
+        <button id="btn-1" data-key="1">1</button>
+        <button id="btn-2" data-key="2">2</button>
+        <button id="btn-3" data-key="3">3</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="help">
+    Arrow keys to navigate, Enter to select.<br>
+    Keys 1, 2, 3 for menu shortcuts.<br>
+    First load downloads ~25MB (cached after).<br>
+    Requires a modern browser with WebAssembly support.
+  </div>
+
+  <div class="error-msg" id="error-msg"></div>
+</div>
+
+<div class="footer">
+  <a href="https://bitcoinbutlers.com">Bitcoin Butlers</a> — We hold your hand, not your keys.
+</div>
+
+<script>
+const canvas = document.getElementById('screen');
+const ctx = canvas.getContext('2d');
+const loadingEl = document.getElementById('loading');
+const loadingText = document.getElementById('loading-text');
+const progressFill = document.getElementById('progress-fill');
+const errorMsg = document.getElementById('error-msg');
+
+let worker = null;
+let keyArray = null;  // SharedArrayBuffer view for key input
+
+// Key name to numeric code mapping
+const KEY_CODES = {
+  'ArrowUp': 1, 'ArrowDown': 2, 'ArrowLeft': 3, 'ArrowRight': 4,
+  'Enter': 5, '1': 6, '2': 7, '3': 8
+};
+
+// Draw initial black screen
+ctx.fillStyle = '#000';
+ctx.fillRect(0, 0, 240, 240);
+
+// Start the worker
+function startWorker() {
+  // Create SharedArrayBuffer for key input
+  // keyArray[0] = key code (0 = none, 1-8 = keys)
+  const keyBuffer = new SharedArrayBuffer(4);
+  keyArray = new Int32Array(keyBuffer);
+
+  worker = new Worker('worker.js');
+
+  // Send the shared buffer to the worker
+  worker.postMessage({ type: 'init', keyBuffer: keyBuffer });
+
+  worker.onmessage = function(e) {
+    const msg = e.data;
+
+    if (msg.type === 'status') {
+      loadingText.textContent = msg.message;
+      if (msg.progress >= 0) {
+        progressFill.style.width = msg.progress + '%';
+      }
+      if (msg.progress === 100) {
+        setTimeout(() => {
+          loadingEl.classList.add('hidden');
+        }, 500);
+      }
+      if (msg.progress === -1) {
+        errorMsg.textContent = msg.message;
+        errorMsg.style.display = 'block';
+      }
+    }
+
+    if (msg.type === 'frame') {
+      const img = new Image();
+      img.onload = function() {
+        ctx.drawImage(img, 0, 0, 240, 240);
+      };
+      img.src = 'data:image/png;base64,' + msg.data;
+    }
+  };
+
+  worker.onerror = function(err) {
+    console.error('Worker error:', err);
+    errorMsg.textContent = 'Worker error: ' + err.message;
+    errorMsg.style.display = 'block';
+  };
+}
+
+// Send key via SharedArrayBuffer
+function sendKey(key) {
+  const code = KEY_CODES[key];
+  if (code && keyArray) {
+    Atomics.store(keyArray, 0, code);
+  }
+}
+
+// Keyboard events
+document.addEventListener('keydown', function(e) {
+  const validKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter', '1', '2', '3'];
+  if (validKeys.includes(e.key)) {
+    e.preventDefault();
+    sendKey(e.key);
+
+    // Visual feedback on buttons
+    const btn = document.querySelector(`[data-key="${e.key}"]`);
+    if (btn) {
+      btn.classList.add('pressed');
+      setTimeout(() => btn.classList.remove('pressed'), 150);
+    }
+  }
+});
+
+// Touch/click button events
+document.querySelectorAll('[data-key]').forEach(btn => {
+  function press() {
+    sendKey(btn.dataset.key);
+    btn.classList.add('pressed');
+    setTimeout(() => btn.classList.remove('pressed'), 150);
+  }
+  btn.addEventListener('mousedown', (e) => { e.preventDefault(); press(); });
+  btn.addEventListener('touchstart', (e) => { e.preventDefault(); press(); }, { passive: false });
+});
+
+// Start
+startWorker();
+</script>
+</body>
+</html>
