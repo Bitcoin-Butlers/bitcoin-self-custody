@@ -406,12 +406,12 @@
       <div class="card" onclick="showGuide('coldcard-q')">
         <h3>ColdCard Q</h3>
         <p>Full QWERTY keyboard, camera, large display. Dual secure elements.</p>
-        <span class="badge">Emulator</span>
+        <span class="badge" style="opacity:0.5;">Emulator Coming Soon</span>
       </div>
       <div class="card" onclick="showGuide('jade')">
         <h3>Jade Plus</h3>
         <p>Budget-friendly, travel-sized. Virtual secure element.</p>
-        <span class="badge">Emulator</span>
+        <span class="badge" style="opacity:0.5;">Emulator Coming Soon</span>
       </div>
       <div class="card" onclick="showGuide('passport')">
         <h3>Passport</h3>
@@ -487,15 +487,9 @@ const cache = {};
 const emulatorDevices = {
   'seedsigner': {
     url: 'emulators/seedsigner/web/index.html',
-    label: 'SeedSigner+ Emulator'
-  },
-  'coldcard-q': {
-    url: 'emulators/coldcard/web/index.html',
-    label: 'ColdCard Q Emulator'
-  },
-  'jade': {
-    url: 'emulators/jade/web/index.html',
-    label: 'Jade Plus Emulator'
+    label: 'SeedSigner+ Emulator',
+    note: 'The emulator runs real SeedSigner firmware through a local Python server. To try it, clone this repo and follow the setup instructions.',
+    noteLink: 'https://github.com/Bitcoin-Butlers/bitcoin-self-custody/tree/main/emulators/seedsigner'
   }
 };
 
@@ -566,10 +560,18 @@ async function showGuide(slug, skipHistory) {
   // Add emulator if this device has one
   if (emulatorDevices[slug]) {
     const emu = emulatorDevices[slug];
-    html += `<div class="emulator-embed">
-      <div class="emulator-label">${emu.label} - Try it in your browser</div>
-      <iframe src="${emu.url}" allow="camera" loading="lazy"></iframe>
-    </div>`;
+    if (emu.note) {
+      html += `<div class="emulator-embed" style="padding:24px; text-align:center;">
+        <div class="emulator-label">${emu.label}</div>
+        <p style="color:rgba(255,248,230,0.7); margin:12px 0; font-size:14px;">${emu.note}</p>
+        <a href="${emu.noteLink}" style="color:#FBDC7B; font-size:14px;">Setup instructions →</a>
+      </div>`;
+    } else {
+      html += `<div class="emulator-embed">
+        <div class="emulator-label">${emu.label} - Try it in your browser</div>
+        <iframe src="${emu.url}" allow="camera" loading="lazy"></iframe>
+      </div>`;
+    }
   }
 
   html += marked.parse(mdBody);
