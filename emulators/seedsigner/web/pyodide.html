@@ -414,7 +414,7 @@
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/pyodide/v0.27.5/full/pyodide.js"></script>
+<script src="https://cdn.jsdelivr.net/pyodide/v0.29.3/full/pyodide.js"></script>
 <script>
 const canvas = document.getElementById('screen');
 const ctx = canvas.getContext('2d');
@@ -434,7 +434,19 @@ function setProgress(msg, pct) {
   statusEl.textContent = msg;
 }
 
+// Draw frame — uses offscreen decode approach
+// When called from Python (which blocks main thread), we queue the frame.
+// paintPendingFrame() is called when JS gets control back (in the RAF yield).
+let _pendingFrame = null;
+
 function drawFrame(b64) {
+  _pendingFrame = b64;
+}
+
+function paintPendingFrame() {
+  if (!_pendingFrame) return;
+  const b64 = _pendingFrame;
+  _pendingFrame = null;
   const img = new Image();
   img.onload = () => ctx.drawImage(img, 0, 0, 240, 240);
   img.src = 'data:image/png;base64,' + b64;
@@ -621,7 +633,7 @@ async function main() {
   try {
     setProgress('Loading Python runtime...', 10);
     const pyodide = await loadPyodide({
-      indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.27.5/full/',
+      indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.29.3/full/',
     });
 
     setProgress('Installing packages...', 30);
@@ -838,16 +850,37 @@ class Camera(Singleton):
     def stop_single_frame_mode(self): pass
 ''')
 
-# Patch time.sleep to check for keys
+# Patch time.sleep to yield to JS event loop (critical for main thread Pyodide)
 import time as _time
+import js as _js
+
 _original_sleep = _time.sleep
+
+# Try JSPI-based run_sync (Pyodide 0.29+ with Chrome 137+/Firefox 134+)
+_has_jspi = False
+try:
+    from pyodide.ffi import run_sync as _run_sync
+    # Test it actually works (JSPI must be enabled in browser)
+    _run_sync(_js.eval("Promise.resolve(42)"))
+    _has_jspi = True
+    print("JSPI available — time.sleep yields to JS event loop!")
+except Exception as e:
+    print(f"JSPI not available ({e}) — falling back to blocking sleep")
+
 def _patched_sleep(seconds):
+    # Process any pending key input
     import _js_bridge
     key = _js_bridge.get_key()
     if key:
         from seedsigner.emulator.desktopDisplay import desktopDisplay
         desktopDisplay.handle_key(key)
-    _original_sleep(min(seconds, 0.05))  # Cap sleep at 50ms for responsiveness
+    if _has_jspi:
+        # Yield to JS event loop — frames paint and key events fire during this
+        ms = max(1, min(int(seconds * 1000), 50))
+        _run_sync(_js.eval(f"new Promise(r => setTimeout(r, {ms}))"))
+    else:
+        # Fallback: blocking sleep, capped low for responsiveness
+        _original_sleep(min(seconds, 0.001))
 _time.sleep = _patched_sleep
 
 # Patch threading
@@ -879,93 +912,75 @@ controller = Controller.get_instance()
 print(f"SeedSigner v{controller.VERSION} loaded!")
 `);
 
-    setProgress('Starting...', 90);
+    setProgress('Starting...', 95);
 
-    // Run the main loop — we call controller.start() but break it into async steps
-    // by running one View at a time
+    // Hide loading overlay
+    loadingEl.classList.add('hidden');
+    statusEl.textContent = 'Running';
+    statusEl.className = 'status connected';
+
+    // Paint frames periodically (since Python may block main thread without JSPI)
+    setInterval(paintPendingFrame, 16);
+
+    // Run the entire SeedSigner main loop in Python
+    // With JSPI: time.sleep yields to JS, so this runs smoothly
+    // Without JSPI: time.sleep blocks briefly (1ms), less responsive but functional
     await pyodide.runPythonAsync(`
-import asyncio
 from seedsigner.controller import Controller
 from seedsigner.views import MainMenuView, BackStackView
 from seedsigner.views.screensaver import OpeningSplashView
+from seedsigner.views.view import Destination
+import traceback, time
 
 controller = Controller.get_instance()
 
 # Show splash
+print("Showing splash screen...")
 OpeningSplashView().run()
+print("Splash done, entering main loop")
 
-from seedsigner.views.view import Destination
 next_dest = Destination(MainMenuView)
 
-import _js_bridge
+while True:
+    try:
+        if next_dest.View_cls is None:
+            next_dest = Destination(MainMenuView)
 
-# Process keys between views
-def check_keys():
-    key = _js_bridge.get_key()
-    if key:
-        from seedsigner.emulator.desktopDisplay import desktopDisplay
-        desktopDisplay.handle_key(key)
+        if next_dest.View_cls == MainMenuView:
+            controller.clear_back_stack()
+            controller.resume_main_flow = None
+            controller.psbt = None
+            controller.psbt_parser = None
+            controller.psbt_seed = None
+
+        next_dest = next_dest.run()
+
+        if not next_dest:
+            from seedsigner.views.view import NotYetImplementedView
+            next_dest = Destination(NotYetImplementedView)
+            continue
+
+        if next_dest.skip_current_view and controller.back_stack:
+            controller.back_stack.pop()
+
+        clear_history = next_dest.clear_history
+
+        if next_dest.View_cls == BackStackView:
+            next_dest = controller.pop_prev_from_back_stack()
+
+        if clear_history:
+            controller.clear_back_stack()
+
+        if len(controller.back_stack) == 0 or controller.back_stack[-1] != next_dest:
+            controller.back_stack.append(next_dest)
+
+    except Exception as e:
+        traceback.print_exc()
+        try:
+            next_dest = controller.handle_exception(e)
+        except:
+            next_dest = Destination(MainMenuView)
 `);
-
-    // Main loop: run one view at a time, yield to JS between views
-    async function runOneStep() {
-      try {
-        await pyodide.runPythonAsync(`
-import time
-
-# Check for keys
-check_keys()
-
-if next_dest.View_cls is None:
-    from seedsigner.views import MainMenuView
-    next_dest = Destination(MainMenuView)
-
-if next_dest.View_cls == MainMenuView:
-    controller.clear_back_stack()
-    controller.resume_main_flow = None
-    controller.psbt = None
-    controller.psbt_parser = None
-    controller.psbt_seed = None
-
-try:
-    next_dest = next_dest.run()
-except Exception as e:
-    import traceback
-    traceback.print_exc()
-    next_dest = controller.handle_exception(e)
-
-if not next_dest:
-    from seedsigner.views.view import NotYetImplementedView
-    next_dest = Destination(NotYetImplementedView)
-
-if next_dest.skip_current_view and controller.back_stack:
-    controller.back_stack.pop()
-
-clear_history = next_dest.clear_history
-
-if next_dest.View_cls == BackStackView:
-    next_dest = controller.pop_prev_from_back_stack()
-
-if clear_history:
-    controller.clear_back_stack()
-
-if len(controller.back_stack) == 0 or controller.back_stack[-1] != next_dest:
-    controller.back_stack.append(next_dest)
-`);
-      } catch (err) {
-        console.error('View step error:', err);
-        statusEl.textContent = 'View error: ' + err.message;
-        statusEl.className = 'status';
-      }
-      // Yield to browser, then run next step
-      requestAnimationFrame(() => setTimeout(runOneStep, 10));
-    }
-
-    // Hide loading overlay, show the SeedSigner UI
-    loadingEl.classList.add('hidden');
-    statusEl.textContent = 'Running';
-    statusEl.className = 'status connected';
-    runOneStep();
 
   } catch (err) {
     console.error('Fatal error:', err);
