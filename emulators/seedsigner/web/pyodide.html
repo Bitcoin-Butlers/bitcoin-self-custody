@@ -282,33 +282,14 @@
   .footer a:hover { text-decoration: underline; }
 
   /* === MOBILE LAYOUT (stacked, compact) === */
+  /* Always desktop layout (row), just scales smaller on mobile */
+  .device-shell {
+    flex-direction: row;
+  }
   @media (max-width: 599px) {
     .device-shell {
-      flex-direction: column;
-      border-radius: 24px;
-      padding: 20px;
-      gap: 16px;
-    }
-    .dpad-area { order: 2; }
-    .screen-area { order: 1; }
-    .side-area {
-      order: 3;
-      flex-direction: row;
-      gap: 12px;
-    }
-    .side-area button {
-      width: 60px;
-      height: 36px;
-      border-radius: 18px;
-    }
-    .dpad button { width: 56px; height: 56px; font-size: 1.8rem; }
-    .dpad .ok-btn { border-radius: 50%; }
-  }
-
-  /* === TABLET+ (side by side, pill device) === */
-  @media (min-width: 600px) {
-    .device-shell {
-      flex-direction: row;
+      transform: scale(0.75);
+      transform-origin: top center;
     }
   }
   /* Loading overlay for Pyodide */
