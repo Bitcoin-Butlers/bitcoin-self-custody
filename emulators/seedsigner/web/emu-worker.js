@@ -166,7 +166,9 @@ def _patched_sleep(seconds):
         pin = key_map.get(key)
         if pin is not None:
             _pending_pin_reset.append(pin)
-    _original_sleep(min(seconds, 0.05))
+    # Honor the requested sleep duration (important for animation timing)
+    # Cap at 2s to prevent total lockup
+    _original_sleep(min(seconds, 2.0))
 _time.sleep = _patched_sleep
 
 # Patch threading (no real threads in Pyodide)
