@@ -53,14 +53,11 @@ class DesktopDisplay:
         }
         pin = key_map.get(key)
         if pin is not None:
-            # Press (active LOW)
-            GPIO.set_input(pin, GPIO.LOW)
-            import time
-            time.sleep(0.15)
-            # Release (HIGH) and unlock for next press
-            GPIO.set_input(pin, GPIO.HIGH)
             from seedsigner.hardware.buttons import HardwareButtonsConstants
+            # Set release lock so the press is accepted
             HardwareButtonsConstants.release_lock = True
+            # Press (active LOW) — leave it LOW for wait_for to detect
+            GPIO.set_input(pin, GPIO.LOW)
 
 # display_driver.py does `from ... import desktopDisplay` then calls desktopDisplay(display_type=..., width=..., height=...)
 # So desktopDisplay must be the CLASS (used as constructor), not an instance

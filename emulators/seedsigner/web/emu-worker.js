@@ -137,13 +137,36 @@ sys.modules['_js_bridge'] = js_bridge
 # Patch time.sleep to check keys (in worker, blocking is OK but we still need to process keys)
 import time as _time
 _original_sleep = _time.sleep
+_pending_pin_reset = []
 def _patched_sleep(seconds):
+    # Reset any pins that were pressed in the previous cycle
+    from seedsigner.emulator.virtualGPIO import GPIO as _GPIO
+    global _pending_pin_reset
+    for pin in _pending_pin_reset:
+        _GPIO._pins[pin] = _GPIO.HIGH
+    _pending_pin_reset = []
+    # Check for new key input
     import _js_bridge
     key = _js_bridge.get_key()
     if key:
         from seedsigner.emulator.desktopDisplay import desktopDisplay
         desktopDisplay.handle_key(key)
-    _original_sleep(min(seconds, 0.05))  # Cap at 50ms for key responsiveness
+        # Track which pins need resetting next cycle
+        from seedsigner.hardware.buttons import HardwareButtons
+        key_map = {
+            "ArrowUp": HardwareButtons.KEY_UP_PIN,
+            "ArrowDown": HardwareButtons.KEY_DOWN_PIN,
+            "ArrowLeft": HardwareButtons.KEY_LEFT_PIN,
+            "ArrowRight": HardwareButtons.KEY_RIGHT_PIN,
+            "Enter": HardwareButtons.KEY_PRESS_PIN,
+            "1": HardwareButtons.KEY1_PIN,
+            "2": HardwareButtons.KEY2_PIN,
+            "3": HardwareButtons.KEY3_PIN,
+        }
+        pin = key_map.get(key)
+        if pin is not None:
+            _pending_pin_reset.append(pin)
+    _original_sleep(min(seconds, 0.05))
 _time.sleep = _patched_sleep
 
 # Patch threading (no real threads in Pyodide)
