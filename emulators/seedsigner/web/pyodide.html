@@ -430,12 +430,8 @@ print(f"SeedSigner v{controller.VERSION} loaded!")
     await pyodide.runPythonAsync(`
 import asyncio
 from seedsigner.controller import Controller
-from seedsigner.models.threads import BaseThread
-from seedsigner.views import MainMenuView, BackStackView, RemoveMicroSDWarningView
+from seedsigner.views import MainMenuView, BackStackView
 from seedsigner.views.screensaver import OpeningSplashView
-from seedsigner.gui.toast import RemoveSDCardToastManagerThread
-from seedsigner.models.settings import SettingsConstants
-from seedsigner.models.base_decoder import DecodeQR
 
 controller = Controller.get_instance()
 
