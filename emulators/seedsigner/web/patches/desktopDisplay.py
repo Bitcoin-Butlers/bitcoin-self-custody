@@ -12,7 +12,7 @@ class DesktopDisplay:
         self.height = height
         self.current_frame = None
 
-    def ShowImage(self, image):
+    def ShowImage(self, image, *args):
         imwidth, imheight = image.size
         if imwidth != self.width or imheight != self.height:
             image = image.resize((self.width, self.height))
@@ -22,7 +22,8 @@ class DesktopDisplay:
         import _js_bridge
         _js_bridge.send_frame(self.current_frame)
 
-    show_image = ShowImage
+    def show_image(self, image, *args):
+        self.ShowImage(image)
 
     def update_geometry(self):
         pass
