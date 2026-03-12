@@ -5,6 +5,7 @@ Simulates RPi.GPIO pin states for button input.
 
 class GPIO:
     BCM = 11
+    BOARD = 10
     IN = 0
     OUT = 1
     PUD_UP = 22
