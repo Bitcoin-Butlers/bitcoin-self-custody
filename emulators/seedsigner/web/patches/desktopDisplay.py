@@ -12,7 +12,17 @@ class DesktopDisplay:
         self.height = height
         self.current_frame = None
 
+    _last_frame_time = 0
+
     def ShowImage(self, image, *args):
+        # Rate limit to ~30fps (real hardware is limited by SPI speed)
+        import time
+        now = time.time()
+        elapsed = now - self._last_frame_time
+        if elapsed < 0.033:  # ~30fps
+            time.sleep(0.033 - elapsed)
+        self._last_frame_time = time.time()
+
         imwidth, imheight = image.size
         if imwidth != self.width or imheight != self.height:
             image = image.resize((self.width, self.height))
