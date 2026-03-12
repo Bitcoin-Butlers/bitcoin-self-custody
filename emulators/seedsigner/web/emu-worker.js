@@ -116,146 +116,18 @@ sys.modules['libcamera'] = libcam
 import builtins
 builtins._ = lambda x: x
 
-# Create emulator display driver
-os.makedirs('/home/pyodide/seedsigner/emulator', exist_ok=True)
-with open('/home/pyodide/seedsigner/emulator/__init__.py', 'w') as f:
-    f.write('')
+# Display, GPIO, camera, and ST7789 are pre-patched in the bundle (see patches/ dir)
+# Just need to set up the RPi.GPIO module alias and JS bridge
 
-with open('/home/pyodide/seedsigner/emulator/desktopDisplay.py', 'w') as f:
-    f.write('''
-import io, base64
-from PIL import Image
-
-class DesktopDisplay:
-    def __init__(self):
-        self.width = 240
-        self.height = 240
-        self.current_frame = None
-
-    def ShowImage(self, image):
-        imwidth, imheight = image.size
-        if imwidth != self.width or imheight != self.height:
-            image = image.resize((self.width, self.height))
-        buf = io.BytesIO()
-        image.save(buf, format="PNG")
-        self.current_frame = base64.b64encode(buf.getvalue()).decode("ascii")
-        import _js_bridge
-        _js_bridge.send_frame(self.current_frame)
-
-    show_image = ShowImage
-    def update_geometry(self): pass
-    def invert(self, enabled=True): pass
-    def clear(self): pass
-    def get_frame(self): return self.current_frame
-
-    @staticmethod
-    def handle_key(key):
-        from seedsigner.hardware.buttons import HardwareButtons
-        from seedsigner.emulator.virtualGPIO import GPIO
-        key_map = {
-            "ArrowUp": HardwareButtons.KEY_UP_PIN,
-            "ArrowDown": HardwareButtons.KEY_DOWN_PIN,
-            "ArrowLeft": HardwareButtons.KEY_LEFT_PIN,
-            "ArrowRight": HardwareButtons.KEY_RIGHT_PIN,
-            "Enter": HardwareButtons.KEY_PRESS_PIN,
-            "1": HardwareButtons.KEY1_PIN,
-            "2": HardwareButtons.KEY2_PIN,
-            "3": HardwareButtons.KEY3_PIN,
-        }
-        pin = key_map.get(key)
-        if pin is not None:
-            GPIO.set_input(pin, GPIO.HIGH)
-            import time; time.sleep(0.15)
-            GPIO.set_input(pin, GPIO.LOW)
-
-# Singleton instance (display_driver.py imports this lowercase name)
-desktopDisplay = DesktopDisplay()
-''')
-
-# Virtual GPIO
-with open('/home/pyodide/seedsigner/emulator/virtualGPIO.py', 'w') as f:
-    f.write('''
-class GPIO:
-    BCM = 11
-    IN = 0
-    OUT = 1
-    PUD_UP = 22
-    PUD_DOWN = 21
-    HIGH = 1
-    LOW = 0
-    RISING = 31
-    FALLING = 32
-
-    _pins = {}
-    _callbacks = {}
-
-    @classmethod
-    def setmode(cls, mode): pass
-
-    @classmethod
-    def setup(cls, pin, mode, pull_up_down=None, initial=None):
-        if isinstance(pin, (list, tuple)):
-            for p in pin: cls._pins[p] = cls.HIGH
-        else:
-            cls._pins[pin] = cls.HIGH
-
-    @classmethod
-    def input(cls, pin):
-        return cls._pins.get(pin, cls.HIGH)
-
-    @classmethod
-    def output(cls, pin, value):
-        cls._pins[pin] = value
-
-    @classmethod
-    def set_input(cls, pin, value):
-        cls._pins[pin] = value
-
-    @classmethod
-    def add_event_detect(cls, pin, edge, callback=None, bouncetime=None):
-        if callback: cls._callbacks[pin] = callback
-
-    @classmethod
-    def cleanup(cls): pass
-''')
-
-# Patch display module to use our emulator
-with open('/home/pyodide/seedsigner/hardware/ST7789.py', 'w') as f:
-    f.write('''
-from seedsigner.emulator.desktopDisplay import DesktopDisplay
-class ST7789:
-    def __init__(self, *a, **k):
-        self._display = DesktopDisplay()
-        self.width = 240
-        self.height = 240
-    def Init(self): pass
-    def ShowImage(self, img): self._display.ShowImage(img)
-    def show_image(self, img): self._display.ShowImage(img)
-    def clear(self): pass
-    def module_exit(self): pass
-''')
-
-# Patch GPIO import in hardware
-import importlib
-sys.modules['RPi.GPIO'] = type(sys)('RPi.GPIO')
+# Map RPi.GPIO to our virtual GPIO
 from seedsigner.emulator.virtualGPIO import GPIO
-sys.modules['RPi.GPIO'].BCM = GPIO.BCM
-sys.modules['RPi.GPIO'].IN = GPIO.IN
-sys.modules['RPi.GPIO'].OUT = GPIO.OUT
-sys.modules['RPi.GPIO'].PUD_UP = GPIO.PUD_UP
-sys.modules['RPi.GPIO'].PUD_DOWN = GPIO.PUD_DOWN
-sys.modules['RPi.GPIO'].HIGH = GPIO.HIGH
-sys.modules['RPi.GPIO'].LOW = GPIO.LOW
-sys.modules['RPi.GPIO'].RISING = GPIO.RISING
-sys.modules['RPi.GPIO'].FALLING = GPIO.FALLING
-sys.modules['RPi.GPIO'].setmode = GPIO.setmode
-sys.modules['RPi.GPIO'].setup = GPIO.setup
-sys.modules['RPi.GPIO'].input = GPIO.input
-sys.modules['RPi.GPIO'].output = GPIO.output
-sys.modules['RPi.GPIO'].add_event_detect = GPIO.add_event_detect
-sys.modules['RPi.GPIO'].cleanup = GPIO.cleanup
+gpio_module = types.ModuleType('RPi.GPIO')
+for attr in ['BCM','IN','OUT','PUD_UP','PUD_DOWN','HIGH','LOW','RISING','FALLING',
+             'setmode','setup','input','output','set_input','add_event_detect','cleanup']:
+    setattr(gpio_module, attr, getattr(GPIO, attr))
+sys.modules['RPi.GPIO'] = gpio_module
 
-# JS bridge module
+# JS bridge module — connects Python to JS for frames and keys
 js_bridge = types.ModuleType('_js_bridge')
 def send_frame(b64):
     _js_send_frame(b64)
@@ -267,25 +139,6 @@ def get_key():
 js_bridge.send_frame = send_frame
 js_bridge.get_key = get_key
 sys.modules['_js_bridge'] = js_bridge
-
-# Camera driver (stub)
-with open('/home/pyodide/seedsigner/hardware/camera.py', 'w') as f:
-    f.write("""
-class Camera:
-    _instance = None
-    def __init__(self):
-        self.is_active = False
-    @classmethod
-    def get_instance(cls):
-        if cls._instance is None:
-            cls._instance = Camera()
-        return cls._instance
-    def start(self): self.is_active = True
-    def stop(self): self.is_active = False
-    def capture_frame(self):
-        import numpy as np
-        return np.zeros((480, 640, 3), dtype=np.uint8)
-""")
 
 # Patch time.sleep to check keys (in worker, blocking is OK but we still need to process keys)
 import time as _time

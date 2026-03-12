@@ -37,6 +37,16 @@ if [ -d "$VENV_PKGS/cbor2" ]; then
   echo "  ✓ Bundled cbor2"
 fi
 
+# Apply Pyodide-specific patches (replace WebSocket/tkinter drivers with browser-compatible ones)
+PATCHES_DIR="$SCRIPT_DIR/patches"
+if [ -d "$PATCHES_DIR" ]; then
+  cp "$PATCHES_DIR/desktopDisplay.py" "$BUNDLE_DIR/seedsigner/emulator/desktopDisplay.py"
+  cp "$PATCHES_DIR/virtualGPIO.py" "$BUNDLE_DIR/seedsigner/emulator/virtualGPIO.py"
+  cp "$PATCHES_DIR/ST7789.py" "$BUNDLE_DIR/seedsigner/hardware/ST7789.py"
+  cp "$PATCHES_DIR/camera.py" "$BUNDLE_DIR/seedsigner/hardware/camera.py"
+  echo "  ✓ Applied Pyodide patches"
+fi
+
 # Remove __pycache__ directories
 find "$BUNDLE_DIR" -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
 
