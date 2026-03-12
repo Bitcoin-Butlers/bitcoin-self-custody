@@ -25,16 +25,18 @@ class WebVideoStream:
     def read(self):
         return self._get_camera_frame()
 
+    _frame_count = 0
+
     def _get_camera_frame(self):
         import time
-        # Yield to allow worker event loop to process incoming camera frames
         time.sleep(0.05)
+        
+        # Try to get real camera frame from JS
         try:
             import _js_bridge
             raw = _js_bridge.camera_frame()
             if raw is not None:
                 if hasattr(raw, 'keys'):
-                    # Dict from pyodide.toPy
                     w = int(raw['width'])
                     h = int(raw['height'])
                     data = bytes(raw['data'])
@@ -43,12 +45,23 @@ class WebVideoStream:
                     h = int(raw.height)
                     data = bytes(raw.data)
                 else:
-                    return self.frame
-                rgba = np.frombuffer(data, dtype=np.uint8).reshape((h, w, 4))
-                return rgba[:, :, :3]
+                    raw = None
+                if raw is not None:
+                    rgba = np.frombuffer(data, dtype=np.uint8).reshape((h, w, 4))
+                    return rgba[:, :, :3]
         except Exception as e:
             print(f"Camera frame error: {e}")
-        return self.frame
+        
+        # Fallback: animated test pattern so we can see rendering works
+        WebVideoStream._frame_count += 1
+        h, w = self.resolution[1], self.resolution[0]
+        frame = np.zeros((h, w, 3), dtype=np.uint8)
+        offset = WebVideoStream._frame_count * 3
+        for y in range(h):
+            frame[y, :, 0] = (y + offset) % 256      # R shifts
+            frame[y, :, 1] = (y * 2) % 256            # G gradient
+            frame[y, :, 2] = 100                       # B constant
+        return frame
 
     def hasCamera(self):
         return True

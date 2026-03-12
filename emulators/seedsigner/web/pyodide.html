@@ -435,6 +435,7 @@ const camCanvas = document.getElementById('camera-canvas');
 const camCtx = camCanvas.getContext('2d');
 
 async function startCamera(width, height) {
+  statusEl.textContent = 'Requesting camera...';
   try {
     cameraStream = await navigator.mediaDevices.getUserMedia({
       video: { facingMode: 'environment', width: { ideal: width }, height: { ideal: height } }
@@ -443,17 +444,22 @@ async function startCamera(width, height) {
     await videoEl.play();
     camCanvas.width = width;
     camCanvas.height = height;
+    statusEl.textContent = 'Camera active';
+    let framesSent = 0;
     // Send frames to worker at ~12fps
     cameraInterval = setInterval(() => {
       if (videoEl.readyState >= 2) {
         camCtx.drawImage(videoEl, 0, 0, width, height);
         const imageData = camCtx.getImageData(0, 0, width, height);
-        // Send raw RGBA pixel data
-        worker.postMessage({ type: 'camera_frame', width, height, data: imageData.data.buffer }, [imageData.data.buffer]);
+        const buf = imageData.data.buffer.slice(0); // copy to avoid transfer issues
+        worker.postMessage({ type: 'camera_frame', width, height, data: buf }, [buf]);
+        framesSent++;
+        if (framesSent % 30 === 0) statusEl.textContent = 'Camera: ' + framesSent + ' frames';
       }
     }, 83); // ~12fps
   } catch (err) {
     console.error('Camera error:', err);
+    statusEl.textContent = 'Camera error: ' + err.message;
     worker.postMessage({ type: 'camera_error', msg: err.message });
   }
 }
