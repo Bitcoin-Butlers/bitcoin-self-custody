@@ -562,9 +562,10 @@ async function showGuide(slug, skipHistory) {
     const emu = emulatorDevices[slug];
     html += `<div class="emulator-embed" style="padding:24px; text-align:center;">
       <div class="emulator-label">${emu.label}</div>
-      <p style="color:rgba(255,248,230,0.7); margin:12px 0; font-size:14px;">Run real SeedSigner firmware entirely in your browser. No server, no installation.</p>
-      <a href="${emu.url}" style="display:inline-block; margin-top:8px; padding:10px 24px; background:linear-gradient(90deg, #FF9125, #FBDC7B, #FDA24A); color:#0a0a0a; border-radius:6px; font-weight:600; font-size:14px; text-decoration:none;">Launch Emulator →</a>
-      <p style="color:rgba(255,248,230,0.35); margin-top:8px; font-size:12px;">First load: ~25MB (cached after). Requires modern browser.</p>
+      <p style="color:rgba(255,248,230,0.7); margin:12px 0 16px; font-size:14px;">Run real SeedSigner firmware entirely in your browser. No server, no installation.</p>
+      <iframe src="${emu.url}" style="width:100%; max-width:500px; height:750px; border:1px solid rgba(251,220,123,0.2); border-radius:12px; background:#0a0a0a;" allow="camera" allowfullscreen></iframe>
+      <p style="color:rgba(255,248,230,0.35); margin-top:8px; font-size:12px;">First load: ~25MB (cached after). Requires modern desktop browser.</p>
+      <a href="${emu.url}" target="_blank" style="display:inline-block; margin-top:8px; color:#FBDC7B; font-size:13px; text-decoration:none; opacity:0.7;">Open in new tab ↗</a>
     </div>`;
   }
 
