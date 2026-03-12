@@ -56,14 +56,20 @@ async function main() {
       sendError(String(msg));
     });
     pyodide.globals.set('_js_camera_start', (w, h) => {
-      self.postMessage({ type: 'camera_start', width: w, height: h });
+      console.log('[worker] camera_start requested:', Number(w), Number(h));
+      self.postMessage({ type: 'camera_start', width: Number(w), height: Number(h) });
     });
     pyodide.globals.set('_js_camera_stop', () => {
+      console.log('[worker] camera_stop requested');
       self.postMessage({ type: 'camera_stop' });
     });
     pyodide.globals.set('_js_camera_frame', () => {
       if (!latestCameraFrame) return null;
-      return latestCameraFrame;
+      return pyodide.toPy({
+        width: latestCameraFrame.width,
+        height: latestCameraFrame.height,
+        data: latestCameraFrame.data
+      });
     });
     pyodide.globals.set('_js_get_key', () => {
       if (keyQueue.length > 0) return keyQueue.shift();
@@ -209,13 +215,17 @@ def _pi(self, *a, **k):
     k.pop('daemon', None)
     _orig_init(self, *a, **k)
 threading.Thread.__init__ = _pi
-# Run thread synchronously instead of no-op (BackgroundImportThread needs to init _storage)
-def _sync_start(self):
+# Run short-lived threads synchronously (BackgroundImportThread needs to init _storage)
+# Long-running threads (with keep_running loops) are no-oped
+def _smart_start(self):
+    # BaseThread subclasses with keep_running are long-lived - skip them
+    if hasattr(self, 'keep_running'):
+        return
     try:
         self.run()
     except Exception:
         pass
-threading.Thread.start = _sync_start
+threading.Thread.start = _smart_start
 
 print("All patches applied!")
 `);
