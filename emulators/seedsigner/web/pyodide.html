@@ -414,7 +414,6 @@
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/pyodide/v0.29.3/full/pyodide.js"></script>
 <script>
 const canvas = document.getElementById('screen');
 const ctx = canvas.getContext('2d');
@@ -424,32 +423,44 @@ const loadingText = document.getElementById('loading-text');
 const progressFill = document.getElementById('progress-fill');
 const errorMsg = document.getElementById('error-msg');
 
-let keyQueue = [];
+// Start Web Worker for Pyodide
+const worker = new Worker('emu-worker.js');
 
-function sendKey(key) { keyQueue.push(key); }
+worker.onmessage = (e) => {
+  const { type } = e.data;
+  if (type === 'frame') {
+    const img = new Image();
+    img.onload = () => ctx.drawImage(img, 0, 0, 240, 240);
+    img.src = 'data:image/png;base64,' + e.data.data;
+  } else if (type === 'progress') {
+    loadingText.textContent = e.data.msg;
+    progressFill.style.width = e.data.pct + '%';
+    statusEl.textContent = e.data.msg;
+  } else if (type === 'status') {
+    if (e.data.msg === 'running') {
+      loadingEl.classList.add('hidden');
+      statusEl.textContent = 'Running';
+      statusEl.className = 'status connected';
+    }
+  } else if (type === 'error') {
+    console.error('Worker error:', e.data.msg);
+    loadingText.textContent = 'Error';
+    errorMsg.textContent = e.data.msg;
+    errorMsg.style.display = 'block';
+    statusEl.textContent = 'Error';
+    statusEl.className = 'status';
+  }
+};
 
-function setProgress(msg, pct) {
-  loadingText.textContent = msg;
-  progressFill.style.width = pct + '%';
-  statusEl.textContent = msg;
-}
+worker.onerror = (e) => {
+  console.error('Worker error:', e);
+  statusEl.textContent = 'Worker failed to start';
+  errorMsg.textContent = 'WebAssembly may not be available in this browser. Try Chrome or Firefox on desktop.';
+  errorMsg.style.display = 'block';
+};
 
-// Draw frame — uses offscreen decode approach
-// When called from Python (which blocks main thread), we queue the frame.
-// paintPendingFrame() is called when JS gets control back (in the RAF yield).
-let _pendingFrame = null;
-
-function drawFrame(b64) {
-  _pendingFrame = b64;
-}
-
-function paintPendingFrame() {
-  if (!_pendingFrame) return;
-  const b64 = _pendingFrame;
-  _pendingFrame = null;
-  const img = new Image();
-  img.onload = () => ctx.drawImage(img, 0, 0, 240, 240);
-  img.src = 'data:image/png;base64,' + b64;
+function sendKey(key) {
+  worker.postMessage({ type: 'key', key });
 }
 
 // Help overlay
@@ -469,7 +480,10 @@ if (!document.fullscreenEnabled && !document.webkitFullscreenEnabled) {
 }
 
 // Reset
-document.getElementById('btn-reset').addEventListener('click', () => location.reload());
+document.getElementById('btn-reset').addEventListener('click', () => {
+  worker.terminate();
+  location.reload();
+});
 
 // Keyboard controls
 document.addEventListener('keydown', (e) => {
@@ -484,7 +498,7 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-// Button controls
+// Button controls (mouse + touch)
 const btnMap = {'btn-up':'ArrowUp','btn-down':'ArrowDown','btn-left':'ArrowLeft','btn-right':'ArrowRight','btn-enter':'Enter','btn-1':'1','btn-2':'2','btn-3':'3'};
 for (const [id, key] of Object.entries(btnMap)) {
   const btn = document.getElementById(id);
@@ -498,8 +512,11 @@ for (const [id, key] of Object.entries(btnMap)) {
 // Loading state
 ctx.fillStyle = '#1a1a1a';
 ctx.fillRect(0, 0, 240, 240);
+ctx.fillStyle = '#666';
+ctx.font = '14px system-ui';
+ctx.textAlign = 'center';
+ctx.fillText('Loading SeedSigner...', 120, 120);
 
-// Tutorial system (from original)
 const tutorials = [
   {
     id: 'generate-seed',
@@ -628,369 +645,6 @@ tutorialNext.addEventListener('click', () => {
   else { tutorialClose.click(); }
 });
 
-
-async function main() {
-  try {
-    setProgress('Loading Python runtime...', 10);
-    const pyodide = await loadPyodide({
-      indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.29.3/full/',
-    });
-
-    setProgress('Installing packages...', 30);
-    await pyodide.loadPackage(['Pillow', 'numpy']);
-
-    setProgress('Loading SeedSigner firmware...', 50);
-    const resp = await fetch('seedsigner-bundle.zip');
-    const zipData = await resp.arrayBuffer();
-    pyodide.unpackArchive(zipData, 'zip', { extractDir: '/home/pyodide' });
-
-    setProgress('Patching for browser...', 75);
-
-    // Make keyQueue and drawFrame accessible from Python
-    pyodide.globals.set('_js_key_queue', keyQueue);
-    pyodide.globals.set('_js_draw_frame', drawFrame);
-
-    // Apply all patches
-    await pyodide.runPythonAsync(`
-import sys, types, os
-
-# Stub hardware modules
-for mod_name in ['picamera', 'picamera.array', 'spidev', 'RPi', 'RPi.GPIO']:
-    sys.modules[mod_name] = types.ModuleType(mod_name)
-sys.modules['picamera'].PiCamera = type('PiCamera', (), {'__init__': lambda *a, **k: None})
-sys.modules['picamera.array'].PiRGBArray = type('PiRGBArray', (), {'__init__': lambda *a, **k: None})
-sys.modules['picamera'].array = sys.modules['picamera.array']
-sys.modules['spidev'].SpiDev = type('SpiDev', (), {
-    '__init__': lambda *a, **k: None, 'open': lambda *a, **k: None,
-    'xfer2': lambda *a, **k: [], 'close': lambda *a, **k: None,
-})
-
-# Stub pyzbar
-pyzbar_mod = types.ModuleType('pyzbar')
-pyzbar_decode_mod = types.ModuleType('pyzbar.pyzbar')
-pyzbar_decode_mod.decode = lambda image, symbols=None: []
-pyzbar_mod.pyzbar = pyzbar_decode_mod
-sys.modules['pyzbar'] = pyzbar_mod
-sys.modules['pyzbar.pyzbar'] = pyzbar_decode_mod
-
-# Paths — bundle root has embit/, qrcode/, urtypes/ alongside seedsigner/
-sys.path.insert(0, '/home/pyodide')
-sys.path.insert(0, '/home/pyodide/seedsigner')
-
-# virtualGPIO
-emu_dir = '/home/pyodide/seedsigner/emulator'
-os.makedirs(emu_dir, exist_ok=True)
-with open(os.path.join(emu_dir, '__init__.py'), 'w') as f: f.write('')
-
-with open(os.path.join(emu_dir, 'virtualGPIO.py'), 'w') as f:
-    f.write('''
-import time
-dictionaryPins = {}
-raisedPin = ""
-
-class GPIO:
-    LOW = 0; HIGH = 1; OUT = 2; IN = 3
-    PUD_OFF = 4; PUD_DOWN = 5; PUD_UP = 6; BCM = 7; BOARD = 101
-    SLEEP_TIME_S = 0.1; SLEEP_TIME_L = 1.5
-    risecallback = None
-
-    def setmode(mode): pass
-    def setwarnings(flag): pass
-    def setup(channel, state, initial=-1, pull_up_down=-1):
-        global dictionaryPins
-        if str(channel) in dictionaryPins: return
-        if state == GPIO.OUT:
-            dictionaryPins[str(channel)] = PIN("OUT")
-        elif state == GPIO.IN:
-            p = PIN("IN")
-            if pull_up_down == GPIO.PUD_UP: p.In = "1"
-            else: p.In = "0"
-            dictionaryPins[str(channel)] = p
-    def output(channel, outmode):
-        global dictionaryPins
-        c = str(channel)
-        if c in dictionaryPins:
-            dictionaryPins[c].Out = "1" if outmode == GPIO.HIGH else "0"
-    def input(channel):
-        global dictionaryPins, raisedPin
-        c = str(channel)
-        if c == raisedPin:
-            raisedPin = ""
-            return GPIO.LOW
-        return GPIO.HIGH
-    def cleanup(): pass
-    def add_event_detect(channel, edge, callback):
-        GPIO.risecallback = callback
-    def set_input(gpioID, state):
-        global raisedPin
-        if state == GPIO.HIGH:
-            raisedPin = str(gpioID)
-            if GPIO.risecallback: GPIO.risecallback(gpioID)
-        else: raisedPin = ""
-
-class PIN:
-    SetMode = "None"; Out = "0"; pull_up_down = "PUD_OFF"; In = "1"
-    def __init__(self, SetMode):
-        self.SetMode = SetMode; self.Out = "0"
-''')
-
-# Browser display driver
-with open(os.path.join(emu_dir, 'desktopDisplay.py'), 'w') as f:
-    f.write('''
-import io, base64
-
-EMULATOR_VERSION = "2.0-wasm"
-DISPLAY_TYPE__ST7789 = "st7789"
-DISPLAY_TYPE__ILI9341 = "ili9341"
-DISPLAY_TYPE__ILI9486 = "ili9486"
-ALL_DISPLAY_TYPES = [DISPLAY_TYPE__ST7789, DISPLAY_TYPE__ILI9341, DISPLAY_TYPE__ILI9486]
-_instance = None
-
-class desktopDisplay:
-    def __init__(self, display_type=DISPLAY_TYPE__ST7789, width=240, height=240):
-        global _instance
-        self.width = width; self.height = height
-        self.display_type = display_type; self.current_frame = None
-        _instance = self
-
-    def callback(self): pass
-    def run(self): pass
-    def start(self): pass
-
-    def ShowImage(self, image, Xstart, Ystart):
-        imwidth, imheight = image.size
-        if imwidth != self.width or imheight != self.height:
-            image = image.resize((self.width, self.height))
-        buf = io.BytesIO()
-        image.save(buf, format="PNG")
-        self.current_frame = base64.b64encode(buf.getvalue()).decode("ascii")
-        # Send to JavaScript
-        import _js_bridge
-        _js_bridge.send_frame(self.current_frame)
-
-    show_image = ShowImage
-    def update_geometry(self): pass
-    def invert(self, enabled=True): pass
-    def clear(self): pass
-    def get_frame(self): return self.current_frame
-
-    @staticmethod
-    def handle_key(key):
-        from seedsigner.hardware.buttons import HardwareButtons
-        from seedsigner.emulator.virtualGPIO import GPIO
-        key_map = {
-            "ArrowUp": HardwareButtons.KEY_UP_PIN,
-            "ArrowDown": HardwareButtons.KEY_DOWN_PIN,
-            "ArrowLeft": HardwareButtons.KEY_LEFT_PIN,
-            "ArrowRight": HardwareButtons.KEY_RIGHT_PIN,
-            "Enter": HardwareButtons.KEY_PRESS_PIN,
-            "1": HardwareButtons.KEY1_PIN,
-            "2": HardwareButtons.KEY2_PIN,
-            "3": HardwareButtons.KEY3_PIN,
-        }
-        pin = key_map.get(key)
-        if pin is not None:
-            GPIO.set_input(pin, GPIO.HIGH)
-            import time; time.sleep(0.15)
-            GPIO.set_input(pin, GPIO.LOW)
-''')
-
-# JS bridge module
-js_bridge = types.ModuleType('_js_bridge')
-def send_frame(b64):
-    _js_draw_frame(b64)
-def get_key():
-    if len(_js_key_queue) > 0:
-        return _js_key_queue.pop(0)
-    return None
-js_bridge.send_frame = send_frame
-js_bridge.get_key = get_key
-sys.modules['_js_bridge'] = js_bridge
-
-# Camera driver (simplified)
-with open('/home/pyodide/seedsigner/hardware/camera.py', 'w') as f:
-    f.write('''
-import numpy as np
-from PIL import Image
-from seedsigner.models.settings import Settings, SettingsConstants
-from seedsigner.models.singleton import Singleton
-
-class CameraConnectionError(Exception): pass
-
-class WebVideoStream:
-    def __init__(self, resolution=(512, 384), framerate=12, format="bgr"):
-        self.resolution = resolution; self.stopped = False
-    def start(self): return self
-    def read(self): return np.zeros((self.resolution[1], self.resolution[0], 3), dtype=np.uint8)
-    def hasCamera(self): return True
-    def stop(self): self.stopped = True
-    @staticmethod
-    def single_frame(): return np.zeros((480, 640, 3), dtype=np.uint8)
-
-class Camera(Singleton):
-    _video_stream = None; _camera_rotation = None
-    @classmethod
-    def get_instance(cls):
-        if cls._instance is None: cls._instance = cls.__new__(cls)
-        cls._instance._camera_rotation = int(Settings.get_instance().get_value(SettingsConstants.SETTING__CAMERA_ROTATION))
-        return cls._instance
-    def start_video_stream_mode(self, resolution=(512, 384), framerate=12, format="bgr"):
-        if self._video_stream: self.stop_video_stream_mode()
-        self._video_stream = WebVideoStream(resolution=resolution)
-        self._video_stream.start()
-    def read_video_stream(self, as_image=False):
-        if not self._video_stream: raise Exception("No stream")
-        frame = self._video_stream.read()
-        return Image.fromarray(frame.astype("uint8"), "RGB") if as_image else frame
-    def stop_video_stream_mode(self):
-        if self._video_stream: self._video_stream.stop(); self._video_stream = None
-    def start_single_frame_mode(self, resolution=(720, 480)):
-        if self._video_stream: self.stop_video_stream_mode()
-    def capture_frame(self): return Image.fromarray(WebVideoStream.single_frame())
-    def stop_single_frame_mode(self): pass
-''')
-
-# Patch time.sleep to yield to JS event loop (critical for main thread Pyodide)
-import time as _time
-import js as _js
-
-_original_sleep = _time.sleep
-
-# Try JSPI-based run_sync (Pyodide 0.29+ with Chrome 137+/Firefox 134+)
-_has_jspi = False
-try:
-    from pyodide.ffi import run_sync as _run_sync
-    # Test it actually works (JSPI must be enabled in browser)
-    _run_sync(_js.eval("Promise.resolve(42)"))
-    _has_jspi = True
-    print("JSPI available — time.sleep yields to JS event loop!")
-except Exception as e:
-    print(f"JSPI not available ({e}) — falling back to blocking sleep")
-
-def _patched_sleep(seconds):
-    # Process any pending key input
-    import _js_bridge
-    key = _js_bridge.get_key()
-    if key:
-        from seedsigner.emulator.desktopDisplay import desktopDisplay
-        desktopDisplay.handle_key(key)
-    if _has_jspi:
-        # Yield to JS event loop — frames paint and key events fire during this
-        ms = max(1, min(int(seconds * 1000), 50))
-        _run_sync(_js.eval(f"new Promise(r => setTimeout(r, {ms}))"))
-    else:
-        # Fallback: blocking sleep, capped low for responsiveness
-        _original_sleep(min(seconds, 0.001))
-_time.sleep = _patched_sleep
-
-# Patch threading
-import threading
-_orig_init = threading.Thread.__init__
-def _pi(self, *a, **k):
-    k.pop('daemon', None)
-    _orig_init(self, *a, **k)
-threading.Thread.__init__ = _pi
-threading.Thread.start = lambda self: None
-
-print("All patches applied!")
-`);
-
-    setProgress('Starting emulator...', 90);
-
-    // Initialize controller
-    await pyodide.runPythonAsync(`
-import sys, os
-os.chdir('/home/pyodide/seedsigner')
-
-# Clear cached modules
-for k in list(sys.modules.keys()):
-    if k.startswith('seedsigner'):
-        del sys.modules[k]
-
-from seedsigner.controller import Controller
-controller = Controller.get_instance()
-print(f"SeedSigner v{controller.VERSION} loaded!")
-`);
-
-    setProgress('Starting...', 95);
-
-    // Hide loading overlay
-    loadingEl.classList.add('hidden');
-    statusEl.textContent = 'Running';
-    statusEl.className = 'status connected';
-
-    // Paint frames periodically (since Python may block main thread without JSPI)
-    setInterval(paintPendingFrame, 16);
-
-    // Run the entire SeedSigner main loop in Python
-    // With JSPI: time.sleep yields to JS, so this runs smoothly
-    // Without JSPI: time.sleep blocks briefly (1ms), less responsive but functional
-    await pyodide.runPythonAsync(`
-from seedsigner.controller import Controller
-from seedsigner.views import MainMenuView, BackStackView
-from seedsigner.views.screensaver import OpeningSplashView
-from seedsigner.views.view import Destination
-import traceback, time
-
-controller = Controller.get_instance()
-
-# Show splash
-print("Showing splash screen...")
-OpeningSplashView().run()
-print("Splash done, entering main loop")
-
-next_dest = Destination(MainMenuView)
-
-while True:
-    try:
-        if next_dest.View_cls is None:
-            next_dest = Destination(MainMenuView)
-
-        if next_dest.View_cls == MainMenuView:
-            controller.clear_back_stack()
-            controller.resume_main_flow = None
-            controller.psbt = None
-            controller.psbt_parser = None
-            controller.psbt_seed = None
-
-        next_dest = next_dest.run()
-
-        if not next_dest:
-            from seedsigner.views.view import NotYetImplementedView
-            next_dest = Destination(NotYetImplementedView)
-            continue
-
-        if next_dest.skip_current_view and controller.back_stack:
-            controller.back_stack.pop()
-
-        clear_history = next_dest.clear_history
-
-        if next_dest.View_cls == BackStackView:
-            next_dest = controller.pop_prev_from_back_stack()
-
-        if clear_history:
-            controller.clear_back_stack()
-
-        if len(controller.back_stack) == 0 or controller.back_stack[-1] != next_dest:
-            controller.back_stack.append(next_dest)
-
-    except Exception as e:
-        traceback.print_exc()
-        try:
-            next_dest = controller.handle_exception(e)
-        except:
-            next_dest = Destination(MainMenuView)
-`);
-
-  } catch (err) {
-    console.error('Fatal error:', err);
-    loadingText.textContent = 'Error: ' + err.message;
-    errorMsg.textContent = 'Try Chrome or Firefox on desktop. Error: ' + err.message;
-    errorMsg.style.display = 'block';
-  }
-}
-
-main();
 </script>
 </body>
 </html>
