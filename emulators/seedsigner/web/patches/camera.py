@@ -26,19 +26,28 @@ class WebVideoStream:
         return self._get_camera_frame()
 
     def _get_camera_frame(self):
+        import time
+        # Yield to allow worker event loop to process incoming camera frames
+        time.sleep(0.05)
         try:
             import _js_bridge
             raw = _js_bridge.camera_frame()
-            if raw is not None and hasattr(raw, 'data'):
-                w = int(raw.width)
-                h = int(raw.height)
-                # raw.data is RGBA uint8 array from JS
-                data = bytes(raw.data)
+            if raw is not None:
+                if hasattr(raw, 'keys'):
+                    # Dict from pyodide.toPy
+                    w = int(raw['width'])
+                    h = int(raw['height'])
+                    data = bytes(raw['data'])
+                elif hasattr(raw, 'data'):
+                    w = int(raw.width)
+                    h = int(raw.height)
+                    data = bytes(raw.data)
+                else:
+                    return self.frame
                 rgba = np.frombuffer(data, dtype=np.uint8).reshape((h, w, 4))
-                # Convert RGBA to RGB
                 return rgba[:, :, :3]
-        except Exception:
-            pass
+        except Exception as e:
+            print(f"Camera frame error: {e}")
         return self.frame
 
     def hasCamera(self):
@@ -116,17 +125,26 @@ class Camera(Singleton):
         self.is_active = True
 
     def capture_frame(self):
+        import time
+        time.sleep(0.05)
         try:
             import _js_bridge
             raw = _js_bridge.camera_frame()
-            if raw is not None and hasattr(raw, 'data'):
-                w = int(raw.width)
-                h = int(raw.height)
-                data = bytes(raw.data)
+            if raw is not None:
+                if hasattr(raw, 'keys'):
+                    w = int(raw['width'])
+                    h = int(raw['height'])
+                    data = bytes(raw['data'])
+                elif hasattr(raw, 'data'):
+                    w = int(raw.width)
+                    h = int(raw.height)
+                    data = bytes(raw.data)
+                else:
+                    return np.zeros((480, 720, 3), dtype=np.uint8)
                 rgba = np.frombuffer(data, dtype=np.uint8).reshape((h, w, 4))
                 return rgba[:, :, :3]
-        except Exception:
-            pass
+        except Exception as e:
+            print(f"Capture frame error: {e}")
         return np.zeros((480, 720, 3), dtype=np.uint8)
 
     def stop_single_frame_mode(self):
