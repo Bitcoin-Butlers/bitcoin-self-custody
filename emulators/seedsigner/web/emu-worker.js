@@ -66,12 +66,9 @@ os.environ['LANGUAGE'] = 'en'
 os.environ['LANG'] = 'en_US.UTF-8'
 print(f"Set LANGUAGE locale to {os.environ.get('LANGUAGE', 'unknown')}")
 
-# Stub RPi.GPIO
+# Stub RPi module (GPIO mapped properly later after bundle loads)
 gpio_mod = types.ModuleType('RPi')
-gpio_sub = types.ModuleType('RPi.GPIO')
-gpio_mod.GPIO = gpio_sub
 sys.modules['RPi'] = gpio_mod
-sys.modules['RPi.GPIO'] = gpio_sub
 
 # Stub spidev
 spidev_mod = types.ModuleType('spidev')
@@ -119,13 +116,10 @@ builtins._ = lambda x: x
 # Display, GPIO, camera, and ST7789 are pre-patched in the bundle (see patches/ dir)
 # Just need to set up the RPi.GPIO module alias and JS bridge
 
-# Map RPi.GPIO to our virtual GPIO
+# Map RPi.GPIO directly to our virtual GPIO class (has all pin constants + methods)
 from seedsigner.emulator.virtualGPIO import GPIO
-gpio_module = types.ModuleType('RPi.GPIO')
-for attr in ['BCM','IN','OUT','PUD_UP','PUD_DOWN','HIGH','LOW','RISING','FALLING',
-             'setmode','setup','input','output','set_input','add_event_detect','cleanup']:
-    setattr(gpio_module, attr, getattr(GPIO, attr))
-sys.modules['RPi.GPIO'] = gpio_module
+sys.modules['RPi.GPIO'] = GPIO
+sys.modules['RPi'].GPIO = GPIO
 
 # JS bridge module — connects Python to JS for frames and keys
 js_bridge = types.ModuleType('_js_bridge')
