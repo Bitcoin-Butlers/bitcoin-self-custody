@@ -879,8 +879,7 @@ controller = Controller.get_instance()
 print(f"SeedSigner v{controller.VERSION} loaded!")
 `);
 
-    setProgress('Ready!', 100);
-    setTimeout(() => loadingEl.classList.add('hidden'), 500);
+    setProgress('Starting...', 90);
 
     // Run the main loop — we call controller.start() but break it into async steps
     // by running one View at a time
@@ -955,11 +954,17 @@ if len(controller.back_stack) == 0 or controller.back_stack[-1] != next_dest:
 `);
       } catch (err) {
         console.error('View step error:', err);
+        statusEl.textContent = 'View error: ' + err.message;
+        statusEl.className = 'status';
       }
       // Yield to browser, then run next step
       requestAnimationFrame(() => setTimeout(runOneStep, 10));
     }
 
+    // Hide loading overlay, show the SeedSigner UI
+    loadingEl.classList.add('hidden');
+    statusEl.textContent = 'Running';
+    statusEl.className = 'status connected';
     runOneStep();
 
   } catch (err) {
