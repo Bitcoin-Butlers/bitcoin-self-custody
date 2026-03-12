@@ -101,6 +101,9 @@ sys.modules['picamera2'] = pc_mod
 pyzbar_mod = types.ModuleType('pyzbar')
 pyzbar_pyzbar = types.ModuleType('pyzbar.pyzbar')
 pyzbar_pyzbar.decode = lambda *a, **k: []
+class _ZBarSymbol:
+    QRCODE = 'QRCODE'
+pyzbar_pyzbar.ZBarSymbol = _ZBarSymbol()
 pyzbar_mod.pyzbar = pyzbar_pyzbar
 sys.modules['pyzbar'] = pyzbar_mod
 sys.modules['pyzbar.pyzbar'] = pyzbar_pyzbar
