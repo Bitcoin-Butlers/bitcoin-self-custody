@@ -47,8 +47,12 @@ async function main() {
     sendProgress('Patching for browser...', 75);
 
     // Make key queue and frame sender accessible from Python
-    pyodide.globals.set('_js_key_queue', keyQueue);
     pyodide.globals.set('_js_send_frame', sendFrame);
+    // Expose a function to get next key (avoids JS array proxy issues)
+    pyodide.globals.set('_js_get_key', () => {
+      if (keyQueue.length > 0) return keyQueue.shift();
+      return null;
+    });
 
     await pyodide.runPythonAsync(`
 import sys, os, types, io, base64
@@ -253,8 +257,9 @@ js_bridge = types.ModuleType('_js_bridge')
 def send_frame(b64):
     _js_send_frame(b64)
 def get_key():
-    if len(_js_key_queue) > 0:
-        return _js_key_queue.pop(0)
+    result = _js_get_key()
+    if result is not None:
+        return str(result)
     return None
 js_bridge.send_frame = send_frame
 js_bridge.get_key = get_key

@@ -58,18 +58,18 @@
   }
   .dpad {
     display: grid;
-    grid-template-columns: 44px 44px 44px;
-    grid-template-rows: 44px 44px 44px;
+    grid-template-columns: 52px 52px 52px;
+    grid-template-rows: 52px 52px 52px;
     gap: 2px;
   }
   .dpad button {
-    width: 44px;
-    height: 44px;
-    border: 1px solid #444;
-    border-radius: 8px;
+    width: 52px;
+    height: 52px;
+    border: none;
+    border-radius: 10px;
     background: #252525;
     color: #999;
-    font-size: 1.1rem;
+    font-size: 1.6rem;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -113,14 +113,13 @@
     z-index: 1;
   }
   .side-area button {
-    width: 52px;
-    height: 40px;
-    border: 1px solid #444;
-    border-radius: 20px;
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 50%;
     background: #252525;
-    color: #999;
-    font-size: 0.85rem;
-    font-weight: 600;
+    color: transparent;
+    font-size: 0;
     cursor: pointer;
     transition: background 0.1s, color 0.1s;
     -webkit-tap-highlight-color: transparent;
@@ -300,7 +299,7 @@
       height: 36px;
       border-radius: 18px;
     }
-    .dpad button { width: 48px; height: 48px; }
+    .dpad button { width: 56px; height: 56px; font-size: 1.8rem; }
     .dpad .ok-btn { border-radius: 50%; }
   }
 
@@ -364,9 +363,9 @@
 
     <!-- Side buttons (right) -->
     <div class="side-area">
-      <button id="btn-1">1</button>
-      <button id="btn-2">2</button>
-      <button id="btn-3">3</button>
+      <button id="btn-1" aria-label="Key 1"></button>
+      <button id="btn-2" aria-label="Key 2"></button>
+      <button id="btn-3" aria-label="Key 3"></button>
     </div>
   </div>
 
