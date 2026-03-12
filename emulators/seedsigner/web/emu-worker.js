@@ -40,7 +40,7 @@ async function main() {
 
     sendProgress('Loading SeedSigner firmware...', 50);
     // Fetch and unpack the bundle
-    const resp = await fetch('seedsigner-bundle.zip');
+    const resp = await fetch('seedsigner-bundle.zip?v=' + Date.now());
     const data = await resp.arrayBuffer();
     pyodide.unpackArchive(data, 'zip', { extractDir: '/home/pyodide' });
 
