@@ -168,15 +168,9 @@ async function main() {
     });
 
     setProgress('Installing packages...', 30);
-    await pyodide.loadPackage(['micropip', 'Pillow', 'numpy']);
-    
-    const micropip = pyodide.pyimport('micropip');
-    setProgress('Installing Bitcoin libraries...', 45);
-    await micropip.install('embit==0.8.0');
-    await micropip.install('qrcode==7.3.1');
-    await micropip.install('urtypes==1.0.1');
+    await pyodide.loadPackage(['Pillow', 'numpy']);
 
-    setProgress('Loading SeedSigner firmware...', 60);
+    setProgress('Loading SeedSigner firmware...', 50);
     const resp = await fetch('seedsigner-bundle.zip');
     const zipData = await resp.arrayBuffer();
     pyodide.unpackArchive(zipData, 'zip', { extractDir: '/home/pyodide' });
@@ -210,7 +204,8 @@ pyzbar_mod.pyzbar = pyzbar_decode_mod
 sys.modules['pyzbar'] = pyzbar_mod
 sys.modules['pyzbar.pyzbar'] = pyzbar_decode_mod
 
-# Paths
+# Paths — bundle root has embit/, qrcode/, urtypes/ alongside seedsigner/
+sys.path.insert(0, '/home/pyodide')
 sys.path.insert(0, '/home/pyodide/seedsigner')
 
 # virtualGPIO
