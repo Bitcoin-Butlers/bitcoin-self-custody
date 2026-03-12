@@ -48,7 +48,10 @@ async function main() {
 
     // Make key queue and frame sender accessible from Python
     pyodide.globals.set('_js_send_frame', sendFrame);
-    // Expose a function to get next key (avoids JS array proxy issues)
+    // Expose functions to Python
+    pyodide.globals.set('_js_send_error', (msg) => {
+      sendError(String(msg));
+    });
     pyodide.globals.set('_js_get_key', () => {
       if (keyQueue.length > 0) return keyQueue.shift();
       return null;
@@ -132,6 +135,9 @@ def get_key():
     return None
 js_bridge.send_frame = send_frame
 js_bridge.get_key = get_key
+def send_error(msg):
+    _js_send_error(msg)
+js_bridge.send_error = send_error
 sys.modules['_js_bridge'] = js_bridge
 
 # Patch time.sleep to check keys (in worker, blocking is OK but we still need to process keys)
@@ -252,7 +258,11 @@ while True:
             controller.back_stack.append(next_dest)
 
     except Exception as e:
-        traceback.print_exc()
+        err_msg = traceback.format_exc()
+        print(f"View error: {err_msg}")
+        # Send error to JS via _js_bridge
+        import _js_bridge
+        _js_bridge.send_error(str(e)[:200])
         try:
             next_dest = controller.handle_exception(e)
         except:
