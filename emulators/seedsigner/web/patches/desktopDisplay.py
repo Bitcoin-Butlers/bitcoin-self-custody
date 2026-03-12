@@ -7,9 +7,9 @@ import base64
 from PIL import Image
 
 class DesktopDisplay:
-    def __init__(self):
-        self.width = 240
-        self.height = 240
+    def __init__(self, display_type=None, width=240, height=240, **kwargs):
+        self.width = width
+        self.height = height
         self.current_frame = None
 
     def ShowImage(self, image):
@@ -57,5 +57,6 @@ class DesktopDisplay:
             time.sleep(0.15)
             GPIO.set_input(pin, GPIO.LOW)
 
-# Singleton instance — display_driver.py imports this lowercase name
-desktopDisplay = DesktopDisplay()
+# display_driver.py does `from ... import desktopDisplay` then calls desktopDisplay(display_type=..., width=..., height=...)
+# So desktopDisplay must be the CLASS (used as constructor), not an instance
+desktopDisplay = DesktopDisplay
