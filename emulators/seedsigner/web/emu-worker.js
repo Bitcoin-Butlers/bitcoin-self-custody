@@ -167,6 +167,9 @@ class DesktopDisplay:
             GPIO.set_input(pin, GPIO.HIGH)
             import time; time.sleep(0.15)
             GPIO.set_input(pin, GPIO.LOW)
+
+# Singleton instance (display_driver.py imports this lowercase name)
+desktopDisplay = DesktopDisplay()
 ''')
 
 # Virtual GPIO
@@ -291,8 +294,8 @@ def _patched_sleep(seconds):
     import _js_bridge
     key = _js_bridge.get_key()
     if key:
-        from seedsigner.emulator.desktopDisplay import DesktopDisplay
-        DesktopDisplay().handle_key(key)
+        from seedsigner.emulator.desktopDisplay import desktopDisplay
+        desktopDisplay.handle_key(key)
     _original_sleep(min(seconds, 0.05))  # Cap at 50ms for key responsiveness
 _time.sleep = _patched_sleep
 
