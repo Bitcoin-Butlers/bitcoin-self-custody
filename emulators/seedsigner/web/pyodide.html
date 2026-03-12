@@ -119,10 +119,9 @@
   .side-area button {
     width: 44px;
     height: 44px;
-    border: none !important;
+    border: none;
     border-radius: 50%;
-    background: none !important;
-    background-color: transparent !important;
+    background: #252525;
     color: transparent;
     font-size: 0;
     cursor: pointer;
@@ -428,7 +427,7 @@ const progressFill = document.getElementById('progress-fill');
 const errorMsg = document.getElementById('error-msg');
 
 // Start Web Worker for Pyodide
-const worker = new Worker('emu-worker.js');
+const worker = new Worker('emu-worker.js?v=' + Date.now());
 
 worker.onmessage = (e) => {
   const { type } = e.data;
