@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>SeedSigner Emulator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<meta name="description" content="Run SeedSigner in your browser. Practice Bitcoin self-custody without hardware.">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0a0a0a;
+    color: #f5f5f5;
+    font-family: system-ui, -apple-system, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 16px;
+  }
+  h1 {
+    font-size: 1.1rem;
+    color: #FBDC7B;
+    margin-bottom: 1rem;
+    text-align: center;
+    letter-spacing: 1px;
+  }
+
+  /* === DEVICE SHELL (pill shape, SeedSigner+ style) === */
+  .device-shell {
+    background: #1a1a1a;
+    border: 2px solid #333;
+    border-radius: 48px;
+    padding: 28px 32px;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    position: relative;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04);
+  }
+  .device-shell::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 49px;
+    background: linear-gradient(160deg, rgba(251,220,123,0.08) 0%, transparent 40%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Left: D-pad */
+  .dpad-area {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+  }
+  .dpad {
+    display: grid;
+    grid-template-columns: 44px 44px 44px;
+    grid-template-rows: 44px 44px 44px;
+    gap: 2px;
+  }
+  .dpad button {
+    width: 44px;
+    height: 44px;
+    border: 1px solid #444;
+    border-radius: 8px;
+    background: #252525;
+    color: #999;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.1s, color 0.1s;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+  .dpad button:hover { background: #333; color: #f5f5f5; }
+  .dpad button:active, .dpad button.pressed { background: #FBDC7B; color: #000; }
+  .dpad .empty { border: none; background: transparent; cursor: default; pointer-events: none; }
+  .dpad .ok-btn {
+    background: #2a2a2a;
+    border: 2px solid #555;
+    border-radius: 50%;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #FBDC7B;
+  }
+  .dpad .ok-btn:active, .dpad .ok-btn.pressed { background: #FBDC7B; color: #000; }
+
+  /* Center: Screen */
+  .screen-area {
+    position: relative;
+    z-index: 1;
+  }
+  #screen {
+    border: 3px solid #333;
+    border-radius: 8px;
+    image-rendering: pixelated;
+    display: block;
+  }
+
+  /* Right: Side buttons (1, 2, 3) */
+  .side-area {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+    z-index: 1;
+  }
+  .side-area button {
+    width: 52px;
+    height: 40px;
+    border: 1px solid #444;
+    border-radius: 20px;
+    background: #252525;
+    color: #999;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.1s, color 0.1s;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+  .side-area button:hover { background: #333; color: #f5f5f5; }
+  .side-area button:active, .side-area button.pressed { background: #FBDC7B; color: #000; }
+
+  /* Camera feed */
+  .camera-container {
+    width: 240px;
+    height: 180px;
+    border: 1px solid #333;
+    border-radius: 12px;
+    overflow: hidden;
+    display: none;
+    position: relative;
+    margin-top: 12px;
+  }
+  .camera-container.active { display: block; }
+  .camera-container video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .camera-label {
+    position: absolute;
+    bottom: 6px;
+    left: 8px;
+    font-size: 0.65rem;
+    color: #10B981;
+    background: rgba(0,0,0,0.7);
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  /* Toolbar */
+  .toolbar {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .toolbar button {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    color: #888;
+    font-size: 0.75rem;
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .toolbar button:hover { background: #2a2a2a; color: #f5f5f5; }
+  .toolbar button.active { background: #FBDC7B; color: #000; border-color: #FBDC7B; }
+  .toolbar .reset-btn { border-color: #552222; color: #cc6666; }
+  .toolbar .reset-btn:hover { background: #331111; color: #ff8888; }
+
+  /* Status */
+  .status { font-size: 0.7rem; color: #444; margin-top: 10px; }
+  .status.connected { color: #10B981; }
+
+  /* Help overlay */
+  .overlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 240px; height: 240px;
+    background: rgba(0,0,0,0.92);
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    padding: 18px;
+    font-size: 0.75rem;
+    line-height: 2;
+    z-index: 10;
+    border-radius: 6px;
+  }
+  .overlay.visible { display: flex; }
+  .overlay kbd {
+    background: #333;
+    border: 1px solid #555;
+    border-radius: 3px;
+    padding: 1px 6px;
+    font-family: monospace;
+    font-size: 0.7rem;
+    color: #FBDC7B;
+  }
+
+  /* Tutorial panel */
+  .main-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  .tutorial-panel {
+    background: #1a1a1a;
+    border: 2px solid #333;
+    border-radius: 16px;
+    padding: 20px;
+    width: 100%;
+    max-width: 480px;
+    display: none;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .tutorial-panel.visible { display: flex; }
+  .tutorial-title { color: #FBDC7B; font-size: 0.95rem; font-weight: 600; }
+  .tutorial-step-count { color: #666; font-size: 0.7rem; }
+  .tutorial-instruction { font-size: 0.85rem; line-height: 1.5; min-height: 60px; }
+  .tutorial-keys { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tutorial-keys kbd {
+    background: #333;
+    border: 1px solid #555;
+    border-radius: 3px;
+    padding: 2px 8px;
+    font-family: monospace;
+    font-size: 0.8rem;
+    color: #FBDC7B;
+  }
+  .tutorial-nav { display: flex; justify-content: space-between; gap: 8px; }
+  .tutorial-nav button {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #444;
+    border-radius: 6px;
+    background: #2a2a2a;
+    color: #f5f5f5;
+    cursor: pointer;
+    font-size: 0.8rem;
+  }
+  .tutorial-nav button:hover { background: #3a3a3a; }
+  .tutorial-nav button:disabled { opacity: 0.3; cursor: default; }
+  .tutorial-tip { font-size: 0.7rem; color: #666; font-style: italic; }
+  .tutorial-menu { display: flex; flex-direction: column; gap: 6px; }
+  .tutorial-menu button {
+    text-align: left;
+    padding: 10px 12px;
+    border: 1px solid #333;
+    border-radius: 8px;
+    background: #222;
+    color: #f5f5f5;
+    cursor: pointer;
+    font-size: 0.85rem;
+  }
+  .tutorial-menu button:hover { border-color: #FBDC7B; }
+  .tutorial-menu .tutorial-label { color: #666; font-size: 0.7rem; }
+
+  .footer {
+    margin-top: 16px;
+    font-size: 0.7rem;
+    color: #444;
+    text-align: center;
+  }
+  .footer a { color: #FBDC7B; text-decoration: none; }
+  .footer a:hover { text-decoration: underline; }
+
+  /* === MOBILE LAYOUT (stacked, compact) === */
+  @media (max-width: 599px) {
+    .device-shell {
+      flex-direction: column;
+      border-radius: 24px;
+      padding: 20px;
+      gap: 16px;
+    }
+    .dpad-area { order: 2; }
+    .screen-area { order: 1; }
+    .side-area {
+      order: 3;
+      flex-direction: row;
+      gap: 12px;
+    }
+    .side-area button {
+      width: 60px;
+      height: 36px;
+      border-radius: 18px;
+    }
+    .dpad button { width: 48px; height: 48px; }
+    .dpad .ok-btn { border-radius: 50%; }
+  }
+
+  /* === TABLET+ (side by side, pill device) === */
+  @media (min-width: 600px) {
+    .device-shell {
+      flex-direction: row;
+    }
+  }
