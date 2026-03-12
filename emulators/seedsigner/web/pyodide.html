@@ -427,6 +427,43 @@ const errorMsg = document.getElementById('error-msg');
 // Start Web Worker for Pyodide
 const worker = new Worker('emu-worker.js?v=' + Date.now());
 
+// Camera management
+let cameraStream = null;
+let cameraInterval = null;
+const videoEl = document.getElementById('camera');
+const camCanvas = document.getElementById('camera-canvas');
+const camCtx = camCanvas.getContext('2d');
+
+async function startCamera(width, height) {
+  try {
+    cameraStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'environment', width: { ideal: width }, height: { ideal: height } }
+    });
+    videoEl.srcObject = cameraStream;
+    await videoEl.play();
+    camCanvas.width = width;
+    camCanvas.height = height;
+    // Send frames to worker at ~12fps
+    cameraInterval = setInterval(() => {
+      if (videoEl.readyState >= 2) {
+        camCtx.drawImage(videoEl, 0, 0, width, height);
+        const imageData = camCtx.getImageData(0, 0, width, height);
+        // Send raw RGBA pixel data
+        worker.postMessage({ type: 'camera_frame', width, height, data: imageData.data.buffer }, [imageData.data.buffer]);
+      }
+    }, 83); // ~12fps
+  } catch (err) {
+    console.error('Camera error:', err);
+    worker.postMessage({ type: 'camera_error', msg: err.message });
+  }
+}
+
+function stopCamera() {
+  if (cameraInterval) { clearInterval(cameraInterval); cameraInterval = null; }
+  if (cameraStream) { cameraStream.getTracks().forEach(t => t.stop()); cameraStream = null; }
+  videoEl.srcObject = null;
+}
+
 worker.onmessage = (e) => {
   const { type } = e.data;
   if (type === 'frame') {
@@ -443,6 +480,10 @@ worker.onmessage = (e) => {
       statusEl.textContent = 'Running';
       statusEl.className = 'status connected';
     }
+  } else if (type === 'camera_start') {
+    startCamera(e.data.width || 512, e.data.height || 384);
+  } else if (type === 'camera_stop') {
+    stopCamera();
   } else if (type === 'error') {
     console.error('Worker error:', e.data.msg);
     loadingText.textContent = 'Error';

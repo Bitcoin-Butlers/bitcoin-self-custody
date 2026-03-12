@@ -19,8 +19,8 @@ class DesktopDisplay:
         import time
         now = time.time()
         elapsed = now - self._last_frame_time
-        if elapsed < 0.033:  # ~30fps
-            time.sleep(0.033 - elapsed)
+        if elapsed < 0.1:  # ~10fps (matches real SPI display speed)
+            time.sleep(0.1 - elapsed)
         self._last_frame_time = time.time()
 
         imwidth, imheight = image.size

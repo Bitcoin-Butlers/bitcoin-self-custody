@@ -1,6 +1,6 @@
 """
-Stub camera for Pyodide SeedSigner emulator.
-All camera methods return empty/black frames.
+Camera for Pyodide SeedSigner emulator.
+Uses device camera via getUserMedia (bridged through JS).
 """
 import numpy as np
 from seedsigner.models.singleton import Singleton
@@ -23,6 +23,22 @@ class WebVideoStream:
         self.stopped = True
 
     def read(self):
+        return self._get_camera_frame()
+
+    def _get_camera_frame(self):
+        try:
+            import _js_bridge
+            raw = _js_bridge.camera_frame()
+            if raw is not None and hasattr(raw, 'data'):
+                w = int(raw.width)
+                h = int(raw.height)
+                # raw.data is RGBA uint8 array from JS
+                data = bytes(raw.data)
+                rgba = np.frombuffer(data, dtype=np.uint8).reshape((h, w, 4))
+                # Convert RGBA to RGB
+                return rgba[:, :, :3]
+        except Exception:
+            pass
         return self.frame
 
     def hasCamera(self):
@@ -59,11 +75,21 @@ class Camera(Singleton):
 
     def stop(self):
         self.is_active = False
+        try:
+            import _js_bridge
+            _js_bridge.camera_stop()
+        except Exception:
+            pass
         if self._video_stream:
             self._video_stream.stop()
             self._video_stream = None
 
     def start_video_stream_mode(self, resolution=(512, 384), framerate=12, format="bgr"):
+        try:
+            import _js_bridge
+            _js_bridge.camera_start(resolution[0], resolution[1])
+        except Exception:
+            pass
         self._video_stream = WebVideoStream(resolution=resolution, framerate=framerate, format=format)
         self._video_stream.start()
         self.is_active = True
@@ -82,17 +108,29 @@ class Camera(Singleton):
         self.stop()
 
     def start_single_frame_mode(self, resolution=(720, 480)):
+        try:
+            import _js_bridge
+            _js_bridge.camera_start(resolution[0], resolution[1])
+        except Exception:
+            pass
         self.is_active = True
-        self._current_frame = np.zeros((resolution[1], resolution[0], 3), dtype=np.uint8)
 
     def capture_frame(self):
-        if self._current_frame is not None:
-            return self._current_frame
+        try:
+            import _js_bridge
+            raw = _js_bridge.camera_frame()
+            if raw is not None and hasattr(raw, 'data'):
+                w = int(raw.width)
+                h = int(raw.height)
+                data = bytes(raw.data)
+                rgba = np.frombuffer(data, dtype=np.uint8).reshape((h, w, 4))
+                return rgba[:, :, :3]
+        except Exception:
+            pass
         return np.zeros((480, 720, 3), dtype=np.uint8)
 
     def stop_single_frame_mode(self):
-        self.is_active = False
-        self._current_frame = None
+        self.stop()
 
     @property
     def camera_rotation(self):

@@ -4,10 +4,13 @@ importScripts('https://cdn.jsdelivr.net/pyodide/v0.29.3/full/pyodide.js');
 
 let pyodide = null;
 let keyQueue = [];
+let latestCameraFrame = null;
 
-// Receive key events from main thread
+// Receive key events and camera frames from main thread
 self.onmessage = (e) => {
-  if (e.data.type === 'key') {
+  if (e.data.type === 'camera_frame') {
+    latestCameraFrame = { width: e.data.width, height: e.data.height, data: new Uint8Array(e.data.data) };
+  } else if (e.data.type === 'key') {
     keyQueue.push(e.data.key);
   }
 };
@@ -51,6 +54,16 @@ async function main() {
     // Expose functions to Python
     pyodide.globals.set('_js_send_error', (msg) => {
       sendError(String(msg));
+    });
+    pyodide.globals.set('_js_camera_start', (w, h) => {
+      self.postMessage({ type: 'camera_start', width: w, height: h });
+    });
+    pyodide.globals.set('_js_camera_stop', () => {
+      self.postMessage({ type: 'camera_stop' });
+    });
+    pyodide.globals.set('_js_camera_frame', () => {
+      if (!latestCameraFrame) return null;
+      return latestCameraFrame;
     });
     pyodide.globals.set('_js_get_key', () => {
       if (keyQueue.length > 0) return keyQueue.shift();
@@ -141,6 +154,15 @@ js_bridge.get_key = get_key
 def send_error(msg):
     _js_send_error(msg)
 js_bridge.send_error = send_error
+def camera_start(w=512, h=384):
+    _js_camera_start(w, h)
+def camera_stop():
+    _js_camera_stop()
+def camera_frame():
+    return _js_camera_frame()
+js_bridge.camera_start = camera_start
+js_bridge.camera_stop = camera_stop
+js_bridge.camera_frame = camera_frame
 sys.modules['_js_bridge'] = js_bridge
 
 # Patch time.sleep to check keys (in worker, blocking is OK but we still need to process keys)
