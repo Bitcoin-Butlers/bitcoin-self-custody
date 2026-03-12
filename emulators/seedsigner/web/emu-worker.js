@@ -187,7 +187,13 @@ def _pi(self, *a, **k):
     k.pop('daemon', None)
     _orig_init(self, *a, **k)
 threading.Thread.__init__ = _pi
-threading.Thread.start = lambda self: None
+# Run thread synchronously instead of no-op (BackgroundImportThread needs to init _storage)
+def _sync_start(self):
+    try:
+        self.run()
+    except Exception:
+        pass
+threading.Thread.start = _sync_start
 
 print("All patches applied!")
 `);
