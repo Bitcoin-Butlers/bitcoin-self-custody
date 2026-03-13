@@ -16,12 +16,9 @@ No tracking. No paywalls. No affiliate links. No sales CTAs.
 
 ## Live Site
 
-Static tutorial site with hash-based routing, markdown rendering, device-specific dropdown selectors, and glossary tooltips for technical terms. Serve locally:
+**[bitcoin-butlers.github.io/bitcoin-self-custody](https://bitcoin-butlers.github.io/bitcoin-self-custody/)**
 
-```bash
-cd bitcoin-self-custody && python3 -m http.server 9000
-# Open http://localhost:9000
-```
+Or run locally: `python3 -m http.server 9000`
 
 ## Emulators
 
