@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Master Concierge - Bitcoin Self-Custody Guide</title>
+<meta name="description" content="Build your custom Bitcoin self-custody plan. Choose your signing device, seed generation method, wallet software, and backup approach - step by step.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0a0a;
+    color: rgba(255,248,230,0.85);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    font-size: 15px;
+  }
+
+  /* Nav */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(10,10,10,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(251,220,123,0.08);
+    padding: 0 24px;
+  }
+  .nav-inner {
+    max-width: 1100px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 56px;
+    padding-left: 8px;
+  }
+  .nav-brand {
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'Playfair Display', serif;
+    font-size: 18px; font-weight: 400; font-style: italic;
+    background: linear-gradient(90deg, #FF9125, #FBDC7B, #FDA24A);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .nav-brand img {
+    height: 28px; width: auto; border-radius: 4px;
+  }
+  .nav-home {
+    font-size: 13px; color: rgba(251,220,123,0.5);
+    text-decoration: none; letter-spacing: 1px;
+  }
+  .nav-home:hover { color: #FBDC7B; }
+
+  /* Layout */
+  main {
+    max-width: 800px; margin: 0 auto;
+    padding: 80px 24px 60px;
+  }
+
+  /* Hero */
+  .hero {
+    text-align: center;
+    padding: 40px 0 32px;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 38px; font-weight: 400; font-style: italic;
+    margin-bottom: 12px;
+  }
+  .hero h1 span {
+    background: linear-gradient(90deg, #FF9125, #FBDC7B, #FDA24A);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .hero p {
+    font-size: 15px; color: rgba(255,248,230,0.55); max-width: 500px; margin: 0 auto;
+  }
+
+  /* Step indicator */
+  .step-indicator {
+    display: flex; align-items: center; justify-content: center;
+    gap: 0; margin: 32px 0 40px;
+    padding: 0 16px;
+  }
+  .step-dot {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 600;
+    border: 2px solid rgba(251,220,123,0.15);
+    color: rgba(255,248,230,0.3);
+    cursor: pointer;
+    transition: all 0.3s;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .step-dot.active {
+    border-color: #FBDC7B;
+    color: #0a0a0a;
+    background: #FBDC7B;
+  }
+  .step-dot.completed {
+    border-color: rgba(251,220,123,0.4);
+    color: #FBDC7B;
+    background: rgba(251,220,123,0.08);
+  }
+  .step-dot.clickable:hover {
+    border-color: rgba(251,220,123,0.5);
+    color: #FBDC7B;
+  }
+  .step-line {
+    height: 2px; flex: 1; max-width: 60px;
+    background: rgba(251,220,123,0.1);
+    transition: background 0.3s;
+  }
+  .step-line.completed {
+    background: rgba(251,220,123,0.3);
+  }
+  .step-label {
+    display: none;
+  }
+  @media (min-width: 600px) {
+    .step-dot {
+      width: 40px; height: 40px;
+    }
+    .step-line { max-width: 80px; }
+  }
+
+  /* Step content */
+  .step-content {
+    display: none;
+  }
+  .step-content.active {
+    display: block;
+  }
+  .step-header {
+    margin-bottom: 28px;
+  }
+  .step-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px; font-weight: 400; font-style: italic;
+    color: #f5f5f5; margin-bottom: 4px;
+  }
+  .step-header h2 span {
+    background: linear-gradient(90deg, #FF9125, #FBDC7B, #FDA24A);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .step-header p {
+    font-size: 14px; color: rgba(255,248,230,0.5);
+  }
+
+  /* Selection sections within step 1 */
+  .selection-section {
+    margin: 28px 0;
+  }
+  .selection-title {
+    font-size: 11px; font-weight: 500; letter-spacing: 4px;
+    text-transform: uppercase; color: rgba(251,220,123,0.5);
+    margin-bottom: 12px;
+  }
+  .selection-note {
+    font-size: 13px; color: rgba(255,248,230,0.4);
+    margin-top: 8px; font-style: italic;
+  }
+
+  /* Card grid */
+  .card-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+  }
+  .card {
+    background: rgba(251,220,123,0.02);
+    border: 1px solid rgba(251,220,123,0.08);
+    border-radius: 12px; padding: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .card:hover {
+    border-color: rgba(251,220,123,0.25);
+    background: rgba(251,220,123,0.04);
+  }
+  .card.selected {
+    border-color: #FBDC7B;
+    background: rgba(251,220,123,0.06);
+  }
+  .card h3 {
+    font-size: 15px; font-weight: 600; color: #f5f5f5;
+    margin-bottom: 6px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card p { font-size: 13px; color: rgba(255,248,230,0.5); line-height: 1.5; }
+  .card .check {
+    display: none;
+    color: #FBDC7B; font-size: 16px; flex-shrink: 0;
+  }
+  .card.selected .check { display: inline; }
+
+  /* Compare link */
+  .compare-link {
+    display: inline-block; margin-top: 12px;
+    font-size: 13px; color: rgba(251,220,123,0.6);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .compare-link:hover { color: #FBDC7B; text-decoration: underline; }
+
+  /* Step navigation buttons */
+  .step-nav {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 40px; padding-top: 24px;
+    border-top: 1px solid rgba(251,220,123,0.08);
+  }
+  .btn {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px; font-weight: 500;
+    padding: 12px 28px; border-radius: 8px;
+    cursor: pointer; border: none;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  .btn-primary {
+    background: #FBDC7B; color: #0a0a0a;
+  }
+  .btn-primary:hover { background: #fce79f; }
+  .btn-primary:disabled {
+    opacity: 0.3; cursor: not-allowed;
+  }
+  .btn-secondary {
+    background: rgba(251,220,123,0.06);
+    color: rgba(255,248,230,0.7);
+    border: 1px solid rgba(251,220,123,0.15);
+  }
+  .btn-secondary:hover {
+    border-color: rgba(251,220,123,0.3);
+    color: #f5f5f5;
+  }
+
+  /* Guide content (rendered markdown in steps 2-5) */
+  .guide-render h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px; font-weight: 400; font-style: italic;
+    margin-bottom: 8px; line-height: 1.2; color: #f5f5f5;
+  }
+  .guide-render h2 {
+    font-size: 18px; font-weight: 600; color: #FBDC7B;
+    margin: 28px 0 10px; padding-bottom: 6px;
+    border-bottom: 1px solid rgba(251,220,123,0.1);
+  }
+  .guide-render h3 {
+    font-size: 16px; font-weight: 600; color: #f5f5f5;
+    margin: 20px 0 8px;
+  }
+  .guide-render h4 {
+    font-size: 14px; font-weight: 600; color: rgba(251,220,123,0.8);
+    margin: 14px 0 6px;
+  }
+  .guide-render p { margin-bottom: 14px; }
+  .guide-render a { color: #FBDC7B; text-decoration: none; }
+  .guide-render a:hover { text-decoration: underline; }
+  .guide-render strong { font-weight: 600; color: #f5f5f5; }
+  .guide-render em { font-style: italic; color: rgba(255,248,230,0.7); }
+  .guide-render ul, .guide-render ol { margin: 0 0 14px 20px; }
+  .guide-render li { margin-bottom: 6px; }
+  .guide-render blockquote {
+    border-left: 3px solid rgba(251,220,123,0.3);
+    padding: 12px 20px; margin: 16px 0;
+    background: rgba(251,220,123,0.03);
+    border-radius: 0 8px 8px 0;
+    color: rgba(255,248,230,0.75);
+  }
+  .guide-render code {
+    background: rgba(251,220,123,0.08);
+    padding: 2px 6px; border-radius: 4px;
+    font-size: 13px; color: #FBDC7B;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+  .guide-render pre {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(251,220,123,0.08);
+    border-radius: 8px; padding: 16px;
+    overflow-x: auto; margin: 16px 0;
+  }
+  .guide-render pre code { background: none; padding: 0; color: rgba(255,248,230,0.8); }
+  .guide-render table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+  .guide-render th {
+    background: rgba(251,220,123,0.06); color: #FBDC7B;
+    font-weight: 600; font-size: 13px;
+    padding: 10px 14px; text-align: left;
+    border-bottom: 1px solid rgba(251,220,123,0.15);
+  }
+  .guide-render td {
+    padding: 10px 14px; font-size: 14px;
+    border-bottom: 1px solid rgba(251,220,123,0.06);
+  }
+  .guide-render hr { border: none; border-top: 1px solid rgba(251,220,123,0.08); margin: 28px 0; }
+  .guide-render img { max-width: 100%; border-radius: 8px; }
+  .guide-render input[type="checkbox"] {
+    accent-color: #FBDC7B; margin-right: 8px; transform: scale(1.1);
+  }
+
+  /* Setup steps list */
+  .setup-steps {
+    list-style: none; padding: 0; margin: 20px 0;
+    counter-reset: setup;
+  }
+  .setup-steps li {
+    counter-increment: setup;
+    padding: 12px 16px 12px 48px;
+    position: relative;
+    border-bottom: 1px solid rgba(251,220,123,0.05);
+    font-size: 14px;
+  }
+  .setup-steps li::before {
+    content: counter(setup);
+    position: absolute; left: 0; top: 12px;
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600;
+    border: 1.5px solid rgba(251,220,123,0.2);
+    color: #FBDC7B;
+  }
+
+  /* Prerequisites box */
+  .prereqs-box {
+    background: rgba(251,220,123,0.03);
+    border: 1px solid rgba(251,220,123,0.1);
+    border-radius: 10px; padding: 16px 20px;
+    margin: 16px 0;
+  }
+  .prereqs-box h4 {
+    font-size: 12px; font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; color: rgba(251,220,123,0.6);
+    margin-bottom: 8px;
+  }
+  .prereqs-box ul { margin: 0; padding-left: 18px; }
+  .prereqs-box li { font-size: 13px; color: rgba(255,248,230,0.65); margin-bottom: 4px; }
+  .prereqs-box .time {
+    margin-top: 10px; font-size: 13px; color: rgba(251,220,123,0.5);
+    font-weight: 500;
+  }
+
+  /* Info note */
+  .info-note {
+    font-size: 13px; color: rgba(255,248,230,0.5);
+    padding: 12px 16px; margin: 12px 0;
+    border-left: 3px solid rgba(251,220,123,0.2);
+    background: rgba(251,220,123,0.02);
+    border-radius: 0 8px 8px 0;
+  }
+
+  /* Summary card (step 5 / end) */
+  .summary-card {
+    background: rgba(251,220,123,0.03);
+    border: 1px solid rgba(251,220,123,0.12);
+    border-radius: 12px; padding: 24px;
+    margin: 24px 0;
+  }
+  .summary-card h3 {
+    font-size: 16px; font-weight: 600; color: #FBDC7B; margin-bottom: 12px;
+  }
+  .summary-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(251,220,123,0.06);
+    font-size: 14px;
+  }
+  .summary-item:last-child { border-bottom: none; }
+  .summary-label { color: rgba(255,248,230,0.5); }
+  .summary-value { color: #f5f5f5; font-weight: 500; }
+
+  /* Device selector dropdown (for guides with device-specific content) */
+  .device-selector { margin: 20px 0; }
+  .device-selector select {
+    appearance: none;
+    background: rgba(251,220,123,0.06);
+    border: 1px solid rgba(251,220,123,0.2);
+    color: #FBDC7B;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px; font-weight: 500;
+    padding: 12px 40px 12px 16px;
+    border-radius: 8px; cursor: pointer;
+    width: 100%; max-width: 320px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23FBDC7B' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+  }
+  .device-selector select:hover { border-color: rgba(251,220,123,0.4); }
+  .device-selector select:focus {
+    outline: none;
+    border-color: rgba(251,220,123,0.5);
+    box-shadow: 0 0 0 2px rgba(251,220,123,0.1);
+  }
+  .device-selector select option { background: #1a1a1a; color: #f5f5f5; }
+  .device-panel {
+    border: 1px solid rgba(251,220,123,0.1);
+    border-radius: 10px; background: rgba(251,220,123,0.02);
+    padding: 20px 24px; margin: 16px 0;
+  }
+  .device-panel[hidden] { display: none; }
+
+  /* Glossary tooltips */
+  .glossary-term {
+    border-bottom: 1px dotted rgba(251,220,123,0.4);
+    cursor: help; position: relative;
+  }
+  .glossary-term:hover::after {
+    content: attr(data-tooltip);
+    position: absolute; top: 100%; left: 50%;
+    transform: translateX(-50%);
+    background: #1a1a1a;
+    border: 1px solid rgba(251,220,123,0.2);
+    color: rgba(255,248,230,0.85);
+    font-size: 13px; font-weight: 300;
+    padding: 8px 12px; border-radius: 6px;
+    white-space: normal; width: max-content; max-width: 280px;
+    z-index: 200; line-height: 1.4;
+    margin-top: 6px; pointer-events: none;
+  }
+  @media (max-width: 600px) {
+    .glossary-term:hover::after {
+      left: 0; transform: none; max-width: 220px;
+    }
+    .hero h1 { font-size: 28px; }
+    .step-header h2 { font-size: 24px; }
+  }
+
+  /* Share URL */
+  .share-bar {
+    text-align: center; margin: 32px 0 0;
+  }
+  .share-btn {
+    font-size: 13px; color: rgba(251,220,123,0.5);
+    background: none; border: 1px solid rgba(251,220,123,0.1);
+    padding: 8px 16px; border-radius: 6px;
+    cursor: pointer; font-family: 'Inter', sans-serif;
+    transition: all 0.2s;
+  }
+  .share-btn:hover {
+    border-color: rgba(251,220,123,0.3); color: #FBDC7B;
+  }
+
+  /* Footer */
+  footer {
+    text-align: center; padding: 40px 24px;
+    font-size: 13px; color: rgba(255,248,230,0.3);
+    border-top: 1px solid rgba(251,220,123,0.05);
+    margin-top: 60px;
+  }
+  footer a { color: rgba(251,220,123,0.5); text-decoration: none; }
+  footer a:hover { color: #FBDC7B; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a class="nav-brand" href="index.html">
+      <img src="assets/logo.png" alt="Bitcoin Butlers" onerror="this.style.display='none'">
+      Bitcoin Self-Custody
+    </a>
+    <a class="nav-home" href="index.html">All Tutorials</a>
+  </div>
+</nav>
+
+<main>
+  <div class="hero">
+    <h1><span>Master Concierge</span></h1>
+    <p>Build your custom self-custody plan. Five steps from zero to sovereign.</p>
+  </div>
+
+  <!-- Step indicator -->
+  <div class="step-indicator" id="stepIndicator"></div>
+
+  <!-- Step containers rendered by JS -->
+  <div id="stepContainer"></div>
+</main>
+
+<footer>
+  <a href="https://github.com/Bitcoin-Butlers/bitcoin-self-custody">GitHub</a>
+  &middot; <a href="https://bitcoinbutlers.com">bitcoinbutlers.com</a>
+  &middot; CC BY-SA 4.0 (docs) / MIT (code)
+</footer>
+
+<script>
+// ── State ──────────────────────────────────────────────────
+let manifest = null;
+let currentStep = 0;
+const selections = {
+  device: null,
+  seedMethod: null,
+  software: null,
+  backup: null
+};
+const guideCache = {};
+
+// ── Glossary ───────────────────────────────────────────────
+const glossary = {
+  'seed phrase': 'A list of 12 or 24 words that is the master backup of your Bitcoin wallet. Anyone with these words controls your Bitcoin.',
+  'seed': 'Short for seed phrase. The 12 or 24 words that back up your wallet.',
+  'BIP-39': 'The standard word list used for seed phrases. Contains 2,048 English words. The first 4 letters of each word are unique.',
+  'entropy': 'Randomness. The raw random data used to generate your seed. More entropy means a more secure seed.',
+  'xpub': 'Extended public key. A read-only key that can generate all your wallet addresses. Safe to share with wallet software, but reveals your balance and transaction history.',
+  'checksum': 'The last word in your seed phrase. It is calculated from the other words and proves the seed is valid.',
+  'TRNG': 'True Random Number Generator. A hardware chip that produces randomness from physical noise like electrical fluctuations.',
+  'air-gapped': 'A device that never connects to the internet. It communicates only via QR codes, MicroSD cards, NFC, or manual entry.',
+  'secure element': 'A tamper-resistant chip that stores your seed phrase encrypted. Designed to resist physical attacks.',
+  'virtual secure element': 'A security model where the device encrypts your seed locally, but needs a remote server (or your own server) to provide a blinding key for decryption. The server never sees your seed.',
+  'multisig': 'A wallet that requires multiple keys from different devices to authorize a transaction. Eliminates single points of failure.',
+  'single-sig': 'A wallet controlled by one key. Simpler than multisig but has a single point of failure.',
+  'PSBT': 'Partially Signed Bitcoin Transaction. A standard format for passing unsigned or partially signed transactions between devices.',
+  'derivation path': 'A numbering scheme that tells wallet software which addresses to generate from your seed.',
+  'wallet descriptor': 'A text string that fully describes how to reconstruct a wallet, including all keys, derivation paths, and the signing policy.',
+  'stateless': 'A device that does not store any data between sessions. When powered off, everything is erased.',
+  'hot wallet': 'A wallet on a device connected to the internet. Convenient but less secure than hardware wallets.',
+  'PIN': 'Personal Identification Number. A short code that locks your device. Not the same as your seed phrase.',
+};
+
+function applyGlossary(container) {
+  const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+  const nodes = [];
+  while (walker.nextNode()) nodes.push(walker.currentNode);
+  const sortedTerms = Object.keys(glossary).sort((a, b) => b.length - a.length);
+  const pattern = new RegExp('\\b(' + sortedTerms.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')\\b', 'gi');
+  nodes.forEach(node => {
+    if (node.parentElement.closest('.glossary-term, code, pre, a, h1, h2, h3, h4, select, .step-dot')) return;
+    const text = node.textContent;
+    if (!pattern.test(text)) return;
+    pattern.lastIndex = 0;
+    const frag = document.createDocumentFragment();
+    let last = 0;
+    let match;
+    while ((match = pattern.exec(text)) !== null) {
+      const term = match[1].toLowerCase();
+      const key = sortedTerms.find(t => t.toLowerCase() === term) || term;
+      if (match.index > last) frag.appendChild(document.createTextNode(text.slice(last, match.index)));
+      const span = document.createElement('span');
+      span.className = 'glossary-term';
+      span.setAttribute('data-tooltip', glossary[key] || glossary[term]);
+      span.textContent = match[0];
+      frag.appendChild(span);
+      last = match.index + match[0].length;
+    }
+    if (last === 0) return;
+    if (last < text.length) frag.appendChild(document.createTextNode(text.slice(last)));
+    node.parentNode.replaceChild(frag, node);
+  });
+}
+
+// ── Load manifest ──────────────────────────────────────────
+async function init() {
+  try {
+    const resp = await fetch('concierge.json');
+    manifest = await resp.json();
+  } catch (e) {
+    document.getElementById('stepContainer').innerHTML =
+      '<p style="color:#ff6b6b;">Failed to load concierge data. Please try refreshing.</p>';
+    return;
+  }
+
+  parseUrlState();
+  renderStepIndicator();
+  renderStep(currentStep);
+}
+
+// ── URL state ──────────────────────────────────────────────
+function parseUrlState() {
+  const hash = location.hash.slice(1);
+  if (!hash) return;
+  const params = new URLSearchParams(hash);
+  if (params.get('device') && manifest.devices[params.get('device')]) {
+    selections.device = params.get('device');
+  }
+  if (params.get('seed') && manifest.seedMethods[params.get('seed')]) {
+    selections.seedMethod = params.get('seed');
+  }
+  if (params.get('software') && manifest.software[params.get('software')]) {
+    selections.software = params.get('software');
+  }
+  if (params.get('backup') && manifest.backup[params.get('backup')]) {
+    selections.backup = params.get('backup');
+  }
+  const step = parseInt(params.get('step'));
+  if (step >= 1 && step <= 5) {
+    currentStep = step - 1;
+  }
+}
+
+function updateUrl() {
+  const params = new URLSearchParams();
+  params.set('step', currentStep + 1);
+  if (selections.device) params.set('device', selections.device);
+  if (selections.seedMethod) params.set('seed', selections.seedMethod);
+  if (selections.software) params.set('software', selections.software);
+  if (selections.backup) params.set('backup', selections.backup);
+  history.replaceState(null, '', '#' + params.toString());
+}
+
+function shareUrl() {
+  const url = window.location.href;
+  navigator.clipboard.writeText(url).then(() => {
+    const btn = document.querySelector('.share-btn');
+    if (btn) {
+      const orig = btn.textContent;
+      btn.textContent = 'Copied!';
+      setTimeout(() => { btn.textContent = orig; }, 2000);
+    }
+  });
+}
+
+// ── Step indicator ─────────────────────────────────────────
+function renderStepIndicator() {
+  const el = document.getElementById('stepIndicator');
+  let html = '';
+  manifest.steps.forEach((step, i) => {
+    if (i > 0) {
+      const lineClass = i <= currentStep ? 'completed' : '';
+      html += `<div class="step-line ${lineClass}"></div>`;
+    }
+    let dotClass = '';
+    if (i === currentStep) dotClass = 'active';
+    else if (i < currentStep) dotClass = 'completed clickable';
+    else if (canAdvanceTo(i)) dotClass = 'clickable';
+
+    html += `<div class="step-dot ${dotClass}" onclick="goToStep(${i})" title="${step.title}">${i + 1}</div>`;
+  });
+  el.innerHTML = html;
+}
+
+function canAdvanceTo(stepIndex) {
+  if (stepIndex === 0) return true;
+  // Must have device selected to go past step 1
+  if (!selections.device) return false;
+  if (stepIndex >= 2 && !selections.seedMethod) return false;
+  return true;
+}
+
+// ── Navigate ───────────────────────────────────────────────
+function goToStep(index) {
+  if (index < 0 || index >= manifest.steps.length) return;
+  if (index > currentStep && !canAdvanceTo(index)) return;
+  currentStep = index;
+  renderStepIndicator();
+  renderStep(currentStep);
+  updateUrl();
+  window.scrollTo(0, 0);
+}
+
+function nextStep() {
+  goToStep(currentStep + 1);
+}
+
+function prevStep() {
+  goToStep(currentStep - 1);
+}
+
+// ── Render steps ───────────────────────────────────────────
+function renderStep(index) {
+  const container = document.getElementById('stepContainer');
+  const step = manifest.steps[index];
+
+  switch (step.id) {
+    case 'plan': renderPlanStep(container, step); break;
+    case 'hardware-setup': renderHardwareStep(container, step); break;
+    case 'seed-generation': renderSeedGenStep(container, step); break;
+    case 'seed-in-use': renderSeedInUseStep(container, step); break;
+    case 'seed-at-rest': renderSeedAtRestStep(container, step); break;
+  }
+
+  applyGlossary(container);
+}
+
+// ── Step 1: Plan ───────────────────────────────────────────
+function renderPlanStep(container, step) {
+  let html = `
+    <div class="step-content active">
+      <div class="step-header">
+        <h2><span>Step 1:</span> ${step.title}</h2>
+        <p>${step.description}</p>
+      </div>
+
+      <!-- Device selection -->
+      <div class="selection-section">
+        <div class="selection-title">Choose Your Signing Device</div>
+        <div class="card-grid">`;
+
+  for (const [id, device] of Object.entries(manifest.devices)) {
+    const sel = selections.device === id ? 'selected' : '';
+    html += `
+          <div class="card ${sel}" onclick="selectDevice('${id}')">
+            <h3><span class="check">&#10003;</span> ${device.name}</h3>
+            <p>${device.summary}</p>
+          </div>`;
+  }
+
+  html += `</div>
+        <a class="compare-link" href="index.html#choosing-a-device" target="_blank">Compare all devices side by side &rarr;</a>
+      </div>`;
+
+  // Seed method selection (conditional on device)
+  if (selections.device) {
+    const compatible = Object.entries(manifest.seedMethods)
+      .filter(([_, m]) => m.devices.includes(selections.device));
+
+    html += `
+      <div class="selection-section">
+        <div class="selection-title">Choose Your Seed Generation Method</div>
+        <div class="card-grid">`;
+
+    for (const [id, method] of compatible) {
+      const sel = selections.seedMethod === id ? 'selected' : '';
+      html += `
+          <div class="card ${sel}" onclick="selectSeedMethod('${id}')">
+            <h3><span class="check">&#10003;</span> ${method.name}</h3>
+            <p>${method.summary}</p>
+          </div>`;
+    }
+
+    html += `</div>
+        <p class="selection-note">Showing methods compatible with ${manifest.devices[selections.device].name}. <a class="compare-link" href="index.html#seed-generation" target="_blank">See all methods &rarr;</a></p>
+      </div>`;
+  }
+
+  // Software selection (conditional on device)
+  if (selections.device) {
+    const compatible = Object.entries(manifest.software)
+      .filter(([_, s]) => s.devices.includes(selections.device));
+
+    html += `
+      <div class="selection-section">
+        <div class="selection-title">Choose Your Wallet Software</div>
+        <div class="card-grid">`;
+
+    for (const [id, sw] of compatible) {
+      const sel = selections.software === id ? 'selected' : '';
+      html += `
+          <div class="card ${sel}" onclick="selectSoftware('${id}')">
+            <h3><span class="check">&#10003;</span> ${sw.name}</h3>
+            <p>${sw.summary}</p>
+          </div>`;
+    }
+
+    html += `</div></div>`;
+  }
+
+  // Backup selection
+  if (selections.device) {
+    html += `
+      <div class="selection-section">
+        <div class="selection-title">Choose Your Backup Method</div>
+        <div class="card-grid">`;
+
+    for (const [id, backup] of Object.entries(manifest.backup)) {
+      const sel = selections.backup === id ? 'selected' : '';
+      html += `
+          <div class="card ${sel}" onclick="selectBackup('${id}')">
+            <h3><span class="check">&#10003;</span> ${backup.name}</h3>
+            <p>${backup.summary}</p>
+          </div>`;
+    }
+
+    html += `</div></div>`;
+  }
+
+  // Navigation
+  const canProceed = selections.device && selections.seedMethod && selections.software && selections.backup;
+  html += `
+      <div class="step-nav">
+        <div></div>
+        <button class="btn btn-primary" onclick="nextStep()" ${canProceed ? '' : 'disabled'}>
+          Continue to Hardware Setup &rarr;
+        </button>
+      </div>
+
+      <div class="share-bar">
+        <button class="share-btn" onclick="shareUrl()">Share this configuration</button>
+      </div>
+    </div>`;
+
+  container.innerHTML = html;
+}
+
+// ── Step 2: Hardware Setup ─────────────────────────────────
+function renderHardwareStep(container, step) {
+  const device = manifest.devices[selections.device];
+  const setup = device.setup;
+
+  let html = `
+    <div class="step-content active">
+      <div class="step-header">
+        <h2><span>Step 2:</span> ${step.title}</h2>
+        <p>${step.subtitle} - setting up your ${device.name}.</p>
+      </div>`;
+
+  // If device has prebuilt/diy variants (SeedSigner)
+  if (setup.prebuilt && setup.diy) {
+    html += `
+      <div class="device-selector">
+        <select id="setupVariant" onchange="toggleSetupVariant()">
+          <option value="prebuilt">${setup.prebuilt.label}</option>
+          <option value="diy">${setup.diy.label}</option>
+        </select>
+      </div>`;
+
+    html += renderSetupVariant('prebuilt', setup.prebuilt, false);
+    html += renderSetupVariant('diy', setup.diy, true);
+  } else {
+    // Standard setup (ColdCard, Passport, Jade)
+    html += renderSetupSteps(setup);
+  }
+
+  // Note
+  if (setup.note) {
+    html += `<div class="info-note">${setup.note}</div>`;
+  }
+
+  // Link to full device guide
+  html += `
+      <p style="margin-top: 24px;">
+        <a class="compare-link" href="index.html#${device.guide}" target="_blank">
+          Read the full ${device.name} setup guide &rarr;
+        </a>
+      </p>`;
+
+  // Check if seed method needs physical prep
+  const seedMethod = manifest.seedMethods[selections.seedMethod];
+  if (['gen-seed-picker', 'gen-entropia-pills', 'gen-codex32'].includes(selections.seedMethod)) {
+    html += `
+      <div class="selection-section" style="margin-top: 32px;">
+        <div class="selection-title">Prepare Your ${seedMethod.name}</div>
+        <div class="info-note">
+          You will be using <strong>${seedMethod.name}</strong> to generate your seed in the next step.
+          Make sure you have your materials ready and have read the guide.
+        </div>
+        <a class="compare-link" href="index.html#${seedMethod.guide}" target="_blank">
+          Read the ${seedMethod.name} guide &rarr;
+        </a>
+      </div>`;
+  }
+
+  html += renderStepNav(true, true, 'Continue to Seed Generation');
+  html += `</div>`;
+
+  container.innerHTML = html;
+}
+
+function renderSetupVariant(id, variant, hidden) {
+  let html = `<div id="setup-${id}" ${hidden ? 'hidden' : ''}>`;
+  html += `<div class="prereqs-box">
+    <h4>What You Need</h4>
+    <ul>${variant.prereqs.map(p => `<li>${p}</li>`).join('')}</ul>
+    <div class="time">Estimated time: ${variant.time}</div>
+  </div>`;
+  html += `<ol class="setup-steps">${variant.steps.map(s => `<li>${s}</li>`).join('')}</ol>`;
+  html += `</div>`;
+  return html;
+}
+
+function renderSetupSteps(setup) {
+  let html = `<div class="prereqs-box">
+    <h4>What You Need</h4>
+    <ul>${setup.prereqs.map(p => `<li>${p}</li>`).join('')}</ul>
+    <div class="time">Estimated time: ${setup.time}</div>
+  </div>`;
+  html += `<ol class="setup-steps">${setup.steps.map(s => `<li>${s}</li>`).join('')}</ol>`;
+  return html;
+}
+
+function toggleSetupVariant() {
+  const val = document.getElementById('setupVariant').value;
+  const prebuilt = document.getElementById('setup-prebuilt');
+  const diy = document.getElementById('setup-diy');
+  if (prebuilt) prebuilt.hidden = val !== 'prebuilt';
+  if (diy) diy.hidden = val !== 'diy';
+}
+
+// ── Step 3: Seed Generation ────────────────────────────────
+async function renderSeedGenStep(container, step) {
+  const seedMethod = manifest.seedMethods[selections.seedMethod];
+  const device = manifest.devices[selections.device];
+
+  let html = `
+    <div class="step-content active">
+      <div class="step-header">
+        <h2><span>Step 3:</span> ${step.title}</h2>
+        <p>${step.description}</p>
+      </div>
+
+      <div class="summary-card">
+        <h3>Your Method: ${seedMethod.name}</h3>
+        <p style="font-size:14px; color:rgba(255,248,230,0.6);">${seedMethod.summary}</p>
+      </div>
+
+      <div class="guide-render" id="seedGuideContent">
+        <p style="color:rgba(255,248,230,0.4);">Loading guide...</p>
+      </div>`;
+
+  html += renderStepNav(true, true, 'Continue to Wallet Setup');
+  html += `</div>`;
+
+  container.innerHTML = html;
+  await loadGuide(seedMethod.guide, 'seedGuideContent');
+}
+
+// ── Step 4: Seed In Use ────────────────────────────────────
+async function renderSeedInUseStep(container, step) {
+  const sw = manifest.software[selections.software];
+  const device = manifest.devices[selections.device];
+
+  let html = `
+    <div class="step-content active">
+      <div class="step-header">
+        <h2><span>Step 4:</span> ${step.title}</h2>
+        <p>${step.description}</p>
+      </div>
+
+      <div class="summary-card">
+        <h3>Setting up ${sw.name} with ${device.name}</h3>
+        <div class="summary-item">
+          <span class="summary-label">Wallet Software</span>
+          <span class="summary-value">${sw.name}</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Signing Device</span>
+          <span class="summary-value">${device.name}</span>
+        </div>
+      </div>
+
+      <div class="guide-render" id="softwareGuideContent">
+        <p style="color:rgba(255,248,230,0.4);">Loading guide...</p>
+      </div>
+
+      <div class="selection-section" style="margin-top: 32px;">
+        <div class="selection-title">Verify Your Backup</div>
+        <div class="info-note">
+          <strong>Before loading real funds:</strong> Wipe your device (or use the verify backup feature),
+          restore from your backup, and confirm the same addresses appear. This is the most important step.
+        </div>
+        <a class="compare-link" href="index.html#checklists/backup-verification" target="_blank">
+          Open the Backup Verification Checklist &rarr;
+        </a>
+      </div>`;
+
+  html += renderStepNav(true, true, 'Continue to Long-Term Security');
+  html += `</div>`;
+
+  container.innerHTML = html;
+  await loadGuide(sw.guide, 'softwareGuideContent');
+}
+
+// ── Step 5: Seed At Rest ───────────────────────────────────
+async function renderSeedAtRestStep(container, step) {
+  const backup = manifest.backup[selections.backup];
+  const device = manifest.devices[selections.device];
+  const seedMethod = manifest.seedMethods[selections.seedMethod];
+  const sw = manifest.software[selections.software];
+
+  let html = `
+    <div class="step-content active">
+      <div class="step-header">
+        <h2><span>Step 5:</span> ${step.title}</h2>
+        <p>${step.description}</p>
+      </div>
+
+      <div class="guide-render" id="backupGuideContent">
+        <p style="color:rgba(255,248,230,0.4);">Loading guide...</p>
+      </div>
+
+      <div class="selection-section" style="margin-top: 32px;">
+        <div class="selection-title">Inheritance Planning</div>
+        <div class="info-note">
+          Make sure your Bitcoin does not die with you. Plan who gets access, what they need to know,
+          and where things are stored.
+        </div>
+        <a class="compare-link" href="index.html#checklists/inheritance-planning" target="_blank">
+          Open the Inheritance Planning Checklist &rarr;
+        </a>
+      </div>
+
+      <div class="summary-card" style="margin-top: 32px;">
+        <h3>Your Complete Setup</h3>
+        <div class="summary-item">
+          <span class="summary-label">Signing Device</span>
+          <span class="summary-value">${device.name}</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Seed Generation</span>
+          <span class="summary-value">${seedMethod.name}</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Wallet Software</span>
+          <span class="summary-value">${sw.name}</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Backup Method</span>
+          <span class="summary-value">${backup.name}</span>
+        </div>
+      </div>`;
+
+  html += `
+      <div class="step-nav">
+        <button class="btn btn-secondary" onclick="prevStep()">&larr; Back</button>
+        <div style="text-align:center;">
+          <button class="share-btn" onclick="shareUrl()">Share this configuration</button>
+        </div>
+      </div>
+    </div>`;
+
+  container.innerHTML = html;
+  await loadGuide(backup.guide, 'backupGuideContent');
+}
+
+// ── Helpers ────────────────────────────────────────────────
+function renderStepNav(showBack, showNext, nextLabel) {
+  return `
+    <div class="step-nav">
+      ${showBack ? '<button class="btn btn-secondary" onclick="prevStep()">&larr; Back</button>' : '<div></div>'}
+      ${showNext ? `<button class="btn btn-primary" onclick="nextStep()">${nextLabel} &rarr;</button>` : ''}
+    </div>`;
+}
+
+async function loadGuide(slug, targetId) {
+  let path;
+  if (slug.startsWith('checklists/')) {
+    path = slug + '.md';
+  } else {
+    path = 'guides/' + slug + '.md';
+  }
+
+  if (!guideCache[slug]) {
+    try {
+      const resp = await fetch(path);
+      if (!resp.ok) throw new Error('Not found');
+      guideCache[slug] = await resp.text();
+    } catch (e) {
+      document.getElementById(targetId).innerHTML =
+        '<p style="color:rgba(255,248,230,0.4);">Guide not found. <a href="index.html#' + slug + '" target="_blank" style="color:#FBDC7B;">Open separately &rarr;</a></p>';
+      return;
+    }
+  }
+
+  const mdLines = guideCache[slug].split('\n');
+  // Skip the H1 title line (we show our own header)
+  let mdBody = guideCache[slug];
+  if (mdLines[0] && mdLines[0].match(/^#\s+/)) {
+    mdBody = mdLines.slice(1).join('\n');
+  }
+
+  let html = marked.parse(mdBody);
+
+  // Convert checkboxes
+  html = html.replace(/\[ \]/g, '<input type="checkbox">');
+  html = html.replace(/\[x\]/g, '<input type="checkbox" checked>');
+
+  // Rewrite internal links to open in main tutorial site
+  html = html.replace(/href="(?:\.\.\/guides\/)?([a-z0-9_-]+)\.md"/gi, (_, s) => {
+    return `href="index.html#${s}" target="_blank"`;
+  });
+  html = html.replace(/href="\.\.\/emulators\/([a-z0-9_-]+)\/?"/gi, (_, device) => {
+    return `href="index.html#${device}" target="_blank"`;
+  });
+
+  const target = document.getElementById(targetId);
+  target.innerHTML = html;
+
+  convertDetailsToDropdowns(target);
+  applyGlossary(target);
+}
+
+function convertDetailsToDropdowns(container) {
+  const allDetails = container.querySelectorAll('details');
+  if (!allDetails.length) return;
+  const groups = [];
+  let current = [];
+  allDetails.forEach((d, i) => {
+    if (i === 0 || d.previousElementSibling === allDetails[i - 1]) {
+      current.push(d);
+    } else {
+      if (current.length) groups.push([...current]);
+      current = [d];
+    }
+  });
+  if (current.length) groups.push(current);
+
+  groups.forEach((group, gi) => {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'device-selector';
+    const select = document.createElement('select');
+    select.id = 'device-select-c-' + gi;
+    const panels = [];
+    group.forEach((details, di) => {
+      const label = details.querySelector('summary').textContent.trim();
+      const opt = document.createElement('option');
+      opt.value = di;
+      opt.textContent = label;
+      select.appendChild(opt);
+      const panel = document.createElement('div');
+      panel.className = 'device-panel';
+      panel.id = 'device-panel-c-' + gi + '-' + di;
+      const clone = details.cloneNode(true);
+      clone.querySelector('summary').remove();
+      panel.innerHTML = clone.innerHTML;
+      if (di > 0) panel.hidden = true;
+      panels.push(panel);
+    });
+    select.addEventListener('change', () => {
+      panels.forEach((p, pi) => { p.hidden = pi !== parseInt(select.value); });
+    });
+    group[0].parentNode.insertBefore(wrapper, group[0]);
+    wrapper.appendChild(select);
+    panels.forEach(p => wrapper.parentNode.insertBefore(p, group[0]));
+    group.forEach(d => d.remove());
+  });
+}
+
+// ── Selections ─────────────────────────────────────────────
+function selectDevice(id) {
+  selections.device = id;
+  // Clear dependent selections if incompatible
+  if (selections.seedMethod) {
+    const method = manifest.seedMethods[selections.seedMethod];
+    if (!method.devices.includes(id)) {
+      selections.seedMethod = null;
+    }
+  }
+  if (selections.software) {
+    const sw = manifest.software[selections.software];
+    if (!sw.devices.includes(id)) {
+      selections.software = null;
+    }
+  }
+  renderStep(currentStep);
+  updateUrl();
+}
+
+function selectSeedMethod(id) {
+  selections.seedMethod = id;
+  renderStep(currentStep);
+  updateUrl();
+}
+
+function selectSoftware(id) {
+  selections.software = id;
+  renderStep(currentStep);
+  updateUrl();
+}
+
+function selectBackup(id) {
+  selections.backup = id;
+  renderStep(currentStep);
+  updateUrl();
+}
+
+// ── Init ───────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>

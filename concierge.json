@@ -1,0 +1,291 @@
+{
+  "version": "1.0.0",
+  "steps": [
+    {
+      "id": "plan",
+      "number": 1,
+      "title": "Plan Your Setup",
+      "subtitle": "Understand your choices before you commit",
+      "description": "Choose your signing device, seed generation method, wallet software, and backup approach. Take your time here. The decisions you make in this step shape everything that follows."
+    },
+    {
+      "id": "hardware-setup",
+      "number": 2,
+      "title": "Set Up Your Hardware",
+      "subtitle": "Get your devices ready before creating any keys",
+      "description": "Unbox, verify, and configure your signing device. If you are using physical tools for seed generation (Seed Picker Cards, Entropia Pills, Codex32 volvelles), get those ready too."
+    },
+    {
+      "id": "seed-generation",
+      "number": 3,
+      "title": "Create Your Key",
+      "subtitle": "Generate your Bitcoin seed phrase",
+      "description": "This is the most security-critical step. Work in a private space with no cameras. Never photograph your seed words. Never type them into a computer or phone."
+    },
+    {
+      "id": "seed-in-use",
+      "number": 4,
+      "title": "Put Your Key to Work",
+      "subtitle": "Set up your wallet, send and receive Bitcoin",
+      "description": "Connect your signing device to wallet software, export your public key, and make your first transaction. Test your backup before loading real funds."
+    },
+    {
+      "id": "seed-at-rest",
+      "number": 5,
+      "title": "Protect Your Key",
+      "subtitle": "Secure your seed for the long term",
+      "description": "Stamp your seed into steel, consider a passphrase for additional security, and plan for inheritance. Your Bitcoin should outlast you."
+    }
+  ],
+  "devices": {
+    "seedsigner": {
+      "name": "SeedSigner / SeedSigner+",
+      "guide": "seedsigner",
+      "summary": "DIY, stateless, air-gapped. 100% open source. Build from parts or buy pre-built.",
+      "setup": {
+        "prebuilt": {
+          "label": "Pre-Built (SeedSigner+)",
+          "steps": [
+            "Insert the pre-loaded MicroSD card (if not already inserted)",
+            "Connect USB power cable",
+            "Wait 30-60 seconds for boot",
+            "Verify main menu appears on display"
+          ],
+          "prereqs": ["SeedSigner+ device", "USB power cable", "Wall charger or power bank"],
+          "time": "5 min"
+        },
+        "diy": {
+          "label": "DIY Build",
+          "steps": [
+            "Download the latest SeedSigner OS image from github.com/SeedSigner/seedsigner/releases",
+            "Verify the SHA256 hash matches the published release hash",
+            "Flash the .img file to a MicroSD card using Balena Etcher or Raspberry Pi Imager",
+            "Wait for verification to complete (do not skip)",
+            "Solder GPIO headers to Pi Zero if not pre-soldered",
+            "Attach Waveshare 1.3\" LCD Hat onto GPIO pins",
+            "Connect Pi Camera via ribbon cable",
+            "Insert flashed MicroSD card",
+            "Fit into 3D-printed case (if using one)",
+            "Connect USB power cable and verify boot"
+          ],
+          "prereqs": [
+            "Raspberry Pi Zero v1.3 (NO WiFi)",
+            "Waveshare 1.3\" LCD Hat (240x240)",
+            "Pi Camera (Aokin/Arducam 5MP OV5647)",
+            "MicroSD card (8GB+)",
+            "Micro-USB power cable",
+            "Soldering iron + headers (if needed)",
+            "Computer for flashing"
+          ],
+          "time": "30-45 min"
+        },
+        "note": "Use Pi Zero v1.3 specifically. It has NO WiFi or Bluetooth hardware. The chips physically do not exist. Air-gap by hardware design."
+      }
+    },
+    "coldcard-mk4": {
+      "name": "ColdCard Mk4",
+      "guide": "coldcard-mk4",
+      "summary": "Compact, discreet, longest track record. Dual secure elements. MicroSD-only communication.",
+      "setup": {
+        "steps": [
+          "Inspect the tamper-evident bag for cuts, tears, or signs of resealing",
+          "Note the bag number on the barcode label",
+          "Pull the blue tab to open (the word VOID should appear on the seal)",
+          "Verify the serialized tear-off tab width and perforations match the bag",
+          "Power on via USB-C to a wall charger (not a computer)",
+          "Accept Terms of Sale",
+          "Set your primary PIN (avoid obvious patterns)",
+          "Set your secondary PIN",
+          "Verify the bag number matches what the device displays",
+          "Update firmware via MicroSD if a newer version is available"
+        ],
+        "prereqs": [
+          "ColdCard Mk4 (in sealed tamper-evident bag)",
+          "USB-C cable",
+          "Wall charger or power bank",
+          "Industrial MicroSD card"
+        ],
+        "time": "15-20 min",
+        "note": "If anything about the packaging looks wrong, do not use the device. Contact support@coinkite.com with photos."
+      }
+    },
+    "coldcard-q": {
+      "name": "ColdCard Q",
+      "guide": "coldcard-q",
+      "summary": "Full QWERTY keyboard, camera, large color display. Flagship signing device with NFC and battery.",
+      "setup": {
+        "steps": [
+          "Inspect the tamper-evident bag for cuts, tears, or signs of resealing",
+          "Note the bag number on the barcode label",
+          "Pull the blue tab to open (the word VOID should appear on the seal)",
+          "Verify the serialized tear-off tab width and perforations match the bag",
+          "Power on via USB-C or internal battery",
+          "Accept Terms of Sale",
+          "Set your primary PIN using the QWERTY keyboard",
+          "Set your secondary PIN",
+          "Verify the bag number matches what the device displays",
+          "Update firmware via MicroSD if a newer version is available"
+        ],
+        "prereqs": [
+          "ColdCard Q (in sealed tamper-evident bag)",
+          "USB-C cable (for charging and power)",
+          "Industrial MicroSD card"
+        ],
+        "time": "15-20 min",
+        "note": "The Q has a built-in camera for QR scanning and a rechargeable battery for fully portable, air-gapped operation."
+      }
+    },
+    "passport": {
+      "name": "Foundation Passport",
+      "guide": "passport",
+      "summary": "Premium machined aluminum. QR air-gap. Supply chain validation built in.",
+      "setup": {
+        "steps": [
+          "Inspect packaging for signs of tampering",
+          "Power on the device",
+          "Run supply chain validation (device scans barcode and checks against Foundation's server)",
+          "If validation passes, proceed. If it fails, contact Foundation support.",
+          "Set your PIN",
+          "Update firmware if prompted"
+        ],
+        "prereqs": [
+          "Foundation Passport (in sealed packaging)",
+          "USB-C cable (for charging)",
+          "MicroSD card (included)"
+        ],
+        "time": "10-15 min",
+        "note": "Supply chain validation requires a one-time internet connection (via your phone scanning a QR). After this, the device operates fully air-gapped."
+      }
+    },
+    "jade": {
+      "name": "Blockstream Jade / Jade Plus",
+      "guide": "jade",
+      "summary": "Budget-friendly, travel-sized. Virtual secure element. QR-only mode on Jade Plus.",
+      "setup": {
+        "steps": [
+          "Power on via USB-C",
+          "Choose setup mode: QR-only air-gap (Jade Plus) or USB/Bluetooth",
+          "Set your PIN",
+          "Device connects to Blockstream PIN server for initial key setup",
+          "Firmware update if available"
+        ],
+        "prereqs": [
+          "Blockstream Jade or Jade Plus",
+          "USB-C cable"
+        ],
+        "time": "10 min",
+        "note": "Jade uses a virtual secure element. Your seed is encrypted on the device and requires a blinding key from the Blockstream PIN server (or your own server) to decrypt. The server never sees your seed."
+      }
+    }
+  },
+  "seedMethods": {
+    "gen-hardware-wallet": {
+      "name": "Hardware Wallet RNG",
+      "guide": "gen-hardware-wallet",
+      "summary": "Let your device generate the seed. Easiest method, requires trust in the manufacturer's random number generator.",
+      "devices": ["coldcard-mk4", "coldcard-q", "passport", "jade"],
+      "support": "native"
+    },
+    "gen-seed-picker": {
+      "name": "Seed Picker Cards",
+      "guide": "gen-seed-picker",
+      "summary": "Shuffle a physical deck of BIP-39 word cards. Verifiable randomness, no electronics needed for generation.",
+      "devices": ["seedsigner", "coldcard-mk4", "coldcard-q", "passport", "jade"],
+      "support": "native"
+    },
+    "gen-dice-rolls": {
+      "name": "Dice Rolls",
+      "guide": "gen-dice-rolls",
+      "summary": "99 dice rolls for maximum verifiable entropy. You control every bit of randomness.",
+      "devices": ["seedsigner", "coldcard-mk4", "coldcard-q"],
+      "support": "native"
+    },
+    "gen-camera-entropy": {
+      "name": "Camera Entropy",
+      "guide": "gen-camera-entropy",
+      "summary": "SeedSigner captures a photo and hashes it for entropy. Fast, open source, and unique to SeedSigner.",
+      "devices": ["seedsigner"],
+      "support": "native"
+    },
+    "gen-entropia-pills": {
+      "name": "Entropia Pills",
+      "guide": "gen-entropia-pills",
+      "summary": "3D-printed capsules containing BIP-39 words. Tactile, educational, and verifiable.",
+      "devices": ["seedsigner", "coldcard-mk4", "coldcard-q", "passport", "jade"],
+      "support": "native"
+    },
+    "gen-codex32": {
+      "name": "Codex32",
+      "guide": "gen-codex32",
+      "summary": "Generate, verify, and split your seed entirely by hand using pen, paper, dice, and volvelles. Zero electronic trust.",
+      "devices": ["seedsigner", "coldcard-mk4", "coldcard-q"],
+      "support": "native"
+    }
+  },
+  "software": {
+    "sparrow-wallet": {
+      "name": "Sparrow Wallet",
+      "guide": "sparrow-wallet",
+      "summary": "Desktop coordinator for single-sig and multisig. Coin control, PSBT signing, privacy tools.",
+      "devices": ["seedsigner", "coldcard-mk4", "coldcard-q", "passport", "jade"],
+      "type": "coordinator"
+    },
+    "bull-bitcoin": {
+      "name": "Bull Bitcoin",
+      "guide": "bull-bitcoin",
+      "summary": "Non-custodial mobile wallet. Buy, sell, and spend Bitcoin without giving up your keys.",
+      "devices": ["seedsigner", "coldcard-mk4", "coldcard-q", "passport", "jade"],
+      "type": "hot-wallet"
+    }
+  },
+  "backup": {
+    "steel-single": {
+      "name": "Steel Backup (Single-Sig)",
+      "guide": "steel-backup",
+      "section": "single-sig",
+      "summary": "Stamp your 24 words into a steel plate. Fire-proof, flood-proof, forever."
+    },
+    "steel-multi": {
+      "name": "Steel Backup (Multi-Sig)",
+      "guide": "steel-backup",
+      "section": "multi-sig",
+      "summary": "Seed phrases plus wallet descriptor on distributed steel plates. 2-of-3 recovery."
+    }
+  },
+  "checklists": {
+    "first-setup": {
+      "guide": "checklists/first-setup",
+      "step": "hardware-setup",
+      "summary": "Complete unboxing-to-first-transaction checklist"
+    },
+    "backup-verification": {
+      "guide": "checklists/backup-verification",
+      "step": "seed-in-use",
+      "summary": "Prove your backup works before loading real funds"
+    },
+    "inheritance-planning": {
+      "guide": "checklists/inheritance-planning",
+      "step": "seed-at-rest",
+      "summary": "Make sure your Bitcoin outlives you"
+    }
+  },
+  "comparisons": {
+    "devices": {
+      "guide": "choosing-a-device",
+      "step": "plan",
+      "summary": "All 5 signing devices compared side by side"
+    },
+    "seed-methods": {
+      "guide": "seed-generation",
+      "step": "plan",
+      "summary": "All 6 seed generation methods compared"
+    }
+  },
+  "advanced": {
+    "multisig": {
+      "guide": "multisig-sparrow",
+      "step": "seed-in-use",
+      "summary": "2-of-3 multi-vendor multisig setup with Sparrow"
+    }
+  }
+}
