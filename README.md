@@ -104,6 +104,34 @@ Each guide includes device-specific steps via dropdown selectors (SeedSigner, Co
 - [ ] Video walkthroughs
 - [ ] Translations (Spanish, Portuguese, Japanese priority)
 
+## References
+
+All tutorial content is original. The following external sources are referenced throughout the guides:
+
+### Bitcoin Standards
+- [BIP-39](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki) - Mnemonic code for deterministic keys ([word list](https://github.com/bitcoin/bips/blob/master/bip-0039/english.txt))
+- [BIP-93](https://github.com/bitcoin/bips/blob/master/bip-0093.mediawiki) - Codex32: Shamir secret sharing for seed backup
+- [BIP-85](https://github.com/bitcoin/bips/blob/master/bip-0085.mediawiki) - Deterministic entropy from BIP-32 keychains (child seeds)
+
+### Device Firmware (source code linked in guides)
+- [SeedSigner/seedsigner](https://github.com/SeedSigner/seedsigner) - `src/seedsigner/models/seed.py` (FOSS, MIT)
+- [Coldcard/firmware](https://github.com/Coldcard/firmware) - `shared/seed.py` (source-available)
+- [Blockstream/Jade](https://github.com/BlockstreamResearch/Jade) - `components/random/random.c` (FOSS, MIT)
+- [Foundation-Devices/passport2](https://github.com/Foundation-Devices/passport2) - `SECURITY.md` (source-available)
+
+### Wallet Software
+- [Sparrow Wallet](https://sparrowwallet.com) - Desktop coordinator (Apache 2.0)
+- [Bull Bitcoin](https://www.bullbitcoin.com) - Non-custodial mobile wallet ([GitHub](https://github.com/nicehash/bullbitcoin-mobile))
+
+### Tools
+- [secretcodex32.com](https://secretcodex32.com) - Codex32 worksheets and volvelles
+- [Ian Coleman BIP-39 Tool](https://github.com/iancoleman/bip39) - Offline checksum calculator
+
+### Manufacturer Documentation
+- [coldcard.com/docs](https://coldcard.com/docs/upgrade) - ColdCard firmware and upgrade docs
+- Blockstream Green - Jade companion app (iOS/Android)
+- Envoy - Passport companion app (iOS/Android)
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
