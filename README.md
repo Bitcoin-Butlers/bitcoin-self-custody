@@ -27,12 +27,14 @@ cd bitcoin-self-custody && python3 -m http.server 9000
 
 Practice with real device firmware in your browser. No hardware needed.
 
-| Device | Type | Status |
-|--------|------|--------|
-| [SeedSigner](emulators/seedsigner/) | Web (browser) | Working - webcam QR scanning |
-| [ColdCard Mk4/Q](emulators/coldcard/) | SDL (desktop) | Setup docs |
-| [Jade](emulators/jade/) | Docker (QEMU web UI) | Setup scripts ready |
-| [Passport](emulators/passport/) | Docker (SDL) | Setup docs + Dockerfile |
+| Device | Approach | Status | Reference |
+|--------|----------|--------|-----------|
+| [SeedSigner](emulators/seedsigner/) | Pyodide (Python in browser via WASM) | **Working** - webcam QR, mobile touch, tutorials | [SeedSigner/seedsigner](https://github.com/SeedSigner/seedsigner) |
+| [ColdCard Mk4/Q](emulators/coldcard/) | Docker + noVNC (SDL simulator wrapped) | Planned - Dockerfile + scripts ready | [Coldcard/firmware](https://github.com/Coldcard/firmware) `unix/simulator.py` |
+| [Jade](emulators/jade/) | Docker + QEMU web display | Planned - official `Dockerfile.qemu` with `--webdisplay` | [Blockstream/Jade](https://github.com/BlockstreamResearch/Jade) |
+| [Passport](emulators/passport/) | Docker + noVNC (SDL simulator wrapped) | Planned - Dockerfile + scripts ready | [Foundation-Devices/passport2](https://github.com/Foundation-Devices/passport2) `simulator/` |
+
+SeedSigner works fully client-side (no server) because its firmware is pure Python. ColdCard, Jade, and Passport are C firmware requiring QEMU/Docker and a host server to run.
 
 ## Guides
 
@@ -86,28 +88,24 @@ Each guide includes device-specific steps via dropdown selectors (SeedSigner, Co
 ## Roadmap
 
 ### Done
-- [x] 6 seed generation guides with device-specific steps and source code links
-- [x] 5 signing device setup guides
-- [x] Device comparison guide (FOSS vs source-available licensing, multi-vendor multisig)
-- [x] Steel backup guide (single-sig + multisig)
-- [x] Sparrow, Bull Bitcoin, and multisig guides
-- [x] 3 checklists (first setup, backup verification, inheritance)
-- [x] Codex32 (BIP-93) guide with Shamir splitting
-- [x] SeedSigner web emulator (real firmware in browser, webcam QR, mobile touch)
-- [x] ColdCard, Jade, Passport emulator setup docs and automation
-- [x] Tutorial site with BB theming, hash routing, dropdown device selectors
-- [x] Glossary tooltip system for technical terms
-- [x] Internal link routing (all .md and hash links work via JS)
+- [x] 17 guides: 6 seed generation methods, 5 signing devices, 3 wallet/multisig, steel backup, device comparison, seed overview
+- [x] 3 checklists: first setup, backup verification, inheritance planning
+- [x] Codex32 (BIP-93) guide with Shamir splitting and hand-verifiable checksums
+- [x] SeedSigner web emulator (Pyodide/WASM - real firmware in browser, webcam QR, mobile touch, guided tutorials)
+- [x] Device-specific dropdown selectors with GitHub source code links ([seed.py](https://github.com/SeedSigner/seedsigner/blob/dev/src/seedsigner/models/seed.py), [seed.py](https://github.com/Coldcard/firmware/blob/master/shared/seed.py), [random.c](https://github.com/BlockstreamResearch/Jade/blob/master/components/random/random.c), [SECURITY.md](https://github.com/Foundation-Devices/passport2/blob/main/SECURITY.md))
+- [x] FOSS vs source-available licensing distinction in device comparison
+- [x] Tutorial site: hash routing, glossary tooltips, browser history navigation, internal link routing
+- [x] GitHub Pages CI deployment
 
-### Next
-- [ ] Jade QEMU web emulator (Docker build ready, needs testing)
-- [ ] ColdCard web emulator (SDL wrapper needed)
-- [ ] Passport web emulator (Docker + noVNC)
+### Next (grant-dependent)
+- [ ] ColdCard web emulator - Docker + noVNC wrapping MicroPython/SDL simulator (Dockerfile + scripts ready, blocked by upstream submodule TLS issue)
+- [ ] Jade web emulator - Docker + QEMU with `--webdisplay` (official Dockerfile.qemu, needs linux/amd64 host for build)
+- [ ] Passport web emulator - Docker + noVNC wrapping SDL simulator (Dockerfile + scripts ready, build not started)
+- [ ] Emulator VPS hosting (C firmware emulators require a server, unlike SeedSigner's client-side WASM)
 - [ ] Shamir backup guide (beyond Codex32)
 - [ ] Passphrase guide (25th word)
 - [ ] Video walkthroughs
 - [ ] Translations (Spanish, Portuguese, Japanese priority)
-- [ ] Hosted version (static site + emulator VPS)
 
 ## Contributing
 
