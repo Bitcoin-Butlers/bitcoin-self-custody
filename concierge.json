@@ -51,7 +51,11 @@
             "Wait 30-60 seconds for boot",
             "Verify main menu appears on display"
           ],
-          "prereqs": ["SeedSigner+ device", "USB power cable", "Wall charger or power bank"],
+          "prereqs": [
+            "SeedSigner+ device",
+            "USB power cable",
+            "Wall charger or power bank"
+          ],
           "time": "5 min"
         },
         "diy": {
@@ -183,43 +187,76 @@
       "name": "Hardware Wallet RNG",
       "guide": "gen-hardware-wallet",
       "summary": "Let your device generate the seed. Easiest method, requires trust in the manufacturer's random number generator.",
-      "devices": ["coldcard-mk4", "coldcard-q", "passport", "jade"],
-      "support": "native"
+      "devices": [
+        "coldcard-mk4",
+        "coldcard-q",
+        "passport",
+        "jade"
+      ],
+      "support": "native",
+      "time": "5 min"
     },
     "gen-seed-picker": {
       "name": "Seed Picker Cards",
       "guide": "gen-seed-picker",
       "summary": "Shuffle a physical deck of BIP-39 word cards. Verifiable randomness, no electronics needed for generation.",
-      "devices": ["seedsigner", "coldcard-mk4", "coldcard-q", "passport", "jade"],
-      "support": "native"
+      "devices": [
+        "seedsigner",
+        "coldcard-mk4",
+        "coldcard-q",
+        "passport",
+        "jade"
+      ],
+      "support": "native",
+      "time": "20 min"
     },
     "gen-dice-rolls": {
       "name": "Dice Rolls",
       "guide": "gen-dice-rolls",
       "summary": "99 dice rolls for maximum verifiable entropy. You control every bit of randomness.",
-      "devices": ["seedsigner", "coldcard-mk4", "coldcard-q"],
-      "support": "native"
+      "devices": [
+        "seedsigner",
+        "coldcard-mk4",
+        "coldcard-q"
+      ],
+      "support": "native",
+      "time": "30 min"
     },
     "gen-camera-entropy": {
       "name": "Camera Entropy",
       "guide": "gen-camera-entropy",
       "summary": "SeedSigner captures a photo and hashes it for entropy. Fast, open source, and unique to SeedSigner.",
-      "devices": ["seedsigner"],
-      "support": "native"
+      "devices": [
+        "seedsigner"
+      ],
+      "support": "native",
+      "time": "5 min"
     },
     "gen-entropia-pills": {
       "name": "Entropia Pills",
       "guide": "gen-entropia-pills",
       "summary": "3D-printed capsules containing BIP-39 words. Tactile, educational, and verifiable.",
-      "devices": ["seedsigner", "coldcard-mk4", "coldcard-q", "passport", "jade"],
-      "support": "native"
+      "devices": [
+        "seedsigner",
+        "coldcard-mk4",
+        "coldcard-q",
+        "passport",
+        "jade"
+      ],
+      "support": "native",
+      "time": "15 min"
     },
     "gen-codex32": {
       "name": "Codex32",
       "guide": "gen-codex32",
       "summary": "Generate, verify, and split your seed entirely by hand using pen, paper, dice, and volvelles. Zero electronic trust.",
-      "devices": ["seedsigner", "coldcard-mk4", "coldcard-q"],
-      "support": "native"
+      "devices": [
+        "seedsigner",
+        "coldcard-mk4",
+        "coldcard-q"
+      ],
+      "support": "native",
+      "time": "60 min"
     }
   },
   "software": {
@@ -227,14 +264,26 @@
       "name": "Sparrow Wallet",
       "guide": "sparrow-wallet",
       "summary": "Desktop coordinator for single-sig and multisig. Coin control, PSBT signing, privacy tools.",
-      "devices": ["seedsigner", "coldcard-mk4", "coldcard-q", "passport", "jade"],
+      "devices": [
+        "seedsigner",
+        "coldcard-mk4",
+        "coldcard-q",
+        "passport",
+        "jade"
+      ],
       "type": "coordinator"
     },
     "bull-bitcoin": {
       "name": "Bull Bitcoin",
       "guide": "bull-bitcoin",
       "summary": "Non-custodial mobile wallet. Buy, sell, and spend Bitcoin without giving up your keys.",
-      "devices": ["seedsigner", "coldcard-mk4", "coldcard-q", "passport", "jade"],
+      "devices": [
+        "seedsigner",
+        "coldcard-mk4",
+        "coldcard-q",
+        "passport",
+        "jade"
+      ],
       "type": "hot-wallet"
     }
   },

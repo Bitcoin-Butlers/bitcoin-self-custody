@@ -490,6 +490,11 @@
   <div class="hero">
     <h1><span>Master Concierge</span></h1>
     <p>Build your custom self-custody plan. Five steps from zero to sovereign.</p>
+    <p id="timeEstimate" style="font-size:13px; color:rgba(251,220,123,0.6); margin-top:8px;"></p>
+    <div style="max-width:640px; margin:20px auto 0; padding:16px 20px; border:1px solid rgba(251,220,123,0.1); border-radius:10px; background:rgba(251,220,123,0.03); text-align:left; font-size:14px; line-height:1.7;">
+      <p style="color:#FBDC7B; font-weight:500; margin-bottom:8px;">Every choice in this wizard addresses a real risk.</p>
+      <p style="color:rgba(255,248,230,0.65); margin:0;">Device theft, house fire, digital compromise, inheritance failure, supply chain tampering. By the end, your setup will have an answer for each one. Single-sig with a passphrase gives you two wallets from one seed: a decoy (no passphrase) and your real vault (with passphrase). This is often enough. Start simple, add complexity only when you understand why.</p>
+    </div>
   </div>
 
   <!-- Step indicator -->
@@ -513,7 +518,8 @@ const selections = {
   device: null,
   seedMethod: null,
   software: null,
-  backup: null
+  backup: null,
+  multisigDevices: []  // for multisig: array of up to 3 device ids
 };
 const guideCache = {};
 
@@ -678,19 +684,72 @@ function prevStep() {
 }
 
 // ── Render steps ───────────────────────────────────────────
+function isMultisig() {
+  return selections.backup === 'steel-multi';
+}
+
+function updateTimeEstimate() {
+  const el = document.getElementById('timeEstimate');
+  if (!el || !selections.device) { if (el) el.textContent = ''; return; }
+
+  let total = 0;
+  if (isMultisig() && selections.multisigDevices.length > 0) {
+    // Sum setup time for each device
+    selections.multisigDevices.forEach(d => {
+      const device = manifest.devices[d];
+      if (device && device.setup) {
+        const t = device.setup.prebuilt ? device.setup.prebuilt.time : device.setup.time;
+        total += parseInt(t) || 15;
+      }
+    });
+    // Seed gen per device
+    if (selections.seedMethod && manifest.seedMethods[selections.seedMethod]) {
+      const seedTime = parseInt(manifest.seedMethods[selections.seedMethod].time) || 10;
+      total += seedTime * selections.multisigDevices.length;
+    }
+    total += 30; // multisig coordinator setup
+  } else {
+    const device = manifest.devices[selections.device];
+    if (device && device.setup) {
+      const t = device.setup.prebuilt ? device.setup.prebuilt.time : device.setup.time;
+      total += parseInt(t) || 15;
+    }
+    if (selections.seedMethod && manifest.seedMethods[selections.seedMethod]) {
+      total += parseInt(manifest.seedMethods[selections.seedMethod].time) || 10;
+    }
+    total += 15; // wallet software setup
+  }
+  total += 20; // steel backup
+  total += 15; // verification
+
+  const low = Math.max(30, total - 15);
+  const high = total + 15;
+  el.textContent = `Estimated total time: ~${low}–${high} minutes`;
+}
+
 function renderStep(index) {
   const container = document.getElementById('stepContainer');
   const step = manifest.steps[index];
 
   switch (step.id) {
     case 'plan': renderPlanStep(container, step); break;
-    case 'hardware-setup': renderHardwareStep(container, step); break;
-    case 'seed-generation': renderSeedGenStep(container, step); break;
-    case 'seed-in-use': renderSeedInUseStep(container, step); break;
+    case 'hardware-setup':
+      if (isMultisig()) renderMultisigHardwareStep(container, step);
+      else renderHardwareStep(container, step);
+      break;
+    case 'seed-generation':
+      if (isMultisig()) renderMultisigSeedGenStep(container, step);
+      else renderSeedGenStep(container, step);
+      break;
+    case 'seed-in-use':
+      if (isMultisig()) renderMultisigSeedInUseStep(container, step);
+      else renderSeedInUseStep(container, step);
+      break;
     case 'seed-at-rest': renderSeedAtRestStep(container, step); break;
   }
 
   applyGlossary(container);
+  updateTimeEstimate();
 }
 
 // ── Step 1: Plan ───────────────────────────────────────────
@@ -785,8 +844,32 @@ function renderPlanStep(container, step) {
     html += `</div></div>`;
   }
 
+  // Multisig: select 3 devices
+  if (selections.backup === 'steel-multi') {
+    html += `
+      <div class="selection-section">
+        <div class="selection-title">Select 3 Signing Devices for Multisig (2-of-3)</div>
+        <p class="selection-note" style="margin-bottom:12px;">Choose 3 different devices. Mixing manufacturers protects against firmware vulnerabilities in any single brand.</p>
+        <div class="card-grid">`;
+
+    for (const [id, device] of Object.entries(manifest.devices)) {
+      const sel = selections.multisigDevices.includes(id) ? 'selected' : '';
+      const disabled = !selections.multisigDevices.includes(id) && selections.multisigDevices.length >= 3 ? 'style="opacity:0.4; pointer-events:none;"' : '';
+      html += `
+          <div class="card ${sel}" ${disabled} onclick="toggleMultisigDevice('${id}')">
+            <h3><span class="check">&#10003;</span> ${device.name}</h3>
+            <p>${device.summary}</p>
+          </div>`;
+    }
+
+    html += `</div>
+        <p class="selection-note">${selections.multisigDevices.length}/3 devices selected</p>
+      </div>`;
+  }
+
   // Navigation
-  const canProceed = selections.device && selections.seedMethod && selections.software && selections.backup;
+  const multisigReady = !isMultisig() || selections.multisigDevices.length === 3;
+  const canProceed = selections.device && selections.seedMethod && selections.software && selections.backup && multisigReady;
   html += `
       <div class="step-nav">
         <div></div>
@@ -954,13 +1037,22 @@ async function renderSeedInUseStep(container, step) {
       </div>
 
       <div class="selection-section" style="margin-top: 32px;">
-        <div class="selection-title">Verify Your Backup</div>
-        <div class="info-note">
-          <strong>Before loading real funds:</strong> Wipe your device (or use the verify backup feature),
-          restore from your backup, and confirm the same addresses appear. This is the most important step.
+        <div class="selection-title">⚠️ Verify Before Loading Real Funds</div>
+        <div class="info-note" style="border-color:rgba(251,220,123,0.3); background:rgba(251,220,123,0.06);">
+          <p style="margin-bottom:12px;"><strong>Do not skip this.</strong> A backup you have never tested is a backup that might not work.</p>
+          <ol style="margin:0 0 0 20px; font-size:14px; line-height:1.8;">
+            <li>Open your wallet in ${manifest.software[selections.software]?.name || 'your wallet software'}. Note the first 3 receive addresses.</li>
+            <li>Verify each address on your ${manifest.devices[selections.device]?.name || 'signing device'} screen. Check the <strong>first 6 and last 6 characters</strong>.</li>
+            <li>Wipe your device (or use its verify backup feature if available).</li>
+            <li>Restore from your steel backup. Enter your seed words from the plate.</li>
+            <li>Verify the same addresses appear. If they match, your backup is good.</li>
+            <li>Send a small test amount (10,000 sats) to the wallet.</li>
+            <li>Verify it arrives and shows the correct balance.</li>
+            <li><strong>Only then</strong> move real funds.</li>
+          </ol>
         </div>
         <a class="compare-link" href="index.html#checklists/backup-verification" target="_blank">
-          Open the Backup Verification Checklist &rarr;
+          Open the full Backup Verification Checklist &rarr;
         </a>
       </div>`;
 
@@ -987,8 +1079,37 @@ async function renderSeedAtRestStep(container, step) {
 
       <div class="guide-render" id="backupGuideContent">
         <p style="color:rgba(255,248,230,0.4);">Loading guide...</p>
-      </div>
+      </div>`;
 
+  // Passphrase section (single-sig only, multisig doesn't need it)
+  if (!isMultisig()) {
+    html += `
+      <div class="selection-section" style="margin-top: 32px;">
+        <div class="selection-title">Optional: Add a Passphrase</div>
+        <div class="info-note">
+          A BIP-39 passphrase creates a second wallet from the same seed. Without the passphrase, your seed opens a decoy wallet.
+          With the passphrase, it opens your real vault. This effectively turns single-sig into a 2-factor setup.
+        </div>
+        <div class="guide-render" id="passphraseGuideContent">
+          <p style="color:rgba(255,248,230,0.4);">Loading guide...</p>
+        </div>
+      </div>`;
+  }
+
+  // Operational Security
+  html += `
+      <div class="selection-section" style="margin-top: 32px;">
+        <div class="selection-title">Operational Security</div>
+        <div class="info-note">
+          Your setup is only as secure as how you use it day to day. Read the operational security guide for receiving, sending, firmware updates, and physical security.
+        </div>
+        <div class="guide-render" id="opsecGuideContent">
+          <p style="color:rgba(255,248,230,0.4);">Loading guide...</p>
+        </div>
+      </div>`;
+
+  // Inheritance
+  html += `
       <div class="selection-section" style="margin-top: 32px;">
         <div class="selection-title">Inheritance Planning</div>
         <div class="info-note">
@@ -998,14 +1119,26 @@ async function renderSeedAtRestStep(container, step) {
         <a class="compare-link" href="index.html#checklists/inheritance-planning" target="_blank">
           Open the Inheritance Planning Checklist &rarr;
         </a>
-      </div>
+      </div>`;
 
+  // Summary card
+  html += `
       <div class="summary-card" style="margin-top: 32px;">
         <h3>Your Complete Setup</h3>
         <div class="summary-item">
           <span class="summary-label">Signing Device</span>
           <span class="summary-value">${device.name}</span>
-        </div>
+        </div>`;
+
+  if (isMultisig()) {
+    const labels = ['A', 'B', 'C'];
+    selections.multisigDevices.forEach((id, i) => {
+      html += `<div class="summary-item"><span class="summary-label">Multisig Device ${labels[i]}</span><span class="summary-value">${manifest.devices[id]?.name || '—'}</span></div>`;
+    });
+    html += `<div class="summary-item"><span class="summary-label">Quorum</span><span class="summary-value">2 of 3</span></div>`;
+  }
+
+  html += `
         <div class="summary-item">
           <span class="summary-label">Seed Generation</span>
           <span class="summary-value">${seedMethod.name}</span>
@@ -1023,14 +1156,19 @@ async function renderSeedAtRestStep(container, step) {
   html += `
       <div class="step-nav">
         <button class="btn btn-secondary" onclick="prevStep()">&larr; Back</button>
-        <div style="text-align:center;">
-          <button class="share-btn" onclick="shareUrl()">Share this configuration</button>
-        </div>
+        <button class="btn btn-primary" onclick="printPlan()">🖨 Print Your Plan</button>
+      </div>
+      <div class="share-bar">
+        <button class="share-btn" onclick="shareUrl()">Share this configuration</button>
       </div>
     </div>`;
 
   container.innerHTML = html;
   await loadGuide(backup.guide, 'backupGuideContent');
+  if (!isMultisig()) {
+    await loadGuide('passphrase', 'passphraseGuideContent');
+  }
+  await loadGuide('operational-security', 'opsecGuideContent');
 }
 
 // ── Helpers ────────────────────────────────────────────────
@@ -1174,8 +1312,251 @@ function selectSoftware(id) {
 
 function selectBackup(id) {
   selections.backup = id;
+  // Clear multisig devices if switching away from multisig
+  if (id !== 'steel-multi') {
+    selections.multisigDevices = [];
+  }
   renderStep(currentStep);
   updateUrl();
+}
+
+function toggleMultisigDevice(id) {
+  const idx = selections.multisigDevices.indexOf(id);
+  if (idx > -1) {
+    selections.multisigDevices.splice(idx, 1);
+  } else if (selections.multisigDevices.length < 3) {
+    selections.multisigDevices.push(id);
+  }
+  renderStep(currentStep);
+  updateUrl();
+}
+
+// ── Multisig Step 2: Hardware Setup for 3 devices ──────────
+function renderMultisigHardwareStep(container, step) {
+  const devices = selections.multisigDevices.map(id => ({id, ...manifest.devices[id]}));
+  const labels = ['A', 'B', 'C'];
+
+  let html = `
+    <div class="step-content active">
+      <div class="step-header">
+        <h2><span>Step 2:</span> ${step.title}</h2>
+        <p>Multisig requires setting up 3 independent signing devices. Work through each tab below.</p>
+      </div>
+      <div class="device-selector">
+        <select id="msDeviceTab" onchange="toggleMsDevice()">
+          ${devices.map((d, i) => `<option value="${i}">Device ${labels[i]}: ${d.name}</option>`).join('')}
+        </select>
+      </div>`;
+
+  devices.forEach((device, i) => {
+    const setup = device.setup;
+    html += `<div id="ms-device-${i}" ${i > 0 ? 'hidden' : ''}>`;
+    if (setup.prebuilt && setup.diy) {
+      html += `
+        <div class="device-selector">
+          <select id="msVariant-${i}" onchange="toggleMsVariant(${i})">
+            <option value="prebuilt">${setup.prebuilt.label}</option>
+            <option value="diy">${setup.diy.label}</option>
+          </select>
+        </div>`;
+      html += `<div id="ms-prebuilt-${i}">` + renderSetupHTML(setup.prebuilt) + `</div>`;
+      html += `<div id="ms-diy-${i}" hidden>` + renderSetupHTML(setup.diy) + `</div>`;
+    } else {
+      html += renderSetupHTML(setup);
+    }
+    if (setup.note) html += `<div class="info-note">${setup.note}</div>`;
+    html += `<p style="margin-top:16px;"><a class="compare-link" href="index.html#${device.guide}" target="_blank">Read the full ${device.name} guide &rarr;</a></p>`;
+    html += `</div>`;
+  });
+
+  html += renderStepNav(true, true, 'Continue to Seed Generation');
+  html += `</div>`;
+  container.innerHTML = html;
+}
+
+function renderSetupHTML(setup) {
+  let html = `<div class="prereqs-box">
+    <h4>What You Need</h4>
+    <ul>${setup.prereqs.map(p => `<li>${p}</li>`).join('')}</ul>
+    <div class="time">Estimated time: ${setup.time}</div>
+  </div>`;
+  html += `<ol class="setup-steps">${setup.steps.map(s => `<li>${s}</li>`).join('')}</ol>`;
+  return html;
+}
+
+function toggleMsDevice() {
+  const sel = document.getElementById('msDeviceTab').value;
+  for (let i = 0; i < 3; i++) {
+    const el = document.getElementById('ms-device-' + i);
+    if (el) el.hidden = i !== parseInt(sel);
+  }
+}
+
+function toggleMsVariant(idx) {
+  const val = document.getElementById('msVariant-' + idx).value;
+  const pre = document.getElementById('ms-prebuilt-' + idx);
+  const diy = document.getElementById('ms-diy-' + idx);
+  if (pre) pre.hidden = val !== 'prebuilt';
+  if (diy) diy.hidden = val !== 'diy';
+}
+
+// ── Multisig Step 3: Seed Generation for 3 devices ─────────
+async function renderMultisigSeedGenStep(container, step) {
+  const devices = selections.multisigDevices.map(id => ({id, ...manifest.devices[id]}));
+  const seedMethod = manifest.seedMethods[selections.seedMethod];
+  const labels = ['A', 'B', 'C'];
+
+  let html = `
+    <div class="step-content active">
+      <div class="step-header">
+        <h2><span>Step 3:</span> ${step.title}</h2>
+        <p>${step.description}</p>
+      </div>
+
+      <div class="info-note" style="border-color:rgba(251,220,123,0.3); background:rgba(251,220,123,0.06);">
+        <strong>Critical:</strong> Each device MUST have a DIFFERENT seed. Generate a fresh seed on each device separately. Using the same seed on multiple devices defeats the purpose of multisig.
+      </div>
+
+      <div class="summary-card">
+        <h3>Your Method: ${seedMethod.name}</h3>
+        <p style="font-size:14px; color:rgba(255,248,230,0.6);">${seedMethod.summary}</p>
+        <p style="font-size:13px; color:rgba(255,248,230,0.5); margin-top:8px;">Repeat this process 3 times, once for each device.</p>
+      </div>
+
+      <div class="device-selector">
+        <select id="msSeedTab" onchange="toggleMsSeed()">
+          ${devices.map((d, i) => `<option value="${i}">Device ${labels[i]}: ${d.name}</option>`).join('')}
+        </select>
+      </div>`;
+
+  devices.forEach((device, i) => {
+    html += `<div id="ms-seed-${i}" ${i > 0 ? 'hidden' : ''}>
+      <h3 style="color:#FBDC7B; margin:16px 0 8px;">Seed for Device ${labels[i]}: ${device.name}</h3>
+      <div class="guide-render" id="msSeedGuide-${i}">
+        <p style="color:rgba(255,248,230,0.4);">Loading guide...</p>
+      </div>
+    </div>`;
+  });
+
+  html += renderStepNav(true, true, 'Continue to Wallet Setup');
+  html += `</div>`;
+
+  container.innerHTML = html;
+  await loadGuide(seedMethod.guide, 'msSeedGuide-0');
+  // Load others lazily on tab switch
+  for (let i = 1; i < devices.length; i++) {
+    loadGuide(seedMethod.guide, 'msSeedGuide-' + i);
+  }
+}
+
+function toggleMsSeed() {
+  const sel = document.getElementById('msSeedTab').value;
+  for (let i = 0; i < 3; i++) {
+    const el = document.getElementById('ms-seed-' + i);
+    if (el) el.hidden = i !== parseInt(sel);
+  }
+}
+
+// ── Multisig Step 4: Sparrow Multisig Setup ────────────────
+async function renderMultisigSeedInUseStep(container, step) {
+  const devices = selections.multisigDevices.map(id => ({id, ...manifest.devices[id]}));
+
+  let html = `
+    <div class="step-content active">
+      <div class="step-header">
+        <h2><span>Step 4:</span> ${step.title}</h2>
+        <p>Create your 2-of-3 multisig wallet in Sparrow using your 3 signing devices.</p>
+      </div>
+
+      <div class="summary-card">
+        <h3>Your 2-of-3 Multisig Setup</h3>
+        <div class="summary-item"><span class="summary-label">Device A</span><span class="summary-value">${devices[0]?.name || '—'}</span></div>
+        <div class="summary-item"><span class="summary-label">Device B</span><span class="summary-value">${devices[1]?.name || '—'}</span></div>
+        <div class="summary-item"><span class="summary-label">Device C</span><span class="summary-value">${devices[2]?.name || '—'}</span></div>
+        <div class="summary-item"><span class="summary-label">Coordinator</span><span class="summary-value">Sparrow Wallet</span></div>
+        <div class="summary-item"><span class="summary-label">Quorum</span><span class="summary-value">2 of 3</span></div>
+      </div>
+
+      <div class="guide-render" id="multisigGuideContent">
+        <p style="color:rgba(255,248,230,0.4);">Loading multisig guide...</p>
+      </div>
+
+      <div class="selection-section" style="margin-top:32px;">
+        <div class="selection-title">Verify Your Setup</div>
+        <div class="info-note" style="border-color:rgba(251,220,123,0.3); background:rgba(251,220,123,0.06);">
+          <strong>Before loading real funds:</strong>
+          <ol style="margin:8px 0 0 20px; font-size:14px;">
+            <li>Verify the first receive address matches on ALL 3 devices and in Sparrow</li>
+            <li>Check the <strong>first 6 and last 6 characters</strong> of the address on each device</li>
+            <li>Send a small test amount (10,000 sats)</li>
+            <li>Create a test transaction and sign with 2 of your 3 devices</li>
+            <li>Confirm the transaction broadcasts successfully</li>
+            <li>Only then move real funds</li>
+          </ol>
+        </div>
+      </div>`;
+
+  html += renderStepNav(true, true, 'Continue to Long-Term Security');
+  html += `</div>`;
+
+  container.innerHTML = html;
+  await loadGuide('multisig-sparrow', 'multisigGuideContent');
+}
+
+// ── Print ──────────────────────────────────────────────────
+function printPlan() {
+  const device = manifest.devices[selections.device];
+  const seed = manifest.seedMethods[selections.seedMethod];
+  const sw = manifest.software[selections.software];
+  const backup = manifest.backup[selections.backup];
+
+  let body = '<h1>Bitcoin Self-Custody Plan</h1>';
+  body += '<h2>Your Configuration</h2>';
+  body += '<table><tr><td><strong>Signing Device</strong></td><td>' + (device?.name || '—') + '</td></tr>';
+
+  if (isMultisig()) {
+    const labels = ['A', 'B', 'C'];
+    selections.multisigDevices.forEach((id, i) => {
+      body += `<tr><td><strong>Multisig Device ${labels[i]}</strong></td><td>${manifest.devices[id]?.name || '—'}</td></tr>`;
+    });
+    body += '<tr><td><strong>Quorum</strong></td><td>2 of 3</td></tr>';
+  }
+
+  body += '<tr><td><strong>Seed Generation</strong></td><td>' + (seed?.name || '—') + '</td></tr>';
+  body += '<tr><td><strong>Wallet Software</strong></td><td>' + (sw?.name || '—') + '</td></tr>';
+  body += '<tr><td><strong>Backup Method</strong></td><td>' + (backup?.name || '—') + '</td></tr></table>';
+
+  body += '<h2>Step-by-Step Summary</h2>';
+  body += '<h3>1. Set Up Hardware</h3><p>Follow the ' + (device?.name || '') + ' setup guide. Verify tamper-evident packaging. Set PIN. Update firmware.</p>';
+  body += '<h3>2. Generate Your Seed</h3><p>Use ' + (seed?.name || '') + '. Work in a private space with no cameras. Write words on steel, not paper.</p>';
+  body += '<h3>3. Set Up Wallet Software</h3><p>Install ' + (sw?.name || '') + '. Connect your signing device. Verify the first receive address on your device screen (check first 6 and last 6 characters).</p>';
+  body += '<h3>4. Verify Your Backup</h3>';
+  body += '<ul><li>☐ Record first 3 receive addresses</li><li>☐ Wipe device and restore from steel backup</li><li>☐ Verify same addresses appear</li><li>☐ Send a small test amount</li><li>☐ Verify it arrives</li></ul>';
+  body += '<h3>5. Secure for the Long Term</h3>';
+  body += '<ul><li>☐ Steel backup in secure location</li><li>☐ Device stored separately from backup</li><li>☐ Inheritance plan documented</li><li>☐ Regular 6-month verification checks scheduled</li></ul>';
+
+  body += '<h2>Security Reminders</h2>';
+  body += '<ul><li>Always verify addresses on your device screen (first 6, last 6 characters)</li>';
+  body += '<li>Never photograph your seed words</li>';
+  body += '<li>Never type your seed into a computer or phone</li>';
+  body += '<li>Never enter your seed on any website</li>';
+  body += '<li>Keep device and backup in separate locations</li></ul>';
+
+  body += '<p style="margin-top:24px; font-size:12px; color:#999;">Generated from bitcoin-butlers.github.io/bitcoin-self-custody</p>';
+
+  const win = window.open('', '_blank');
+  win.document.write(`<!DOCTYPE html><html><head><title>Bitcoin Self-Custody Plan</title>
+    <style>body{font-family:system-ui,sans-serif;max-width:700px;margin:40px auto;padding:0 20px;color:#222;line-height:1.6;}
+    h1{font-size:24px;border-bottom:2px solid #333;padding-bottom:8px;}
+    h2{font-size:18px;margin-top:28px;color:#444;}
+    h3{font-size:15px;margin-top:16px;}
+    table{width:100%;border-collapse:collapse;margin:16px 0;}
+    td{padding:8px 12px;border-bottom:1px solid #ddd;font-size:14px;}
+    td:first-child{font-weight:600;width:40%;}
+    ul{margin:8px 0 8px 20px;}li{margin:4px 0;font-size:14px;}
+    @media print{body{margin:20px;}}</style></head><body>${body}</body></html>`);
+  win.document.close();
+  win.print();
 }
 
 // ── Init ───────────────────────────────────────────────────
