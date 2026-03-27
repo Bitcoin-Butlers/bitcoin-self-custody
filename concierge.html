@@ -296,17 +296,20 @@
     overflow-x: auto; -webkit-overflow-scrolling: touch;
     margin: 16px -16px; padding: 0 16px;
   }
-  .guide-render table { min-width: 480px; border-collapse: collapse; margin: 0; }
+  .guide-render table { min-width: 520px; border-collapse: collapse; margin: 0; table-layout: fixed; }
   .guide-render th {
     background: rgba(251,220,123,0.06); color: #FBDC7B;
     font-weight: 600; font-size: 13px;
     padding: 10px 14px; text-align: left;
     border-bottom: 1px solid rgba(251,220,123,0.15);
-    white-space: nowrap;
   }
+  .guide-render th:nth-child(1) { width: 22%; }
+  .guide-render th:nth-child(2) { width: 30%; }
+  .guide-render th:nth-child(3) { width: 48%; }
   .guide-render td {
     padding: 10px 14px; font-size: 14px;
     border-bottom: 1px solid rgba(251,220,123,0.06);
+    vertical-align: top;
   }
   .guide-render hr { border: none; border-top: 1px solid rgba(251,220,123,0.08); margin: 28px 0; }
   .guide-render img { max-width: 100%; border-radius: 8px; }
