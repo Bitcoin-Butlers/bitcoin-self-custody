@@ -205,9 +205,19 @@
 
   /* Step navigation buttons */
   .step-nav {
-    display: flex; justify-content: space-between; align-items: center;
+    display: flex; justify-content: center; align-items: center;
+    gap: 12px;
     margin-top: 40px; padding-top: 24px;
     border-top: 1px solid rgba(251,220,123,0.08);
+  }
+  @media (max-width: 600px) {
+    .step-nav {
+      flex-direction: column-reverse;
+    }
+    .step-nav .btn {
+      width: 100%;
+      text-align: center;
+    }
   }
   .btn {
     font-family: 'Inter', sans-serif;
@@ -216,6 +226,8 @@
     cursor: pointer; border: none;
     transition: all 0.2s;
     text-decoration: none;
+    height: 44px;
+    display: inline-flex; align-items: center; justify-content: center;
   }
   .btn-primary {
     background: #FBDC7B; color: #0a0a0a;
@@ -290,6 +302,27 @@
   .guide-render td {
     padding: 10px 14px; font-size: 14px;
     border-bottom: 1px solid rgba(251,220,123,0.06);
+  }
+  @media (max-width: 600px) {
+    .guide-render table, .guide-render thead, .guide-render tbody, .guide-render tr, .guide-render th, .guide-render td {
+      display: block;
+    }
+    .guide-render thead { display: none; }
+    .guide-render tr {
+      border: 1px solid rgba(251,220,123,0.1);
+      border-radius: 8px;
+      margin-bottom: 12px;
+      padding: 12px;
+    }
+    .guide-render td {
+      padding: 4px 0;
+      border-bottom: none;
+      font-size: 13px;
+    }
+    .guide-render td:first-child {
+      font-weight: 600; color: #FBDC7B;
+      font-size: 14px; margin-bottom: 4px;
+    }
   }
   .guide-render hr { border: none; border-top: 1px solid rgba(251,220,123,0.08); margin: 28px 0; }
   .guide-render img { max-width: 100%; border-radius: 8px; }
@@ -425,17 +458,22 @@
 
   /* Share URL */
   .share-bar {
-    text-align: center; margin: 32px 0 0;
+    text-align: center; margin: 12px 0 0;
   }
   .share-btn {
-    font-size: 13px; color: rgba(251,220,123,0.5);
-    background: none; border: 1px solid rgba(251,220,123,0.1);
-    padding: 8px 16px; border-radius: 6px;
+    font-size: 13px; color: rgba(251,220,123,0.8);
+    background: rgba(251,220,123,0.08);
+    border: 1px solid rgba(251,220,123,0.25);
+    padding: 10px 20px; border-radius: 6px;
     cursor: pointer; font-family: 'Inter', sans-serif;
     transition: all 0.2s;
   }
   .share-btn:hover {
-    border-color: rgba(251,220,123,0.3); color: #FBDC7B;
+    border-color: rgba(251,220,123,0.5); color: #FBDC7B;
+    background: rgba(251,220,123,0.12);
+  }
+  @media (max-width: 600px) {
+    .share-btn { width: 100%; text-align: center; }
   }
 
   /* Footer */
