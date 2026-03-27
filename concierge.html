@@ -292,37 +292,21 @@
     overflow-x: auto; margin: 16px 0;
   }
   .guide-render pre code { background: none; padding: 0; color: rgba(255,248,230,0.8); }
-  .guide-render table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+  .guide-render .table-wrap {
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+    margin: 16px -16px; padding: 0 16px;
+  }
+  .guide-render table { min-width: 480px; border-collapse: collapse; margin: 0; }
   .guide-render th {
     background: rgba(251,220,123,0.06); color: #FBDC7B;
     font-weight: 600; font-size: 13px;
     padding: 10px 14px; text-align: left;
     border-bottom: 1px solid rgba(251,220,123,0.15);
+    white-space: nowrap;
   }
   .guide-render td {
     padding: 10px 14px; font-size: 14px;
     border-bottom: 1px solid rgba(251,220,123,0.06);
-  }
-  @media (max-width: 600px) {
-    .guide-render table, .guide-render thead, .guide-render tbody, .guide-render tr, .guide-render th, .guide-render td {
-      display: block;
-    }
-    .guide-render thead { display: none; }
-    .guide-render tr {
-      border: 1px solid rgba(251,220,123,0.1);
-      border-radius: 8px;
-      margin-bottom: 12px;
-      padding: 12px;
-    }
-    .guide-render td {
-      padding: 4px 0;
-      border-bottom: none;
-      font-size: 13px;
-    }
-    .guide-render td:first-child {
-      font-weight: 600; color: #FBDC7B;
-      font-size: 14px; margin-bottom: 4px;
-    }
   }
   .guide-render hr { border: none; border-top: 1px solid rgba(251,220,123,0.08); margin: 28px 0; }
   .guide-render img { max-width: 100%; border-radius: 8px; }
@@ -1083,6 +1067,10 @@ async function loadGuide(slug, targetId) {
   }
 
   let html = marked.parse(mdBody);
+
+  // Wrap tables in scrollable container
+  html = html.replace(/<table>/g, '<div class="table-wrap"><table>');
+  html = html.replace(/<\/table>/g, '</table></div>');
 
   // Convert checkboxes
   html = html.replace(/\[ \]/g, '<input type="checkbox">');
