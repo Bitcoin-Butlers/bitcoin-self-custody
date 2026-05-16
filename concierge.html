@@ -489,7 +489,7 @@
 <main>
   <div class="hero">
     <h1><span>Master Concierge</span></h1>
-    <p>Build your custom self-custody plan. Five steps from zero to sovereign.</p>
+    <p>Build your custom self-custody plan. Configure your setup, then follow four steps from zero to sovereign.</p>
     <p id="timeEstimate" style="font-size:13px; color:rgba(251,220,123,0.6); margin-top:8px;"></p>
     <div style="max-width:640px; margin:20px auto 0; padding:16px 20px; border:1px solid rgba(251,220,123,0.1); border-radius:10px; background:rgba(251,220,123,0.03); text-align:left; font-size:14px; line-height:1.7;">
       <p style="color:#FBDC7B; font-weight:500; margin-bottom:8px;">Every choice in this wizard addresses a real risk.</p>
@@ -651,7 +651,8 @@ function renderStepIndicator() {
     else if (i < currentStep) dotClass = 'completed clickable';
     else if (canAdvanceTo(i)) dotClass = 'clickable';
 
-    html += `<div class="step-dot ${dotClass}" onclick="goToStep(${i})" title="${step.title}">${i + 1}</div>`;
+    const dotLabel = i === 0 ? '&#9881;' : `${i}`;
+    html += `<div class="step-dot ${dotClass}" onclick="goToStep(${i})" title="${step.title}">${dotLabel}</div>`;
   });
   el.innerHTML = html;
 }
@@ -757,7 +758,7 @@ function renderPlanStep(container, step) {
   let html = `
     <div class="step-content active">
       <div class="step-header">
-        <h2><span>Step 1:</span> ${step.title}</h2>
+        <h2>${step.title}</h2>
         <p>${step.description}</p>
       </div>
 
@@ -894,7 +895,7 @@ function renderHardwareStep(container, step) {
   let html = `
     <div class="step-content active">
       <div class="step-header">
-        <h2><span>Step 2:</span> ${step.title}</h2>
+        <h2><span>Step 1:</span> ${step.title}</h2>
         <p>${step.subtitle} - setting up your ${device.name}.</p>
       </div>`;
 
@@ -988,7 +989,7 @@ async function renderSeedGenStep(container, step) {
   let html = `
     <div class="step-content active">
       <div class="step-header">
-        <h2><span>Step 3:</span> ${step.title}</h2>
+        <h2><span>Step 2:</span> ${step.title}</h2>
         <p>${step.description}</p>
       </div>
 
@@ -1016,7 +1017,7 @@ async function renderSeedInUseStep(container, step) {
   let html = `
     <div class="step-content active">
       <div class="step-header">
-        <h2><span>Step 4:</span> ${step.title}</h2>
+        <h2><span>Step 3:</span> ${step.title}</h2>
         <p>${step.description}</p>
       </div>
 
@@ -1073,7 +1074,7 @@ async function renderSeedAtRestStep(container, step) {
   let html = `
     <div class="step-content active">
       <div class="step-header">
-        <h2><span>Step 5:</span> ${step.title}</h2>
+        <h2><span>Step 4:</span> ${step.title}</h2>
         <p>${step.description}</p>
       </div>
 

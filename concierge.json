@@ -3,35 +3,35 @@
   "steps": [
     {
       "id": "plan",
-      "number": 1,
+      "number": 0,
       "title": "Plan Your Setup",
       "subtitle": "Understand your choices before you commit",
       "description": "Choose your signing device, seed generation method, wallet software, and backup approach. Take your time here. The decisions you make in this step shape everything that follows."
     },
     {
       "id": "hardware-setup",
-      "number": 2,
+      "number": 1,
       "title": "Set Up Your Hardware",
       "subtitle": "Get your devices ready before creating any keys",
       "description": "Unbox, verify, and configure your signing device. If you are using physical tools for seed generation (Seed Picker Cards, Entropia Pills, Codex32 volvelles), get those ready too."
     },
     {
       "id": "seed-generation",
-      "number": 3,
+      "number": 2,
       "title": "Create Your Key",
       "subtitle": "Generate your Bitcoin seed phrase",
       "description": "This is the most security-critical step. Work in a private space with no cameras. Never photograph your seed words. Never type them into a computer or phone."
     },
     {
       "id": "seed-in-use",
-      "number": 4,
+      "number": 3,
       "title": "Put Your Key to Work",
       "subtitle": "Set up your wallet, send and receive Bitcoin",
       "description": "Connect your signing device to wallet software, export your public key, and make your first transaction. Test your backup before loading real funds."
     },
     {
       "id": "seed-at-rest",
-      "number": 5,
+      "number": 4,
       "title": "Protect Your Key",
       "subtitle": "Secure your seed for the long term",
       "description": "Stamp your seed into steel, consider a passphrase for additional security, and plan for inheritance. Your Bitcoin should outlast you."
