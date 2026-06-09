@@ -139,28 +139,6 @@
         "note": "The Q has a built-in camera for QR scanning and a rechargeable battery for fully portable, air-gapped operation."
       }
     },
-    "passport": {
-      "name": "Foundation Passport",
-      "guide": "passport",
-      "summary": "Premium machined aluminum. QR air-gap. Supply chain validation built in.",
-      "setup": {
-        "steps": [
-          "Inspect packaging for signs of tampering",
-          "Power on the device",
-          "Run supply chain validation (device scans barcode and checks against Foundation's server)",
-          "If validation passes, proceed. If it fails, contact Foundation support.",
-          "Set your PIN",
-          "Update firmware if prompted"
-        ],
-        "prereqs": [
-          "Foundation Passport (in sealed packaging)",
-          "USB-C cable (for charging)",
-          "MicroSD card (included)"
-        ],
-        "time": "10-15 min",
-        "note": "Supply chain validation requires a one-time internet connection (via your phone scanning a QR). After this, the device operates fully air-gapped."
-      }
-    },
     "jade": {
       "name": "Blockstream Jade / Jade Plus",
       "guide": "jade",
@@ -190,7 +168,6 @@
       "devices": [
         "coldcard-mk4",
         "coldcard-q",
-        "passport",
         "jade"
       ],
       "support": "native",
@@ -204,7 +181,6 @@
         "seedsigner",
         "coldcard-mk4",
         "coldcard-q",
-        "passport",
         "jade"
       ],
       "support": "native",
@@ -240,7 +216,6 @@
         "seedsigner",
         "coldcard-mk4",
         "coldcard-q",
-        "passport",
         "jade"
       ],
       "support": "native",
@@ -268,7 +243,6 @@
         "seedsigner",
         "coldcard-mk4",
         "coldcard-q",
-        "passport",
         "jade"
       ],
       "type": "coordinator"
@@ -281,7 +255,6 @@
         "seedsigner",
         "coldcard-mk4",
         "coldcard-q",
-        "passport",
         "jade"
       ],
       "type": "hot-wallet"
