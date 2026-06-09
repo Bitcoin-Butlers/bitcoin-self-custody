@@ -16,7 +16,7 @@ Steel survives:
 
 ## Single-Sig Steel Backup
 
-*For wallets controlled by one signing device (ColdCard, Passport, Jade, SeedSigner, etc.)*
+*For wallets controlled by one signing device (ColdCard, Jade, SeedSigner, etc.)*
 
 ### What You're Backing Up
 - Your 24-word recovery phrase (or 12 words)
@@ -24,9 +24,8 @@ Steel survives:
 
 ### What You'll Need
 - Bitcoin Butlers Steel Backup Plate (single-sig)
-- Letter stamp set (included with some plates, or purchased separately)
-- Hammer
-- Hard, flat surface (concrete floor or anvil, NOT a table)
+- Electric engraver (recommended) or letter stamp set
+- Hard, flat surface
 - Pen/marker for alignment (optional)
 
 ### Step-by-Step
@@ -42,20 +41,17 @@ Steel survives:
 - **You only need the first 4 letters of each word.** In BIP-39, the first 4 letters uniquely identify every word on the 2048-word list.
 - Example: "abandon" → "ABAN", "ability" → "ABIL", "abstract" → "ABST"
 
-#### 3. Stamp Your Words
+#### 3. Engrave Your Words
 1. Start with word #1.
-2. Align the first letter stamp in the slot. Hold it firmly and vertically.
-3. Strike the stamp once with the hammer - firm and confident. Hesitation causes double-strikes.
-4. Move to the next letter. Use the previous impression as a spacing guide.
-5. Stamp all 4 letters for word #1.
-6. Move to word #2. Repeat through word #24.
+2. Using your electric engraver, carefully engrave the first 4 letters in the slot.
+3. Use steady, even pressure. Let the tool do the work.
+4. Move to the next word. Repeat through word #24.
 
-#### 4. Tips for Clean Stamps
-- **One firm strike per letter.** Don't tap repeatedly - it blurs the impression.
-- **Hold the stamp perpendicular** to the plate. Angled strikes create partial impressions.
+#### 4. Tips for Clean Engraving
+- **Steady hand, even pressure.** Don't rush - let the engraver tip glide.
 - **Use a marker first** to lightly mark where each letter goes (optional - helps with alignment).
 - **Don't rush.** This is a permanent backup of your wealth. Take 30-45 minutes.
-- **Practice on scrap metal first** if you've never used letter stamps before.
+- **Practice on scrap metal first** if you've never used an electric engraver before.
 
 #### 5. Verify Your Backup
 1. Read back all 24 words (first 4 letters) from the steel plate.
@@ -70,6 +66,9 @@ Steel survives:
 - Multiple steel backups in different locations add redundancy.
 
 ---
+
+<details>
+<summary><strong>Multi-Sig Steel Backup</strong></summary>
 
 ## Multi-Sig Steel Backup
 
@@ -92,8 +91,7 @@ In single-sig, your 24 words recover everything. In multisig, your 24 words only
 
 ### What You'll Need
 - Bitcoin Butlers Steel Backup Plate Set (multisig - 3 plates)
-- Letter stamp set
-- Hammer
+- Electric engraver (recommended) or letter stamp set
 - Hard, flat surface
 - Your wallet descriptor (from Sparrow → File → Export Wallet)
 - All xpubs for each signer
@@ -158,18 +156,17 @@ This is long. Options for recording it:
 
 **The goal:** No single break-in, fire, flood, or disaster can destroy enough plates to prevent recovery. Any 2 of 3 locations surviving means your Bitcoin is recoverable.
 
+</details>
+
 ---
 
 ## Common Mistakes
 
-| Mistake | Consequence | Prevention |
-|---------|------------|------------|
-| Wrong word stamped | Recovery fails | Verify against paper backup after every word |
-| Unclear stamp impression | Word unreadable in 10 years | One firm strike. Practice first. Re-stamp if unclear. |
-| Storing plate with device | Single point of failure - thief gets both | Always separate: device in one location, steel in another |
-| Only one copy | House fire = total loss | Multiple steel backups in different locations |
-| Multisig: no descriptor backup | Can't reconstruct wallet even with seed phrases | Descriptor on EVERY plate |
-| Photographing the plate | Digital copy = hackable | Never. The plate IS the backup. |
+- **Wrong word engraved** — Recovery fails. Verify against your paper backup after every word.
+- **Unclear engraving** — Word unreadable in 10 years. Practice first. Re-engrave next to original if unclear.
+- **Storing plate with device** — Single point of failure. Always separate: device in one location, steel in another.
+- **Only one copy** — House fire = total loss. Multiple steel backups in different locations.
+- **Photographing the plate** — Digital copy = hackable. Never. The plate IS the backup.
 
 ---
 

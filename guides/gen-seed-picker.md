@@ -97,28 +97,11 @@ The last word is mathematically derived from the first 23. You need a device to 
 
 </details>
 
-<details>
-<summary><strong>Passport</strong></summary>
-
-1. Power on your Passport.
-2. Navigate to **Import Seed** → **Enter 24 Words**.
-3. For each of the 23 words:
-   - Use the keypad to type letters. Passport narrows down matches.
-   - Confirm each word with **OK**.
-4. At word 24, Passport calculates and displays valid checksum words.
-5. Select one and write it down.
-6. Passport asks if you want to store this seed. Choose **Yes** to save to secure element, or back out if you only needed the checksum.
-- Review Passport's security model: [SECURITY.md on GitHub](https://github.com/Foundation-Devices/passport2/blob/main/SECURITY/SECURITY.md)
-
-</details>
-
 ## Step 4: Verify the Complete Seed
 
 1. Wipe your device and re-enter all 24 words manually.
 2. If the device accepts the seed, it's valid.
 3. Confirm the same xpub and first receive address appear - this proves your backup is correct.
-4. **Back up to steel immediately.** See the [At Rest guides](#steel-backup).
-5. **Burn your paper copies.** Ash is unreadable, shredded paper isn't.
 
 ## Why Cards?
 

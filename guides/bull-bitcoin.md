@@ -27,21 +27,22 @@ Bull Bitcoin is a non-custodial Bitcoin wallet and exchange. Your keys stay on y
 
 ### Step 1: Install and Open
 
-Download the app for your platform. Open it and select **Create New Wallet**.
+Download the app for your platform. Open it and select **Create New Wallet** or **Import Existing Wallet** if connecting to your hardware signing device.
 
-### Step 2: Write Down Your Seed
+### Step 2: Connect Your Hardware Wallet
 
-Bull Bitcoin will generate a 12-word seed phrase. Write it down on paper (or stamp it on steel - see our [At Rest guide](#steel-backup)).
+If you're using a signing device (ColdCard, SeedSigner, Jade):
 
-**Never screenshot your seed. Never store it digitally.**
+1. Export the wallet's **public key (xpub)** from your signing device.
+2. In Bull Bitcoin, select **Import Watch-Only Wallet**.
+3. Scan the QR code or import the file from your device.
+4. Bull Bitcoin can now generate receive addresses and build transactions, but your signing device holds the private keys.
 
-### Step 3: Verify Your Backup
+If you're using Bull Bitcoin as a standalone hot wallet, it will generate a 12-word seed phrase. Write it down and back it up on steel.
 
-The app will quiz you on your seed words. This confirms you wrote them down correctly.
+### Step 3: Set a PIN
 
-### Step 4: Set a PIN
-
-Choose a PIN for daily access. This protects the app but is NOT your backup - your 12 words are.
+Choose a PIN for daily access. This protects the app on your phone.
 
 ## Receiving Bitcoin
 
@@ -60,7 +61,7 @@ Choose a PIN for daily access. This protects the app but is NOT your backup - yo
 
 - Bull Bitcoin is a **hot wallet** - your phone is connected to the internet
 - Keep only spending amounts here, not your life savings
-- For large amounts, use a hardware wallet (SeedSigner+, ColdCard Q, Jade Plus, or Passport)
+- For large amounts, use a hardware wallet (SeedSigner, ColdCard, or Jade)
 - Back up your seed phrase on steel and store it securely
 
 ## Resources
