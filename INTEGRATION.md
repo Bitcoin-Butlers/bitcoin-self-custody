@@ -135,6 +135,48 @@ function filterGuideByDevice(markdown: string, deviceName: string): string {
 
 Also strip the `## Choose Your Device` heading after filtering, since it's redundant when only one device remains.
 
+## Video Tutorials
+
+The manifest includes a `videos` section mapping guide slugs to video tutorials by different creators:
+
+```jsonc
+{
+  "videos": {
+    "creators": {
+      "bitcoin-butlers": { "name": "Bitcoin Butlers" },
+      "btc-sessions": { "name": "BTC Sessions" },
+      "the-bitcoin-way": { "name": "The Bitcoin Way" }
+    },
+    "guides": {
+      "coldcard-mk4": {
+        "bitcoin-butlers": { "url": "https://youtube.com/watch?v=...", "platform": "youtube" },
+        "btc-sessions": { "url": "https://youtube.com/watch?v=...", "platform": "youtube" }
+      },
+      "gen-hardware-wallet": {
+        "bitcoin-butlers": { "url": "https://rumble.com/v...", "platform": "rumble" }
+      }
+    }
+  }
+}
+```
+
+### How to use videos
+
+1. **Show a creator dropdown** — let the user pick whose videos to watch. When they select a creator, show that creator's video for each step.
+2. **Lock to one creator** — if your product partners with a specific creator, skip the dropdown and always show their videos.
+3. **Hide videos entirely** — set `showVideos: false` if you only want the text guides.
+
+### Fallback logic
+
+If the selected creator doesn't have a video for a specific guide, fall back to `"bitcoin-butlers"` (which will have a video for every guide). If no video exists at all for a guide, don't show a video section for that step.
+
+### Platforms
+
+Videos can be on YouTube (`"youtube"`) or Rumble (`"rumble"`). Extract the video ID from the URL to build an embed:
+
+- YouTube: `https://youtube.com/embed/{id}`
+- Rumble: `https://rumble.com/embed/{id}/`
+
 ## Caching
 
 All content is served from GitHub Pages with standard HTTP caching. For production use, we recommend:

@@ -309,5 +309,13 @@
       "step": "seed-in-use",
       "summary": "2-of-3 multi-vendor multisig setup with Sparrow"
     }
+  },
+  "videos": {
+    "creators": {
+      "bitcoin-butlers": {
+        "name": "Bitcoin Butlers"
+      }
+    },
+    "guides": {}
   }
 }
