@@ -14,6 +14,10 @@ No tracking. No paywalls. No affiliate links. No sales CTAs.
 
 **Maintained by [Bitcoin Butlers](https://bitcoinbutlers.com)**
 
+## Integration
+
+Want to use these guides in your own product? See **[INTEGRATION.md](INTEGRATION.md)** for the concierge manifest API, guide fetching, device filtering, and caching recommendations.
+
 ## Live Site
 
 **[bitcoin-butlers.github.io/bitcoin-self-custody](https://bitcoin-butlers.github.io/bitcoin-self-custody/)**
@@ -29,9 +33,8 @@ Practice with real device firmware in your browser. No hardware needed.
 | [SeedSigner](emulators/seedsigner/) | Pyodide (Python in browser via WASM) | **Working** - webcam QR, mobile touch, tutorials | [SeedSigner/seedsigner](https://github.com/SeedSigner/seedsigner) |
 | [ColdCard Mk4/Q](emulators/coldcard/) | Docker + noVNC (SDL simulator wrapped) | Planned - Dockerfile + scripts ready | [Coldcard/firmware](https://github.com/Coldcard/firmware) `unix/simulator.py` |
 | [Jade](emulators/jade/) | Docker + QEMU web display | Planned - official `Dockerfile.qemu` with `--webdisplay` | [Blockstream/Jade](https://github.com/BlockstreamResearch/Jade) |
-| [Passport](emulators/passport/) | Docker + noVNC (SDL simulator wrapped) | Planned - Dockerfile + scripts ready | [Foundation-Devices/passport2](https://github.com/Foundation-Devices/passport2) `simulator/` |
 
-SeedSigner works fully client-side (no server) because its firmware is pure Python. ColdCard, Jade, and Passport are C firmware requiring QEMU/Docker and a host server to run.
+SeedSigner works fully client-side (no server) because its firmware is pure Python. ColdCard and Jade are C firmware requiring QEMU/Docker and a host server to run.
 
 ## Guides
 
@@ -47,7 +50,7 @@ SeedSigner works fully client-side (no server) because its firmware is pure Pyth
 | [Codex32](guides/gen-codex32.md) | Pen-and-paper generation with hand-verifiable checksums |
 | [Seed Generation Overview](guides/seed-generation.md) | All 6 methods compared |
 
-Each guide includes device-specific steps via dropdown selectors (SeedSigner, ColdCard Q, ColdCard Mk4, Jade, Passport) with direct links to each device's open-source code.
+Each guide includes device-specific steps via dropdown selectors (SeedSigner, ColdCard Q, ColdCard Mk4, Jade) with direct links to each device's open-source code.
 
 ### Signing Devices
 
@@ -56,9 +59,8 @@ Each guide includes device-specific steps via dropdown selectors (SeedSigner, Co
 | [SeedSigner](guides/seedsigner.md) | SeedSigner / SeedSigner+ |
 | [ColdCard Q](guides/coldcard-q.md) | Coinkite ColdCard Q |
 | [ColdCard Mk4](guides/coldcard-mk4.md) | Coinkite ColdCard Mk4 |
-| [Passport](guides/passport.md) | Foundation Passport |
 | [Jade](guides/jade.md) | Blockstream Jade / Jade Plus |
-| [Compare Devices](guides/choosing-a-device.md) | All 5 side by side |
+| [Compare Devices](guides/choosing-a-device.md) | All 4 side by side |
 
 ### Software
 
@@ -89,7 +91,7 @@ Each guide includes device-specific steps via dropdown selectors (SeedSigner, Co
 - [x] 3 checklists: first setup, backup verification, inheritance planning
 - [x] Codex32 (BIP-93) guide with Shamir splitting and hand-verifiable checksums
 - [x] SeedSigner web emulator (Pyodide/WASM - real firmware in browser, webcam QR, mobile touch, guided tutorials)
-- [x] Device-specific dropdown selectors with GitHub source code links ([seed.py](https://github.com/SeedSigner/seedsigner/blob/dev/src/seedsigner/models/seed.py), [seed.py](https://github.com/Coldcard/firmware/blob/master/shared/seed.py), [random.c](https://github.com/BlockstreamResearch/Jade/blob/master/components/random/random.c), [SECURITY.md](https://github.com/Foundation-Devices/passport2/blob/main/SECURITY.md))
+- [x] Device-specific dropdown selectors with GitHub source code links ([seed.py](https://github.com/SeedSigner/seedsigner/blob/dev/src/seedsigner/models/seed.py), [seed.py](https://github.com/Coldcard/firmware/blob/master/shared/seed.py), [random.c](https://github.com/BlockstreamResearch/Jade/blob/master/components/random/random.c))
 - [x] FOSS vs source-available licensing distinction in device comparison
 - [x] Tutorial site: hash routing, glossary tooltips, browser history navigation, internal link routing
 - [x] GitHub Pages CI deployment
@@ -97,7 +99,6 @@ Each guide includes device-specific steps via dropdown selectors (SeedSigner, Co
 ### Next (grant-dependent)
 - [ ] ColdCard web emulator - Docker + noVNC wrapping MicroPython/SDL simulator (Dockerfile + scripts ready, blocked by upstream submodule TLS issue)
 - [ ] Jade web emulator - Docker + QEMU with `--webdisplay` (official Dockerfile.qemu, needs linux/amd64 host for build)
-- [ ] Passport web emulator - Docker + noVNC wrapping SDL simulator (Dockerfile + scripts ready, build not started)
 - [ ] Emulator VPS hosting (C firmware emulators require a server, unlike SeedSigner's client-side WASM)
 - [ ] Shamir backup guide (beyond Codex32)
 - [ ] Passphrase guide (25th word)
@@ -117,7 +118,6 @@ All tutorial content is original. The following external sources are referenced 
 - [SeedSigner/seedsigner](https://github.com/SeedSigner/seedsigner) - `src/seedsigner/models/seed.py` (FOSS, MIT)
 - [Coldcard/firmware](https://github.com/Coldcard/firmware) - `shared/seed.py` (source-available)
 - [Blockstream/Jade](https://github.com/BlockstreamResearch/Jade) - `components/random/random.c` (FOSS, MIT)
-- [Foundation-Devices/passport2](https://github.com/Foundation-Devices/passport2) - `SECURITY.md` (source-available)
 
 ### Wallet Software
 - [Sparrow Wallet](https://sparrowwallet.com) - Desktop coordinator (Apache 2.0)
@@ -130,7 +130,6 @@ All tutorial content is original. The following external sources are referenced 
 ### Manufacturer Documentation
 - [coldcard.com/docs](https://coldcard.com/docs/upgrade) - ColdCard firmware and upgrade docs
 - Blockstream Green - Jade companion app (iOS/Android)
-- Envoy - Passport companion app (iOS/Android)
 
 ## Contributing
 
