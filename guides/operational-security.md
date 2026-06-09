@@ -44,16 +44,6 @@ Check the **first 6 and last 6 characters** of the address. This is sufficient t
 </details>
 
 <details>
-<summary>Foundation Passport</summary>
-
-1. In Sparrow, go to the **Receive** tab.
-2. On Passport, go to **Verify Address**.
-3. Scan the QR code from Sparrow using Passport's camera.
-4. Passport confirms the address belongs to your wallet.
-
-</details>
-
-<details>
 <summary>Blockstream Jade / Jade Plus</summary>
 
 1. In Sparrow or Green Wallet, go to the **Receive** tab.
@@ -96,7 +86,7 @@ Keep your signing device firmware current. Updates fix security vulnerabilities 
 
 **Safe update process:**
 1. Only download firmware from the official manufacturer website or GitHub releases
-2. Verify the firmware signature or checksum (ColdCard, Passport, and SeedSigner all support this)
+2. Verify the firmware signature or checksum (ColdCard and SeedSigner both support this)
 3. Update via MicroSD card or QR code, not USB (maintains air-gap)
 4. After updating, verify your wallet still loads correctly and addresses match
 

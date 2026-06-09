@@ -93,16 +93,6 @@ This is actually an advantage: no passphrase is ever stored on any device.
 </details>
 
 <details>
-<summary>Foundation Passport</summary>
-
-1. After loading your seed, go to **Settings → Passphrase**
-2. Enter your passphrase
-3. Passport applies it to the current session
-4. Re-enter on each boot unless you save it to the device
-
-</details>
-
-<details>
 <summary>Blockstream Jade</summary>
 
 1. During wallet setup or in settings, enable passphrase

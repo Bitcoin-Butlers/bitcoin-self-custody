@@ -137,22 +137,6 @@ Jade does not currently support direct Codex32 import. To use a Codex32-generate
 
 </details>
 
-<details>
-<summary><strong>Passport</strong></summary>
-
-Passport does not currently support direct Codex32 import. To use a Codex32-generated seed with Passport:
-
-1. Import your Codex32 string into SeedSigner first (see above).
-2. SeedSigner will show the equivalent 24-word BIP-39 seed phrase.
-3. Write down the 24 words.
-4. On Passport, select **Import Seed** > **Enter 24 Words**.
-5. Enter all 24 words using the keypad.
-6. Set your PIN.
-
-- Review Passport's security model: [SECURITY.md on GitHub](https://github.com/Foundation-Devices/passport2/blob/main/SECURITY/SECURITY.md)
-
-</details>
-
 ## Why Codex32?
 
 - **Zero electronic trust for generation and verification.** You don't need to trust any chip, any screen, any software to generate and verify your seed.

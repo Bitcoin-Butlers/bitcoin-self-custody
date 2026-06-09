@@ -87,20 +87,6 @@ The last word is mathematically derived from the first 23. Choose your device:
 
 </details>
 
-<details>
-<summary><strong>Passport</strong></summary>
-
-1. Power on your Passport.
-2. Navigate to **Import Seed** → **Enter 24 Words**.
-3. Type each of the 23 words using the keypad. Passport narrows down matches.
-4. Press **OK** after each word.
-5. At word 24, Passport shows valid checksum words.
-6. Select one and write it down.
-7. Choose whether to store the seed or exit.
-- Review Passport's security model: [SECURITY.md on GitHub](https://github.com/Foundation-Devices/passport2/blob/main/SECURITY/SECURITY.md)
-
-</details>
-
 ## Step 4: Verify the Complete Seed
 
 1. Wipe your device and re-enter all 24 words manually.

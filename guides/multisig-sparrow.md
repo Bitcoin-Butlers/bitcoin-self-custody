@@ -29,7 +29,7 @@ Multi-signature (multisig) means your Bitcoin requires multiple keys to spend. I
 
 ### Hardware (2-of-3 Example)
 - **3 different signing devices** - we recommend mixing manufacturers:
-  - Example: ColdCard Mk4 + Foundation Passport + SeedSigner
+  - Example: ColdCard Mk4 + Jade + SeedSigner
   - Using different manufacturers protects against a firmware vulnerability in one brand
 - **3 steel backup plates** (multisig set)
 - **MicroSD cards** for each device that supports them
@@ -49,7 +49,7 @@ Multi-signature (multisig) means your Bitcoin requires multiple keys to spend. I
 Before creating the multisig wallet, each device must have its own independent seed.
 
 1. **Device A (e.g., ColdCard Mk4):** Follow the ColdCard setup guide. Generate seed. Back up to steel.
-2. **Device B (e.g., Passport):** Follow the Passport setup guide. Generate seed. Back up to steel.
+2. **Device B (e.g., Jade):** Follow the Jade setup guide. Generate seed. Back up to steel.
 3. **Device C (e.g., SeedSigner):** Follow the SeedSigner setup guide. Generate seed. Back up to steel.
 
 **Critical:** Each device must have a DIFFERENT seed. Using the same seed defeats the purpose of multisig.
@@ -68,10 +68,6 @@ Each device needs to share its public key (xpub) with Sparrow. This does NOT exp
 ### From ColdCard Q (QR)
 1. **Export Wallet → For Multisig → Via QR**
 2. Display the animated QR.
-
-### From Passport (QR)
-1. **Export Wallet → Multisig → Via QR**
-2. Hold up to Sparrow's camera.
 
 ### From SeedSigner (QR)
 1. Load your seed on SeedSigner.
@@ -103,7 +99,7 @@ Each device needs to share its public key (xpub) with Sparrow. This does NOT exp
 ### Add Keystore 2 (Device B)
 1. Click **Keystore 2** tab.
 2. Import the xpub from Device B.
-3. Label it (e.g., "Passport - Bank Box").
+3. Label it (e.g., "Jade - Bank Box").
 
 ### Add Keystore 3 (Device C)
 1. Click **Keystore 3** tab.
@@ -135,7 +131,7 @@ This is the most important step. You must verify that all devices agree on the w
 4. Review the wallet details and confirm.
 5. Now ColdCard knows about this multisig wallet and can verify addresses.
 
-### Passport / Jade / SeedSigner
+### Jade / SeedSigner
 - Each device has its own method for registering or verifying multisig addresses.
 - In Sparrow: **File → Export Wallet → [Device Type]** to generate the registration file or QR.
 
@@ -210,7 +206,7 @@ The security of multisig comes from physical separation of keys.
 | Key | Device | Location | Access |
 |-----|--------|----------|--------|
 | Key 1 | ColdCard Mk4 | Home safe | Daily access |
-| Key 2 | Passport | Bank safety deposit box | Weekly access |
+| Key 2 | Jade | Bank safety deposit box | Weekly access |
 | Key 3 | SeedSigner seed on steel | Trusted family member | Emergency only |
 
 ### Rules

@@ -10,7 +10,6 @@ This method is **SeedSigner only**. Other signing devices do not use camera-base
 
 - **ColdCard Q** - no camera entropy (use [Dice Rolls](#gen-dice-rolls) or [Hardware Wallet](#gen-hardware-wallet) generation)
 - **Jade** - no camera entropy (use [Hardware Wallet](#gen-hardware-wallet) generation or import from SeedSigner)
-- **Passport** - no camera entropy (use [Dice Rolls](#gen-dice-rolls) or [Hardware Wallet](#gen-hardware-wallet) generation)
 
 ## What You'll Need
 
@@ -41,7 +40,7 @@ This method is **SeedSigner only**. Other signing devices do not use camera-base
 
 ## Importing to Another Device
 
-If your daily signing device is a ColdCard Q, Jade, or Passport, generate the seed on SeedSigner via camera entropy, then import:
+If your daily signing device is a ColdCard Q or Jade, generate the seed on SeedSigner via camera entropy, then import:
 
 <details>
 <summary><strong>Import to ColdCard Q</strong></summary>
@@ -70,16 +69,6 @@ If your daily signing device is a ColdCard Q, Jade, or Passport, generate the se
 2. Enter all 24 words using the on-screen keyboard.
 3. Set a PIN when prompted.
 4. Jade encrypts and stores the seed.
-
-</details>
-
-<details>
-<summary><strong>Import to Passport</strong></summary>
-
-1. On Passport, select **Import Seed** → **Enter 24 Words**.
-2. Type each word using the keypad.
-3. After word 24, Passport verifies the checksum and stores the seed in the secure element.
-4. Set your PIN.
 
 </details>
 

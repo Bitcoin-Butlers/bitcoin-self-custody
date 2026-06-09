@@ -195,7 +195,7 @@
 ## Understanding Jade's Security Model
 
 ### Virtual Secure Element
-Traditional hardware wallets (ColdCard, Passport) store your seed in a dedicated secure element chip. Jade takes a different approach:
+Traditional hardware wallets (ColdCard) store your seed in a dedicated secure element chip. Jade takes a different approach:
 
 1. Your seed is **encrypted** and stored on the device.
 2. The encryption key is split between Jade and a remote PIN server.

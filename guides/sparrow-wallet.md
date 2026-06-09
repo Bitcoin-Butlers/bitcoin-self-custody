@@ -5,7 +5,7 @@
 ## What You'll Need
 - Computer (Mac, Windows, or Linux)
 - Internet connection (for download and blockchain sync)
-- A signing device already set up (ColdCard, Passport, Jade, SeedSigner, etc.)
+- A signing device already set up (ColdCard, Jade, SeedSigner, etc.)
 - 10-15 minutes for initial setup
 - Optional: your own Bitcoin node (for maximum privacy)
 
@@ -100,7 +100,7 @@ On first launch, Sparrow asks how to connect to the Bitcoin network.
 Under **Keystores**, you'll add your signing device.
 
 ### Air-Gapped (QR Code)
-*Works with: ColdCard Q, Passport, Jade Plus, SeedSigner*
+*Works with: ColdCard Q, Jade Plus, SeedSigner*
 
 1. Click **Airgapped Hardware Wallet**.
 2. Click **Scan** - your computer's camera opens.
@@ -109,14 +109,14 @@ Under **Keystores**, you'll add your signing device.
 5. Sparrow reads the QR (may take a few seconds for animated QRs).
 
 ### Air-Gapped (MicroSD)
-*Works with: ColdCard Mk4/Q, Passport*
+*Works with: ColdCard Mk4/Q*
 
 1. Click **Airgapped Hardware Wallet**.
 2. Click **Import File**.
 3. Select the wallet export file (`.json`) from your MicroSD card.
 
 ### USB Connected
-*Works with: ColdCard Mk4/Q, Jade, Passport (via USB)*
+*Works with: ColdCard Mk4/Q, Jade*
 
 1. Click **Connected Hardware Wallet**.
 2. Connect your device via USB and unlock it.

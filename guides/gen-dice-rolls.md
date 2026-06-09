@@ -99,30 +99,6 @@ Same dice tool as the Q, but navigated with the joystick and numeric keypad.
 </details>
 
 <details>
-<summary><strong>Passport - Dice Rolls</strong></summary>
-
-Passport supports adding dice roll entropy during seed generation.
-
-### Steps
-
-1. Power on your Passport.
-2. Select **Create New Seed**.
-3. When Passport asks you to add entropy, choose **Manual Entropy** → **Dice Rolls**.
-4. Roll your die and enter each result using the keypad (1-6).
-5. Continue for at least **99 rolls**.
-6. Press **OK** to finalize.
-7. Passport generates your **24-word seed phrase**.
-8. Write down every word carefully.
-9. Passport quizzes you to verify.
-10. Set your PIN. The seed is stored in the secure element.
-11. **Back up to steel immediately.** See the [At Rest guides](#steel-backup).
-
-### Notes
-- Review how Passport handles seed security: [SECURITY.md on GitHub](https://github.com/Foundation-Devices/passport2/blob/main/SECURITY/SECURITY.md)
-
-</details>
-
-<details>
 <summary><strong>Jade - No Built-In Dice Tool</strong></summary>
 
 Jade does not have a built-in dice roll seed generation feature. To use dice-generated entropy with Jade:

@@ -126,33 +126,6 @@ Jade generates your seed and encrypts it on the device. Instead of a physical se
 
 </details>
 
-<details>
-<summary><strong>Passport</strong></summary>
-
-Passport generates your seed using its built-in random number generator, combined with button presses you make during setup for extra randomness.
-
-### Steps
-
-1. Power on your Passport. Follow the on-screen welcome.
-2. Passport runs a **Supply Chain Validation** - scan the QR code shown on screen with the Envoy app to verify your device hasn't been tampered with.
-3. Once validated, select **Create New Seed**.
-4. Passport asks you to **add randomness** by pressing random buttons on the device. Mash the keypad.
-5. Passport generates and displays your **24-word seed phrase**.
-6. Write down every word carefully, in order.
-7. Passport quizzes you on specific words to verify your backup.
-8. Set a **6-digit PIN** for daily access.
-9. The seed is stored encrypted in Passport's secure element.
-10. **Back up to steel immediately.** See the [At Rest guides](#steel-backup).
-11. Passport also prompts you to **save a backup to MicroSD**. Insert a MicroSD card and confirm.
-
-### Notes
-- Passport's MicroSD backup is encrypted with your PIN. Keep the MicroSD card stored separately from the device and your steel plate.
-- The Envoy companion app (mobile) is used for wallet coordination but never sees your seed.
-- Passport is fully air-gapped. All communication is via QR codes or MicroSD. No USB data, no Bluetooth, no WiFi.
-- Review how Passport handles seed generation and security: [SECURITY.md on GitHub](https://github.com/Foundation-Devices/passport2/blob/main/SECURITY/SECURITY.md)
-
-</details>
-
 ---
 
 ## Security Rules

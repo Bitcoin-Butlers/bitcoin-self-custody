@@ -17,7 +17,7 @@ Each method has trade-offs between convenience, verifiability, and effort.
 ## Method 1: Hardware Wallet Generation (Easiest)
 
 ### How It Works
-Your signing device (ColdCard, Passport, Jade, etc.) has a built-in random number generator that creates your seed.
+Your signing device (ColdCard, Jade, etc.) has a built-in random number generator that creates your seed.
 
 ### Steps
 1. During device setup, select **New Wallet** or **Create New Seed**.
@@ -26,7 +26,7 @@ Your signing device (ColdCard, Passport, Jade, etc.) has a built-in random numbe
 
 ### Trust Model
 - You're trusting the device manufacturer built a secure random number generator.
-- Reputable devices (ColdCard, Passport) use certified entropy sources.
+- Reputable devices (ColdCard) use certified entropy sources.
 - ColdCard also mixes in your button presses during setup for additional randomness.
 
 ### Best For
