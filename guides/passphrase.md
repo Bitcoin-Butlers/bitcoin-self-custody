@@ -23,6 +23,45 @@ Your seed phrase encodes a master secret (entropy). The BIP-39 standard runs thi
 
 ---
 
+## Enabling a Passphrase by Device
+
+<details>
+<summary><strong>ColdCard Mk4 / Q</strong></summary>
+
+1. Navigate to **Passphrase → Edit Passphrase**
+2. Enter your passphrase using the keypad (Mk4) or QWERTY keyboard (Q)
+3. The device creates a temporary wallet using seed + passphrase
+4. **Lock It In** option: passphrase applies automatically on every boot (convenient but removes deniability)
+5. Without Lock It In, you must re-enter the passphrase every time you power on
+
+ColdCard shows the first few characters of the derived master fingerprint after applying a passphrase. Write this down and compare it each time to confirm you entered the passphrase correctly.
+
+</details>
+
+<details>
+<summary><strong>SeedSigner</strong></summary>
+
+SeedSigner is stateless. It does not store your seed or passphrase between sessions.
+
+1. Load your seed (scan QR, enter words, or camera entropy)
+2. When prompted, enter your passphrase
+3. SeedSigner derives the wallet from seed + passphrase
+4. You must re-enter both the seed and passphrase every time you power on
+
+</details>
+
+<details>
+<summary><strong>Blockstream Jade</strong></summary>
+
+1. During wallet setup or in settings, enable passphrase
+2. Enter the passphrase when prompted
+3. Jade derives the wallet using the Blind Oracle PIN server + seed + passphrase
+4. Re-enter on each unlock
+
+</details>
+
+---
+
 ## When to Use a Passphrase
 
 **Good reasons:**
