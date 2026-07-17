@@ -53,67 +53,11 @@ Storing the passphrase on the same steel plate as your seed is not inherently ba
 
 ## Common Mistakes
 
-| Mistake | What Happens | Prevention |
-|---------|-------------|------------|
-| Forgetting the passphrase | Funds locked forever. No recovery possible. | Write it on your steel plate. Test recovery before loading real funds. |
-| Using a short or guessable phrase | Brute-forceable if seed is compromised | Use 4+ random words or a strong unique phrase. Not your birthday, not "password". |
-| Not testing recovery | Discover the problem when it is too late | Restore from backup WITH passphrase, verify same addresses appear. |
-| Confusing passphrase with device PIN | Entering PIN where passphrase is expected | PIN locks the device. Passphrase changes the wallet. They are different things. |
-| Assuming wrong passphrase shows an error | Sending funds to the wrong wallet | Any passphrase opens a valid wallet. Always verify addresses after entering your passphrase. |
-
----
-
-## How Each Device Handles Passphrases
-
-<details>
-<summary>ColdCard Mk4 / Q</summary>
-
-1. Navigate to **Passphrase → Edit Passphrase**
-2. Enter your passphrase using the keypad (Mk4) or QWERTY keyboard (Q)
-3. The device creates a temporary wallet using seed + passphrase
-4. **Lock It In** option: passphrase applies automatically on every boot (convenient but removes deniability)
-5. Without Lock It In, you must re-enter the passphrase every time you power on
-
-ColdCard shows the first few characters of the derived master fingerprint after applying a passphrase. Write this down and compare it each time to confirm you entered the passphrase correctly.
-
-</details>
-
-<details>
-<summary>SeedSigner</summary>
-
-SeedSigner is stateless. It does not store your seed or passphrase between sessions.
-
-1. Load your seed (scan QR, enter words, or camera entropy)
-2. When prompted, enter your passphrase
-3. SeedSigner derives the wallet from seed + passphrase
-4. You must re-enter both the seed and passphrase every time you power on
-
-This is actually an advantage: no passphrase is ever stored on any device.
-
-</details>
-
-<details>
-<summary>Blockstream Jade</summary>
-
-1. During wallet setup or in settings, enable passphrase
-2. Enter the passphrase when prompted
-3. Jade derives the wallet using the Blind Oracle PIN server + seed + passphrase
-4. Re-enter on each unlock
-
-Note: Jade's virtual secure element means the passphrase adds a third factor (PIN server + seed + passphrase).
-
-</details>
-
----
-
-## Alternative Encoding: Discreet Backups
-
-If your concern is that a steel plate with readable BIP-39 words is too obviously a Bitcoin backup, consider alternative encoding methods:
-
-- **BitCan** ([bitcan.world](https://bitcan.world)): Encodes each BIP-39 word as a binary glyph that can be stamped onto aluminum cans or dog tags. Looks like a personal keepsake, not a Bitcoin backup. Open source, with the reference table archived on-chain.
-- **Codex32**: Already a form of encoded backup. The share strings are not recognizable as seed words.
-
-These add a decoding step to recovery, which increases complexity. For most people, readable words on steel in a secure location is the better trade-off.
+- **Forgetting the passphrase:** Funds locked forever, no recovery possible. Write it on your steel plate and test recovery before loading real funds.
+- **Using a short or guessable phrase:** Brute-forceable if your seed is compromised. Use 4+ random words or a strong unique phrase. Not your birthday, not "password".
+- **Not testing recovery:** You discover the problem when it is too late. Restore from backup WITH the passphrase and verify the same addresses appear.
+- **Confusing passphrase with device PIN:** Entering the PIN where a passphrase is expected. The PIN locks the device; the passphrase changes the wallet. They are different things.
+- **Assuming a wrong passphrase shows an error:** You send funds to the wrong wallet. Any passphrase opens a valid wallet. Always verify addresses after entering your passphrase.
 
 ---
 

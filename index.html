@@ -686,6 +686,10 @@ function convertDetailsToDropdowns(container) {
   if (current.length) groups.push(current);
 
   groups.forEach((group, gi) => {
+    // A lone <details> is a collapsible section, not a device chooser.
+    // Leave it as native <details> so it collapses to reduce clutter.
+    if (group.length < 2) return;
+
     const wrapper = document.createElement('div');
     wrapper.className = 'device-selector';
 

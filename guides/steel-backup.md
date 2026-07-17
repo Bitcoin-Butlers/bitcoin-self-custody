@@ -160,7 +160,19 @@ This is long. Options for recording it:
 
 ---
 
-## Common Mistakes
+## Alternative Encoding: Discreet Backups
+
+If your concern is that a steel plate with readable BIP-39 words is too obviously a Bitcoin backup, consider alternative encoding methods when you engrave:
+
+- **BitCan** ([bitcan.world](https://bitcan.world)): Encodes each BIP-39 word as a binary glyph that can be stamped onto aluminum cans or dog tags. Looks like a personal keepsake, not a Bitcoin backup. Open source, with the reference table archived on-chain.
+- **Codex32**: Already a form of encoded backup. The share strings are not recognizable as seed words.
+
+These add a decoding step to recovery, which increases complexity. For most people, readable words on steel in a secure location is the better trade-off.
+
+---
+
+<details>
+<summary><strong>Common Mistakes</strong></summary>
 
 - **Wrong word engraved** — Recovery fails. Verify against your paper backup after every word.
 - **Unclear engraving** — Word unreadable in 10 years. Practice first. Re-engrave next to original if unclear.
@@ -168,14 +180,19 @@ This is long. Options for recording it:
 - **Only one copy** — House fire = total loss. Multiple steel backups in different locations.
 - **Photographing the plate** — Digital copy = hackable. Never. The plate IS the backup.
 
+</details>
+
 ---
 
-## Long-Term Considerations
+<details>
+<summary><strong>Long-Term Considerations</strong></summary>
 
 - **Check your backup annually.** Pull the plate out, read the words, verify they're still legible.
 - **Tell someone trusted** where the plate is stored - especially for inheritance. Not the contents, just the location.
 - **Update if you change wallets.** A plate for an old wallet is useless (or dangerous if the old wallet still has funds).
 - **Stainless steel > mild steel.** Stainless resists corrosion better for long-term underground or humid storage.
+
+</details>
 
 ---
 

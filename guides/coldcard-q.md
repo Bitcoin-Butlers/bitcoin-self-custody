@@ -22,15 +22,13 @@
 
 The ColdCard Q is Coinkite's flagship device with several upgrades:
 
-| Feature | Mk4 | Q |
-|---------|-----|---|
-| Keyboard | Number pad only | Full QWERTY + numbers |
-| Display | Small monochrome | Large color display |
-| QR Scanner | None | Built-in camera (reads QR codes) |
-| NFC | Yes (built-in) | Yes (built-in, can be permanently disabled) |
-| Power | USB-C only | USB-C OR 3x AAA batteries |
-| MicroSD | 1 slot | 2 slots + storage under battery door |
-| Price | Lower | Higher |
+- **Keyboard:** Mk4 has a number pad only. The Q has a full QWERTY keyboard plus numbers.
+- **Display:** Mk4 has a small monochrome screen. The Q has a large color display.
+- **QR Scanner:** Mk4 has none. The Q has a built-in camera that reads QR codes.
+- **NFC:** Both have NFC built in. On the Q it can be permanently disabled.
+- **Power:** Mk4 is USB-C only. The Q runs on USB-C or 3x AAA batteries.
+- **MicroSD:** Mk4 has 1 slot. The Q has 2 slots plus storage under the battery door.
+- **Price:** The Q costs more than the Mk4.
 
 The Q is ideal if you want fully air-gapped operation with QR codes (no SD card or USB needed for signing).
 
@@ -211,7 +209,8 @@ The ColdCard Q gives you three ways to communicate with wallet software:
 
 ---
 
-## Q-Specific Features
+<details>
+<summary><strong>Q-Specific Features</strong></summary>
 
 ### QR Scanner
 - Press the **QR key** anytime to activate the scanner.
@@ -234,9 +233,12 @@ The ColdCard Q gives you three ways to communicate with wallet software:
 - If importing an existing seed, you can scan a QR code of your seed words instead of typing them manually.
 - Press QR key during the import process.
 
+</details>
+
 ---
 
-## Ongoing Maintenance
+<details>
+<summary><strong>Ongoing Maintenance</strong></summary>
 
 Same as Mk4:
 - Keep firmware updated (coldcard.com/docs/upgrade)
@@ -245,17 +247,20 @@ Same as Mk4:
 - Test your backup periodically
 - Replace batteries together (don't mix old and new)
 
+</details>
+
 ---
 
-## Troubleshooting
+<details>
+<summary><strong>Troubleshooting</strong></summary>
 
-| Problem | Solution |
-|---------|----------|
-| Won't turn on | Hold power button for a full second. Try fresh batteries. Try USB-C power. |
-| QR scanner won't read | Clean the screen (scanner is behind it). Use the flashlight key. Hold steady, about 6-12 inches from the QR. |
-| MicroSD not recognized | Use FAT32-formatted cards. Try the other slot. |
-| Forgot PIN | No recovery. Import seed words onto a new device. |
-| NFC not working | Check if disabled in settings. If PCB trace was scratched, NFC is permanently off. |
+- **Won't turn on:** Hold power button for a full second. Try fresh batteries. Try USB-C power.
+- **QR scanner won't read:** Clean the screen (scanner is behind it). Use the flashlight key. Hold steady, about 6-12 inches from the QR.
+- **MicroSD not recognized:** Use FAT32-formatted cards. Try the other slot.
+- **Forgot PIN:** No recovery. Import seed words onto a new device.
+- **NFC not working:** Check if disabled in settings. If PCB trace was scratched, NFC is permanently off.
+
+</details>
 
 ---
 

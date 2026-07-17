@@ -88,40 +88,81 @@ On first launch, Sparrow asks how to connect to the Bitcoin network.
 - Simplest setup.
 - Good for most users.
 
-### Multi Signature
+<details>
+<summary><strong>Multi-Signature (multi-sig, advanced)</strong></summary>
+
 - Requires M-of-N devices to sign (e.g., 2-of-3).
 - More security, more complexity.
 - See the **Multisig Guide** for detailed setup.
+
+</details>
 
 ---
 
 ## Step 4: Connect Your Hardware Wallet
 
-Under **Keystores**, you'll add your signing device.
+Under **Keystores**, add your signing device. Pick your device below for the connection method that applies to it.
 
-### Air-Gapped (QR Code)
-*Works with: ColdCard Q, Jade Plus, SeedSigner*
+<details>
+<summary><strong>ColdCard Mk4</strong></summary>
 
-1. Click **Airgapped Hardware Wallet**.
-2. Click **Scan** - your computer's camera opens.
-3. On your device: export the wallet/xpub as a QR code.
-4. Hold the device screen up to your computer's camera.
-5. Sparrow reads the QR (may take a few seconds for animated QRs).
-
-### Air-Gapped (MicroSD)
-*Works with: ColdCard Mk4/Q*
-
+**Air-Gapped (MicroSD) - recommended**
 1. Click **Airgapped Hardware Wallet**.
 2. Click **Import File**.
 3. Select the wallet export file (`.json`) from your MicroSD card.
 
-### USB Connected
-*Works with: ColdCard Mk4/Q, Jade*
-
+**USB Connected**
 1. Click **Connected Hardware Wallet**.
-2. Connect your device via USB and unlock it.
-3. Click **Scan** - Sparrow detects the device.
-4. Select it and import.
+2. Connect the ColdCard via USB and unlock it.
+3. Click **Scan** - Sparrow detects the device. Select it and import.
+
+The Mk4 has no camera, so QR connection is not available.
+
+</details>
+
+<details>
+<summary><strong>ColdCard Q</strong></summary>
+
+**Air-Gapped (QR) - recommended**
+1. Click **Airgapped Hardware Wallet**.
+2. Click **Scan** - your computer's camera opens.
+3. On the Q, export the wallet/xpub as a QR code.
+4. Hold the Q's screen up to your camera. Sparrow reads the animated QR.
+
+**Air-Gapped (MicroSD)**
+1. Click **Airgapped Hardware Wallet** → **Import File**.
+2. Select the wallet export file (`.json`) from your MicroSD card.
+
+**USB Connected**
+1. Click **Connected Hardware Wallet**, connect via USB and unlock.
+2. Click **Scan**, select the device, and import.
+
+</details>
+
+<details>
+<summary><strong>SeedSigner</strong></summary>
+
+**Air-Gapped (QR)**
+1. Click **Airgapped Hardware Wallet** → **Scan** - your camera opens.
+2. On SeedSigner, export the xpub as an animated QR.
+3. Hold the SeedSigner screen up to your camera. Sparrow reads the QR.
+
+SeedSigner is air-gapped only - there is no USB or SD card wallet connection.
+
+</details>
+
+<details>
+<summary><strong>Blockstream Jade</strong></summary>
+
+**USB Connected**
+1. Click **Connected Hardware Wallet**, connect Jade via USB and unlock it.
+2. Click **Scan**, select the device, and import.
+
+**Air-Gapped (QR) - Jade Plus**
+1. Click **Airgapped Hardware Wallet** → **Scan**.
+2. Export the xpub QR from Jade Plus and hold it up to your camera.
+
+</details>
 
 ---
 
@@ -192,7 +233,8 @@ This step is critical - it confirms Sparrow and your hardware wallet are in sync
 
 ---
 
-## Advanced Features
+<details>
+<summary><strong>Advanced Features</strong></summary>
 
 ### Coin Control
 - In the **UTXOs** tab, you can see every individual "coin" (UTXO) in your wallet.
@@ -218,9 +260,12 @@ This step is critical - it confirms Sparrow and your hardware wallet are in sync
 - You can see balances, generate addresses, and create unsigned transactions.
 - Only need the hardware wallet when it's time to sign.
 
+</details>
+
 ---
 
-## Connecting to Your Own Node
+<details>
+<summary><strong>Connecting to Your Own Node</strong></summary>
 
 For maximum privacy, run your own Bitcoin node and connect Sparrow to it.
 
@@ -242,9 +287,12 @@ Run an Electrum server on top of Bitcoin Core:
 - Your own node means NOBODY sees your financial activity.
 - Full verification of every transaction against the blockchain.
 
+</details>
+
 ---
 
-## Backup and Recovery
+<details>
+<summary><strong>Backup and Recovery</strong></summary>
 
 ### What Sparrow Stores Locally
 - Wallet files (public keys, labels, configuration)
@@ -267,18 +315,21 @@ Run an Electrum server on top of Bitcoin Core:
 - **File → Export Wallet** to save your labels and configuration.
 - Store the export file securely.
 
+</details>
+
 ---
 
-## Troubleshooting
+<details>
+<summary><strong>Troubleshooting</strong></summary>
 
-| Problem | Solution |
-|---------|----------|
-| "Connection refused" | Check server settings. If using public server, try a different one. Firewall may be blocking. |
-| Hardware wallet not detected (USB) | Try a different cable. Ensure device is unlocked. On Mac, no driver needed. Windows may need drivers. |
-| QR scan won't read | Clean camera lens. Ensure good lighting. Try moving closer/farther (6-12 inches is optimal). |
-| Transactions not showing | Wait for sync to complete (progress bar at bottom). If using own node, ensure it's fully synced. |
-| "Address verification failed" | The wallet in Sparrow doesn't match the hardware device. Delete and recreate the Sparrow wallet. |
-| Balance shows 0 after setup | Sync may still be in progress. Check the status bar at the bottom. |
+- **"Connection refused":** Check server settings. If using a public server, try a different one. A firewall may be blocking it.
+- **Hardware wallet not detected (USB):** Try a different cable. Ensure the device is unlocked. On Mac no driver is needed; Windows may need drivers.
+- **QR scan won't read:** Clean the camera lens. Ensure good lighting. Try moving closer or farther (6-12 inches is optimal).
+- **Transactions not showing:** Wait for sync to complete (progress bar at bottom). If using your own node, ensure it is fully synced.
+- **"Address verification failed":** The wallet in Sparrow doesn't match the hardware device. Delete and recreate the Sparrow wallet.
+- **Balance shows 0 after setup:** Sync may still be in progress. Check the status bar at the bottom.
+
+</details>
 
 ---
 

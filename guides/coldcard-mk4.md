@@ -110,9 +110,10 @@ If you want to verify the randomness yourself instead of trusting the device:
 
 ---
 
-## Step 5: Create Encrypted MicroSD Backup
+<details>
+<summary><strong>Optional: Create Encrypted MicroSD Backup</strong></summary>
 
-Before moving to steel, create an encrypted backup on MicroSD as an additional safety layer.
+Before moving to steel, you can create an encrypted backup on MicroSD as an additional safety layer. This step is optional.
 
 1. Insert a MicroSD card.
 2. Navigate to: **Advanced/Tools → Backups → Backup System**.
@@ -121,6 +122,8 @@ Before moving to steel, create an encrypted backup on MicroSD as an additional s
 5. To restore from this backup: insert the MicroSD on a new ColdCard → **Import Existing → Restore Backup** → enter the 12-word password.
 
 > **Why both seed words AND encrypted backup?** The seed words are your universal recovery (works on any BIP-39 wallet). The encrypted MicroSD backup restores your ColdCard-specific settings (multisig configs, address explorer settings, etc.) in addition to the seed.
+
+</details>
 
 ---
 
@@ -214,7 +217,8 @@ Sparrow is the recommended desktop wallet for ColdCard users.
 
 ---
 
-## NFC Features (Mk4)
+<details>
+<summary><strong>NFC Features (Mk4)</strong></summary>
 
 The ColdCard Mk4 has NFC built in. You can use it for:
 - **Show address:** Tap an NFC-enabled phone to share a receive address
@@ -225,9 +229,12 @@ The ColdCard Mk4 has NFC built in. You can use it for:
 - **Settings → NFC → Enable/Disable**
 - NFC is useful for quick address sharing but adds an attack surface. Disable if not using it.
 
+</details>
+
 ---
 
-## Advanced Features
+<details>
+<summary><strong>Advanced Features</strong></summary>
 
 ### BIP-39 Passphrase
 Add a passphrase (sometimes called "25th word") for an additional layer of security:
@@ -252,9 +259,12 @@ Split your seed across multiple ColdCards so no single device holds the complete
 3. Each part is a valid-looking 24-word seed, but useless alone
 4. Combine the parts to reconstruct the original seed
 
+</details>
+
 ---
 
-## Ongoing Maintenance
+<details>
+<summary><strong>Ongoing Maintenance</strong></summary>
 
 ### Firmware Updates
 1. Check **coldcard.com/docs/upgrade** periodically for new firmware.
@@ -270,17 +280,20 @@ Split your seed across multiple ColdCards so no single device holds the complete
 - **Test your backup** periodically by verifying seed words in Address Explorer match your Sparrow wallet.
 - **Use a passphrase** (BIP-39) for additional security if desired - but only if you can remember it. A forgotten passphrase is as bad as a forgotten PIN.
 
+</details>
+
 ---
 
-## Troubleshooting
+<details>
+<summary><strong>Troubleshooting</strong></summary>
 
-| Problem | Solution |
-|---------|----------|
-| Screen doesn't turn on | Try a different USB-C cable. Some cables are charge-only and may not supply enough power. |
-| Forgot PIN | There is no recovery. If you have your seed words, get a new ColdCard and import the seed. |
-| Seed quiz answer wrong | Re-check your written backup carefully. You can view the words again by pressing ✔ during the quiz. |
-| Sparrow doesn't detect ColdCard | Make sure you're using a data-capable USB cable (not power-only). On Mac, no drivers needed. On Windows, you may need to install the USB driver from coldcard.com. |
-| SD card not recognized | Use a standard MicroSD card (FAT32 format). Some high-capacity cards may not work. |
+- **Screen doesn't turn on:** Try a different USB-C cable. Some cables are charge-only and may not supply enough power.
+- **Forgot PIN:** There is no recovery. If you have your seed words, get a new ColdCard and import the seed.
+- **Seed quiz answer wrong:** Re-check your written backup carefully. You can view the words again by pressing ✔ during the quiz.
+- **Sparrow doesn't detect ColdCard:** Make sure you're using a data-capable USB cable (not power-only). On Mac, no drivers needed. On Windows, you may need to install the USB driver from coldcard.com.
+- **SD card not recognized:** Use a standard MicroSD card (FAT32 format). Some high-capacity cards may not work.
+
+</details>
 
 ---
 
