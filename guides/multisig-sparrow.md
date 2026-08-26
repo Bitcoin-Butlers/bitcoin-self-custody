@@ -29,8 +29,9 @@ Multi-signature (multisig) means your Bitcoin requires multiple keys to spend. I
 
 ### Hardware (2-of-3 Example)
 - **3 different signing devices** - we recommend mixing manufacturers:
-  - Example: ColdCard Mk4 + Jade + SeedSigner
+  - Example: Jade + SeedSigner + a third device from another manufacturer
   - Using different manufacturers protects against a firmware vulnerability in one brand
+  - This guide covers Jade and SeedSigner. Any Bitcoin-only device that exports an xpub and signs PSBTs can hold the third key
 - **3 steel backup plates** (multisig set)
 - **MicroSD cards** for each device that supports them
 
@@ -48,9 +49,9 @@ Multi-signature (multisig) means your Bitcoin requires multiple keys to spend. I
 
 Before creating the multisig wallet, each device must have its own independent seed.
 
-1. **Device A (e.g., ColdCard Mk4):** Follow the ColdCard setup guide. Generate seed. Back up to steel.
-2. **Device B (e.g., Jade):** Follow the Jade setup guide. Generate seed. Back up to steel.
-3. **Device C (e.g., SeedSigner):** Follow the SeedSigner setup guide. Generate seed. Back up to steel.
+1. **Device A (e.g., Jade):** Follow the Jade setup guide. Generate seed. Back up to steel.
+2. **Device B (e.g., SeedSigner):** Follow the SeedSigner setup guide. Generate seed. Back up to steel.
+3. **Device C (your third device):** Follow its manufacturer's setup guide. Generate seed. Back up to steel.
 
 **Critical:** Each device must have a DIFFERENT seed. Using the same seed defeats the purpose of multisig.
 
@@ -59,15 +60,6 @@ Before creating the multisig wallet, each device must have its own independent s
 ## Step 2: Export Public Keys from Each Device
 
 Each device needs to share its public key (xpub) with Sparrow. This does NOT expose private keys.
-
-### From ColdCard (MicroSD)
-1. On ColdCard: **Settings → Multisig Wallets → Export XPUB**
-2. Save to MicroSD card.
-3. Or: **Advanced/Tools → Export Wallet → Generic JSON**
-
-### From ColdCard Q (QR)
-1. **Export Wallet → For Multisig → Via QR**
-2. Display the animated QR.
 
 ### From SeedSigner (QR)
 1. Load your seed on SeedSigner.
@@ -94,7 +86,7 @@ Each device needs to share its public key (xpub) with Sparrow. This does NOT exp
    - **Airgapped Hardware Wallet → Import File** (for MicroSD)
    - **Connected Hardware Wallet** (for USB)
 3. Import the xpub from Device A.
-4. Label it (e.g., "ColdCard - Home Safe").
+4. Label it (e.g., "Jade - Home Safe").
 
 ### Add Keystore 2 (Device B)
 1. Click **Keystore 2** tab.
@@ -120,20 +112,19 @@ This is the most important step. You must verify that all devices agree on the w
 1. In Sparrow: **Receive** tab → note the first receive address.
 2. On **each signing device**, verify this address:
 
-### ColdCard
-- Go to **Address Explorer**.
-- The multisig addresses should appear (after you've registered the multisig wallet on the ColdCard - see below).
+### Registering the multisig on each device
 
-### Registering the Multisig on ColdCard
-1. In Sparrow: **File → Export Wallet → ColdCard Multisig**.
-2. Save the file to MicroSD.
-3. On ColdCard: **Settings → Multisig Wallets → Import from SD**.
-4. Review the wallet details and confirm.
-5. Now ColdCard knows about this multisig wallet and can verify addresses.
+A device can only verify a multisig address after it knows the wallet. Register
+it first, then verify.
+
+1. In Sparrow: **File → Export Wallet → [Device Type]** to produce the
+   registration file or QR for that device.
+2. Move it to the device by QR or MicroSD, whichever that device uses.
+3. Review the wallet details on the device's own screen and confirm.
 
 ### Jade / SeedSigner
 - Each device has its own method for registering or verifying multisig addresses.
-- In Sparrow: **File → Export Wallet → [Device Type]** to generate the registration file or QR.
+- Follow the export that matches the device in Sparrow's list.
 
 **All 3 devices must show the same receive address.** If any device shows a different address, the wallet is misconfigured - do not use it.
 
@@ -205,7 +196,7 @@ The security of multisig comes from physical separation of keys.
 
 | Key | Device | Location | Access |
 |-----|--------|----------|--------|
-| Key 1 | ColdCard Mk4 | Home safe | Daily access |
+| Key 1 | Jade | Home safe | Daily access |
 | Key 2 | Jade | Bank safety deposit box | Weekly access |
 | Key 3 | SeedSigner seed on steel | Trusted family member | Emergency only |
 
@@ -249,7 +240,7 @@ If all devices are gone but you have 2 of 3 steel plates (with seed + descriptor
 | Problem | Solution |
 |---------|----------|
 | Addresses don't match across devices | Delete the wallet in Sparrow and recreate. Ensure correct derivation path (m/48'/0'/0'/2' for P2WSH). |
-| ColdCard rejects multisig PSBT | Register the multisig wallet on ColdCard first (import from Sparrow export). |
+| A device rejects the multisig PSBT | Register the multisig wallet on that device first, using its own import step. |
 | Only 1 signature but need 2 | Sign with a second device. The PSBT carries the first signature. |
 | "Unknown signer" error | The device doesn't recognize itself in the multisig. Re-register the wallet config on the device. |
 | Sparrow shows "partially signed" | Normal after 1 of 2 signatures. Sign with another device to complete. |

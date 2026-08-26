@@ -31,10 +31,9 @@ Practice with real device firmware in your browser. No hardware needed.
 | Device | Approach | Status | Reference |
 |--------|----------|--------|-----------|
 | [SeedSigner](emulators/seedsigner/) | Pyodide (Python in browser via WASM) | **Working** - webcam QR, mobile touch, tutorials | [SeedSigner/seedsigner](https://github.com/SeedSigner/seedsigner) |
-| [ColdCard Mk4/Q](emulators/coldcard/) | Docker + noVNC (SDL simulator wrapped) | Planned - Dockerfile + scripts ready | [Coldcard/firmware](https://github.com/Coldcard/firmware) `unix/simulator.py` |
 | [Jade](emulators/jade/) | Docker + QEMU web display | Planned - official `Dockerfile.qemu` with `--webdisplay` | [Blockstream/Jade](https://github.com/BlockstreamResearch/Jade) |
 
-SeedSigner works fully client-side (no server) because its firmware is pure Python. ColdCard and Jade are C firmware requiring QEMU/Docker and a host server to run.
+SeedSigner works fully client-side (no server) because its firmware is pure Python. Jade is C firmware requiring QEMU/Docker and a host server to run.
 
 ## Guides
 
@@ -50,17 +49,15 @@ SeedSigner works fully client-side (no server) because its firmware is pure Pyth
 | [Codex32](guides/gen-codex32.md) | Pen-and-paper generation with hand-verifiable checksums |
 | [Seed Generation Overview](guides/seed-generation.md) | All 6 methods compared |
 
-Each guide includes device-specific steps via dropdown selectors (SeedSigner, ColdCard Q, ColdCard Mk4, Jade) with direct links to each device's open-source code.
+Each guide includes device-specific steps via dropdown selectors (SeedSigner, Jade) with direct links to each device's open-source code.
 
 ### Signing Devices
 
 | Guide | Device |
 |-------|--------|
 | [SeedSigner](guides/seedsigner.md) | SeedSigner / SeedSigner+ |
-| [ColdCard Q](guides/coldcard-q.md) | Coinkite ColdCard Q |
-| [ColdCard Mk4](guides/coldcard-mk4.md) | Coinkite ColdCard Mk4 |
 | [Jade](guides/jade.md) | Blockstream Jade / Jade Plus |
-| [Compare Devices](guides/choosing-a-device.md) | All 4 side by side |
+| [Compare Devices](guides/choosing-a-device.md) | Both side by side |
 
 ### Software
 
@@ -91,13 +88,12 @@ Each guide includes device-specific steps via dropdown selectors (SeedSigner, Co
 - [x] 3 checklists: first setup, backup verification, inheritance planning
 - [x] Codex32 (BIP-93) guide with Shamir splitting and hand-verifiable checksums
 - [x] SeedSigner web emulator (Pyodide/WASM - real firmware in browser, webcam QR, mobile touch, guided tutorials)
-- [x] Device-specific dropdown selectors with GitHub source code links ([seed.py](https://github.com/SeedSigner/seedsigner/blob/dev/src/seedsigner/models/seed.py), [seed.py](https://github.com/Coldcard/firmware/blob/master/shared/seed.py), [random.c](https://github.com/BlockstreamResearch/Jade/blob/master/components/random/random.c))
+- [x] Device-specific dropdown selectors with GitHub source code links ([seed.py](https://github.com/SeedSigner/seedsigner/blob/dev/src/seedsigner/models/seed.py), [random.c](https://github.com/BlockstreamResearch/Jade/blob/master/components/random/random.c))
 - [x] FOSS vs source-available licensing distinction in device comparison
 - [x] Tutorial site: hash routing, glossary tooltips, browser history navigation, internal link routing
 - [x] GitHub Pages CI deployment
 
 ### Next (grant-dependent)
-- [ ] ColdCard web emulator - Docker + noVNC wrapping MicroPython/SDL simulator (Dockerfile + scripts ready, blocked by upstream submodule TLS issue)
 - [ ] Jade web emulator - Docker + QEMU with `--webdisplay` (official Dockerfile.qemu, needs linux/amd64 host for build)
 - [ ] Emulator VPS hosting (C firmware emulators require a server, unlike SeedSigner's client-side WASM)
 - [ ] Shamir backup guide (beyond Codex32)
@@ -116,7 +112,6 @@ All tutorial content is original. The following external sources are referenced 
 
 ### Device Firmware (source code linked in guides)
 - [SeedSigner/seedsigner](https://github.com/SeedSigner/seedsigner) - `src/seedsigner/models/seed.py` (FOSS, MIT)
-- [Coldcard/firmware](https://github.com/Coldcard/firmware) - `shared/seed.py` (source-available)
 - [Blockstream/Jade](https://github.com/BlockstreamResearch/Jade) - `components/random/random.c` (FOSS, MIT)
 
 ### Wallet Software
@@ -128,7 +123,6 @@ All tutorial content is original. The following external sources are referenced 
 - [Ian Coleman BIP-39 Tool](https://github.com/iancoleman/bip39) - Offline checksum calculator
 
 ### Manufacturer Documentation
-- [coldcard.com/docs](https://coldcard.com/docs/upgrade) - ColdCard firmware and upgrade docs
 - Blockstream Green - Jade companion app (iOS/Android)
 
 ## Contributing

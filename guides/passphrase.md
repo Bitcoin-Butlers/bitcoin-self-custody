@@ -26,19 +26,6 @@ Your seed phrase encodes a master secret (entropy). The BIP-39 standard runs thi
 ## Enabling a Passphrase by Device
 
 <details>
-<summary><strong>ColdCard Mk4 / Q</strong></summary>
-
-1. Navigate to **Passphrase → Edit Passphrase**
-2. Enter your passphrase using the keypad (Mk4) or QWERTY keyboard (Q)
-3. The device creates a temporary wallet using seed + passphrase
-4. **Lock It In** option: passphrase applies automatically on every boot (convenient but removes deniability)
-5. Without Lock It In, you must re-enter the passphrase every time you power on
-
-ColdCard shows the first few characters of the derived master fingerprint after applying a passphrase. Write this down and compare it each time to confirm you entered the passphrase correctly.
-
-</details>
-
-<details>
 <summary><strong>SeedSigner</strong></summary>
 
 SeedSigner is stateless. It does not store your seed or passphrase between sessions.

@@ -17,7 +17,7 @@ Each method has trade-offs between convenience, verifiability, and effort.
 ## Method 1: Hardware Wallet Generation (Easiest)
 
 ### How It Works
-Your signing device (ColdCard, Jade, etc.) has a built-in random number generator that creates your seed.
+Your signing device (Jade, SeedSigner, etc.) has a built-in random number generator that creates your seed.
 
 ### Steps
 1. During device setup, select **New Wallet** or **Create New Seed**.
@@ -26,8 +26,8 @@ Your signing device (ColdCard, Jade, etc.) has a built-in random number generato
 
 ### Trust Model
 - You're trusting the device manufacturer built a secure random number generator.
-- Reputable devices (ColdCard) use certified entropy sources.
-- ColdCard also mixes in your button presses during setup for additional randomness.
+- Reputable devices use certified entropy sources.
+- Some also mix in your button presses or camera noise during setup for additional randomness.
 
 ### Best For
 - Most users. If you trust your hardware wallet enough to sign transactions, you can trust its entropy.
@@ -48,7 +48,7 @@ A deck of physical cards, each representing one of the 2,048 BIP-39 words. You s
 - Seed Picker Cards deck (available in our shop)
 - Flat surface
 - Paper to write words on
-- A way to calculate the checksum word (SeedSigner, Ian Coleman's BIP39 tool offline, or ColdCard's tool)
+- A way to calculate the checksum word (SeedSigner, or Ian Coleman's BIP39 tool offline)
 
 ### Steps
 
@@ -74,12 +74,7 @@ The last word isn't random - it's mathematically derived from the first 23 to en
 3. SeedSigner calculates and shows valid options for word 24.
 4. Select one and write it down.
 
-**Option B: ColdCard (Import Existing)**
-1. On ColdCard: **Import Existing → 24 Word Seed**.
-2. Enter 23 words.
-3. ColdCard calculates the final word.
-
-**Option C: Offline BIP-39 Tool**
+**Option B: Offline BIP-39 Tool**
 1. Download Ian Coleman's BIP39 tool from GitHub (save the HTML file).
 2. Disconnect from the internet.
 3. Open the HTML file in your browser.
@@ -153,7 +148,7 @@ This is tedious (~45-60 minutes) but provides mathematically provable randomness
 2. Mix them thoroughly.
 3. Pick 23 capsules randomly (without looking).
 4. Open each capsule and record the word inside, in order.
-5. Calculate the 24th word (checksum) using SeedSigner or ColdCard.
+5. Calculate the 24th word (checksum) using SeedSigner.
 6. Verify the complete seed on your hardware wallet.
 
 ### Why Pills?

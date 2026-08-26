@@ -7,8 +7,6 @@ Practice Bitcoin self-custody without owning the hardware. These emulators run a
 | Device | Type | Platform | Setup |
 |--------|------|----------|-------|
 | [SeedSigner](seedsigner/) | **Web (browser)** | macOS, Linux | **Easy** - `setup.sh` + open browser |
-| [Passport](passport/) | Desktop (SDL) | macOS, Linux | Medium (Rust + C toolchain) |
-| [ColdCard](coldcard/) | Desktop (SDL) | macOS, Linux | Hard (C toolchain) |
 | [Jade](jade/) | Docker + web UI | Linux (Docker) | Medium |
 
 ## Quick Start: SeedSigner (Easiest)
@@ -33,7 +31,6 @@ Arrow keys to navigate, Enter to select, 1/2/3 for side buttons. Webcam activate
 
 We'd love help with:
 - Testing emulators on different platforms
-- Web-wrapping desktop emulators (Passport, ColdCard) for browser access
 - Dockerizing build processes for easier setup
 - Writing interactive tutorials
 

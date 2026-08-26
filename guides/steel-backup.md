@@ -16,7 +16,7 @@ Steel survives:
 
 ## Single-Sig Steel Backup
 
-*For wallets controlled by one signing device (ColdCard, Jade, SeedSigner, etc.)*
+*For wallets controlled by one signing device (Jade, SeedSigner, etc.)*
 
 ### What You're Backing Up
 - Your 24-word recovery phrase (or 12 words)

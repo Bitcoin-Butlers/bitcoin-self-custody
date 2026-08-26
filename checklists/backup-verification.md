@@ -24,7 +24,7 @@ A backup you've never tested is a backup that might not work. Steel plates get s
 ### Step 2: Wipe and Restore
 
 **Option A: Device has a "verify backup" feature**
-- [ ] Use the built-in verification (ColdCard has this, some others do)
+- [ ] Use the built-in verification if your device offers it
 - [ ] Enter your seed words when prompted
 - [ ] Device confirms match or mismatch
 

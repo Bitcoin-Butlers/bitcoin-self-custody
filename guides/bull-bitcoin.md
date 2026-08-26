@@ -31,7 +31,7 @@ Download the app for your platform. Open it and select **Create New Wallet** or 
 
 ### Step 2: Connect Your Hardware Wallet
 
-If you're using a signing device (ColdCard, SeedSigner, Jade):
+If you're using a signing device (SeedSigner, Jade):
 
 1. Export the wallet's **public key (xpub)** from your signing device.
 2. In Bull Bitcoin, select **Import Watch-Only Wallet**.
@@ -61,7 +61,7 @@ Choose a PIN for daily access. This protects the app on your phone.
 
 - Bull Bitcoin is a **hot wallet** - your phone is connected to the internet
 - Keep only spending amounts here, not your life savings
-- For large amounts, use a hardware wallet (SeedSigner, ColdCard, or Jade)
+- For large amounts, use a hardware wallet (SeedSigner or Jade)
 - Back up your seed phrase on steel and store it securely
 
 ## Resources

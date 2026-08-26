@@ -86,59 +86,6 @@
         "note": "Use Pi Zero v1.3 specifically. It has NO WiFi or Bluetooth hardware. The chips physically do not exist. Air-gap by hardware design."
       }
     },
-    "coldcard-mk4": {
-      "name": "ColdCard Mk4",
-      "guide": "coldcard-mk4",
-      "summary": "Compact, discreet, longest track record. Dual secure elements. MicroSD-only communication.",
-      "setup": {
-        "steps": [
-          "Inspect the tamper-evident bag for cuts, tears, or signs of resealing",
-          "Note the bag number on the barcode label",
-          "Pull the blue tab to open (the word VOID should appear on the seal)",
-          "Verify the serialized tear-off tab width and perforations match the bag",
-          "Power on via USB-C to a wall charger (not a computer)",
-          "Accept Terms of Sale",
-          "Set your primary PIN (avoid obvious patterns)",
-          "Set your secondary PIN",
-          "Verify the bag number matches what the device displays",
-          "Update firmware via MicroSD if a newer version is available"
-        ],
-        "prereqs": [
-          "ColdCard Mk4 (in sealed tamper-evident bag)",
-          "USB-C cable",
-          "Wall charger or power bank",
-          "Industrial MicroSD card"
-        ],
-        "time": "15-20 min",
-        "note": "If anything about the packaging looks wrong, do not use the device. Contact support@coinkite.com with photos."
-      }
-    },
-    "coldcard-q": {
-      "name": "ColdCard Q",
-      "guide": "coldcard-q",
-      "summary": "Full QWERTY keyboard, camera, large color display. Flagship signing device with NFC and battery.",
-      "setup": {
-        "steps": [
-          "Inspect the tamper-evident bag for cuts, tears, or signs of resealing",
-          "Note the bag number on the barcode label",
-          "Pull the blue tab to open (the word VOID should appear on the seal)",
-          "Verify the serialized tear-off tab width and perforations match the bag",
-          "Power on via USB-C or internal battery",
-          "Accept Terms of Sale",
-          "Set your primary PIN using the QWERTY keyboard",
-          "Set your secondary PIN",
-          "Verify the bag number matches what the device displays",
-          "Update firmware via MicroSD if a newer version is available"
-        ],
-        "prereqs": [
-          "ColdCard Q (in sealed tamper-evident bag)",
-          "USB-C cable (for charging and power)",
-          "Industrial MicroSD card"
-        ],
-        "time": "15-20 min",
-        "note": "The Q has a built-in camera for QR scanning and a rechargeable battery for fully portable, air-gapped operation."
-      }
-    },
     "jade": {
       "name": "Blockstream Jade / Jade Plus",
       "guide": "jade",
@@ -166,8 +113,6 @@
       "guide": "gen-hardware-wallet",
       "summary": "Let your device generate the seed. Easiest method, requires trust in the manufacturer's random number generator.",
       "devices": [
-        "coldcard-mk4",
-        "coldcard-q",
         "jade"
       ],
       "support": "native",
@@ -179,8 +124,6 @@
       "summary": "Shuffle a physical deck of BIP-39 word cards. Verifiable randomness, no electronics needed for generation.",
       "devices": [
         "seedsigner",
-        "coldcard-mk4",
-        "coldcard-q",
         "jade"
       ],
       "support": "native",
@@ -191,9 +134,7 @@
       "guide": "gen-dice-rolls",
       "summary": "99 dice rolls for maximum verifiable entropy. You control every bit of randomness.",
       "devices": [
-        "seedsigner",
-        "coldcard-mk4",
-        "coldcard-q"
+        "seedsigner"
       ],
       "support": "native",
       "time": "30 min"
@@ -214,8 +155,6 @@
       "summary": "3D-printed capsules containing BIP-39 words. Tactile, educational, and verifiable.",
       "devices": [
         "seedsigner",
-        "coldcard-mk4",
-        "coldcard-q",
         "jade"
       ],
       "support": "native",
@@ -226,9 +165,7 @@
       "guide": "gen-codex32",
       "summary": "Generate, verify, and split your seed entirely by hand using pen, paper, dice, and volvelles. Zero electronic trust.",
       "devices": [
-        "seedsigner",
-        "coldcard-mk4",
-        "coldcard-q"
+        "seedsigner"
       ],
       "support": "native",
       "time": "60 min"
@@ -241,8 +178,6 @@
       "summary": "Desktop coordinator for single-sig and multisig. Coin control, PSBT signing, privacy tools.",
       "devices": [
         "seedsigner",
-        "coldcard-mk4",
-        "coldcard-q",
         "jade"
       ],
       "type": "coordinator"
@@ -253,8 +188,6 @@
       "summary": "Non-custodial mobile wallet. Buy, sell, and spend Bitcoin without giving up your keys.",
       "devices": [
         "seedsigner",
-        "coldcard-mk4",
-        "coldcard-q",
         "jade"
       ],
       "type": "hot-wallet"

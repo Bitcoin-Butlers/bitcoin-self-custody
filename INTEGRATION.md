@@ -23,20 +23,20 @@ GET https://bitcoin-butlers.github.io/bitcoin-self-custody/concierge.json
     { "id": "seed-at-rest", "number": 4, ... }
   ],
   "devices": {                         // Signing devices keyed by slug
-    "coldcard-mk4": {
-      "name": "ColdCard Mk4",
-      "guide": "coldcard-mk4",          // → fetch guide markdown at /guides/{guide}.md
+    "jade": {
+      "name": "Blockstream Jade / Jade Plus",
+      "guide": "jade",                  // → fetch guide markdown at /guides/{guide}.md
       "summary": "...",
-      "setup": { "steps": [...], "prereqs": [...], "time": "15-20 min" }
+      "setup": { "steps": [...], "prereqs": [...], "time": "10 min" }
     },
-    // seedsigner, coldcard-q, jade
+    // seedsigner
   },
   "seedMethods": {                     // Seed generation methods
     "gen-seed-picker": {
       "name": "Seed Picker Cards",
       "guide": "gen-seed-picker",
       "summary": "...",
-      "devices": ["seedsigner", "coldcard-mk4", "coldcard-q", "jade"],  // compatible devices
+      "devices": ["seedsigner", "jade"],  // compatible devices
       "support": "native"
     },
     // gen-hardware-wallet, gen-dice-rolls, gen-camera-entropy, gen-entropia-pills, gen-codex32
@@ -45,7 +45,7 @@ GET https://bitcoin-butlers.github.io/bitcoin-self-custody/concierge.json
     "sparrow-wallet": {
       "name": "Sparrow Wallet",
       "guide": "sparrow-wallet",
-      "devices": ["seedsigner", "coldcard-mk4", "coldcard-q", "jade"],
+      "devices": ["seedsigner", "jade"],
       "type": "coordinator"
     },
     // bull-bitcoin
@@ -65,9 +65,9 @@ GET https://bitcoin-butlers.github.io/bitcoin-self-custody/concierge.json
 Use the `devices` arrays in `seedMethods` and `software` to filter options based on the user's chosen device:
 
 ```ts
-// Get seed methods compatible with ColdCard Mk4
+// Get seed methods compatible with Blockstream Jade
 const compatible = Object.entries(manifest.seedMethods)
-  .filter(([, method]) => method.devices.includes("coldcard-mk4"));
+  .filter(([, method]) => method.devices.includes("jade"));
 ```
 
 ## Guide Markdown
@@ -90,10 +90,10 @@ Many guides contain device-specific instructions inside `<details>` blocks:
 
 ```markdown
 <details>
-<summary><strong>ColdCard Mk4</strong></summary>
+<summary><strong>Blockstream Jade</strong></summary>
 
-1. Power on your ColdCard Mk4...
-2. Navigate to **Import Existing** → **24 Word Seed**...
+1. Power on your Jade via USB-C...
+2. Select **Restore Wallet** → **24 Word Seed**...
 
 </details>
 
@@ -110,26 +110,40 @@ Many guides contain device-specific instructions inside `<details>` blocks:
 Example filter (TypeScript):
 
 ```ts
-const DEVICE_KEYWORDS = ["seedsigner", "coldcard", "jade", "blockstream"];
+// Derive the device names from the manifest rather than hardcoding them. A
+// hardcoded list silently rots: a device missing from it is not recognised as
+// a device block at all, so it is treated as general content and shown to
+// EVERY reader. That is a real failure mode, not a theoretical one.
+function deviceKeywords(manifest: Manifest): string[] {
+  return Object.values(manifest.devices)
+    .flatMap((d) => d.name.split(/[\/,]/))
+    .map((part) => part.trim().toLowerCase())
+    .filter(Boolean);
+}
 
-function filterGuideByDevice(markdown: string, deviceName: string): string {
-  return markdown.replace(
-    /<details>\s*<summary><strong>(.*?)<\/strong><\/summary>([\s\S]*?)<\/details>/g,
-    (match, summary) => {
-      const s = summary.toLowerCase();
-      const isDeviceBlock = DEVICE_KEYWORDS.some(kw => s.includes(kw));
-      if (!isDeviceBlock) return match; // keep non-device blocks
+// Both summary forms appear in the guides.
+const BLOCK =
+  /<details>\s*<summary>(?:<strong>)?(.*?)(?:<\/strong>)?<\/summary>([\s\S]*?)<\/details>/g;
 
-      if (s.includes(deviceName.toLowerCase())) {
-        // Unwrap matching device — show content inline
-        return match
-          .replace(/<details>\s*<summary><strong>.*?<\/strong><\/summary>/, "")
-          .replace(/<\/details>$/, "")
-          .trim();
-      }
-      return ""; // remove non-matching device blocks
+function filterGuideByDevice(
+  markdown: string,
+  deviceName: string,
+  keywords: string[]
+): string {
+  return markdown.replace(BLOCK, (match, summary) => {
+    const s = summary.toLowerCase();
+    const isDeviceBlock = keywords.some((kw) => s.includes(kw));
+    if (!isDeviceBlock) return match; // keep genuinely general blocks
+
+    if (deviceName.toLowerCase().split(/[\/,]/).some((n) => s.includes(n.trim()))) {
+      // Unwrap the matching device, so its content shows inline
+      return match
+        .replace(/<details>\s*<summary>(?:<strong>)?.*?(?:<\/strong>)?<\/summary>/, "")
+        .replace(/<\/details>$/, "")
+        .trim();
     }
-  );
+    return ""; // remove blocks belonging to a device the reader did not choose
+  });
 }
 ```
 
@@ -148,7 +162,7 @@ The manifest includes a `videos` section mapping guide slugs to video tutorials 
       "the-bitcoin-way": { "name": "The Bitcoin Way" }
     },
     "guides": {
-      "coldcard-mk4": {
+      "jade": {
         "bitcoin-butlers": { "url": "https://youtube.com/watch?v=...", "platform": "youtube" },
         "btc-sessions": { "url": "https://youtube.com/watch?v=...", "platform": "youtube" }
       },
@@ -195,7 +209,7 @@ Here's how [Bitcoin Butlers](https://bitcoinbutlers.com) uses this in production
    - A title and narrative summary (custom per protocol)
    - A collapsible "Step-by-step guide" that lazy-loads the guide markdown on expand
 4. **Filter guide content** by the protocol's device list — only show relevant device instructions
-5. **Link products** to each step (e.g., ColdCard purchase, steel backup plates)
+5. **Link products** to each step (e.g., signing device purchase, steel backup plates)
 
 This turns the generic FOSS guides into a focused, device-specific walkthrough tailored to the protocol's recommended setup.
 
