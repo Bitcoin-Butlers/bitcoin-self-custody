@@ -5,7 +5,7 @@
 ## What You'll Need
 - Computer (Mac, Windows, or Linux)
 - Internet connection (for download and blockchain sync)
-- A signing device already set up (ColdCard, Jade, SeedSigner, etc.)
+- A signing device already set up (Jade, SeedSigner, etc.)
 - 10-15 minutes for initial setup
 - Optional: your own Bitcoin node (for maximum privacy)
 
@@ -80,7 +80,7 @@ On first launch, Sparrow asks how to connect to the Bitcoin network.
 ## Step 3: Create a New Wallet
 
 1. Go to **File → New Wallet** (or click the + tab).
-2. Name your wallet (e.g., "ColdCard Main", "Savings", "Multisig Vault").
+2. Name your wallet (e.g., "Main", "Savings", "Multisig Vault").
 3. Choose your wallet type:
 
 ### Single Signature (Standard)
@@ -102,42 +102,6 @@ On first launch, Sparrow asks how to connect to the Bitcoin network.
 ## Step 4: Connect Your Hardware Wallet
 
 Under **Keystores**, add your signing device. Pick your device below for the connection method that applies to it.
-
-<details>
-<summary><strong>ColdCard Mk4</strong></summary>
-
-**Air-Gapped (MicroSD) - recommended**
-1. Click **Airgapped Hardware Wallet**.
-2. Click **Import File**.
-3. Select the wallet export file (`.json`) from your MicroSD card.
-
-**USB Connected**
-1. Click **Connected Hardware Wallet**.
-2. Connect the ColdCard via USB and unlock it.
-3. Click **Scan** - Sparrow detects the device. Select it and import.
-
-The Mk4 has no camera, so QR connection is not available.
-
-</details>
-
-<details>
-<summary><strong>ColdCard Q</strong></summary>
-
-**Air-Gapped (QR) - recommended**
-1. Click **Airgapped Hardware Wallet**.
-2. Click **Scan** - your computer's camera opens.
-3. On the Q, export the wallet/xpub as a QR code.
-4. Hold the Q's screen up to your camera. Sparrow reads the animated QR.
-
-**Air-Gapped (MicroSD)**
-1. Click **Airgapped Hardware Wallet** → **Import File**.
-2. Select the wallet export file (`.json`) from your MicroSD card.
-
-**USB Connected**
-1. Click **Connected Hardware Wallet**, connect via USB and unlock.
-2. Click **Scan**, select the device, and import.
-
-</details>
 
 <details>
 <summary><strong>SeedSigner</strong></summary>

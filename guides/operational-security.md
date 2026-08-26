@@ -11,28 +11,6 @@ Every time you share a receive address, verify it on your signing device screen 
 Check the **first 6 and last 6 characters** of the address. This is sufficient to catch clipboard replacement attacks, which swap the entire address.
 
 <details>
-<summary>ColdCard Mk4</summary>
-
-1. In Sparrow, go to the **Receive** tab. An address appears.
-2. On ColdCard, go to **Address Explorer**.
-3. Navigate to the same address index.
-4. Compare first 6 and last 6 characters between Sparrow and ColdCard.
-5. ColdCard displays addresses on its own screen, independent of your computer.
-
-</details>
-
-<details>
-<summary>ColdCard Q</summary>
-
-1. In Sparrow, go to the **Receive** tab.
-2. On ColdCard Q, go to **Address Explorer**.
-3. The Q's large color display shows the full address clearly.
-4. Compare first 6 and last 6 characters.
-5. You can also scan a QR of the address with the Q's camera to verify.
-
-</details>
-
-<details>
 <summary>SeedSigner</summary>
 
 1. In Sparrow, go to the **Receive** tab.
@@ -86,7 +64,7 @@ Keep your signing device firmware current. Updates fix security vulnerabilities 
 
 **Safe update process:**
 1. Only download firmware from the official manufacturer website or GitHub releases
-2. Verify the firmware signature or checksum (ColdCard and SeedSigner both support this)
+2. Verify the firmware signature or checksum (SeedSigner supports this)
 3. Update via MicroSD card or QR code, not USB (maintains air-gap)
 4. After updating, verify your wallet still loads correctly and addresses match
 

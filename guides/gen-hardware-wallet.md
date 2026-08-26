@@ -37,69 +37,6 @@ SeedSigner does not use a hardware random number generator. Instead, it uses you
 </details>
 
 <details>
-<summary><strong>ColdCard Q</strong></summary>
-
-ColdCard Q generates your seed using its built-in random number generator, combined with button presses you make during setup for extra randomness.
-
-### Steps
-
-1. Power on your ColdCard Q. On first boot you'll see the Terms of Sale - press **OK** to accept.
-2. Set your **PIN code**. ColdCard uses a two-part PIN:
-   - Enter the **first part** (prefix). Press **OK**.
-   - The ColdCard displays two **anti-phishing words**. Write these down - they prove your ColdCard is genuine on future logins.
-   - Enter the **second part** (suffix). Press **OK**.
-3. After PIN setup, select **New Seed Words** from the menu.
-4. Choose **24 Words** (recommended) or **12 Words**.
-5. ColdCard will ask you to press buttons and add randomness. Press keys randomly.
-6. ColdCard displays your **24-word seed phrase**, 6 words at a time.
-   - Press **1** to see words 1-6.
-   - Press **2** for words 7-12.
-   - Press **3** for words 13-18.
-   - Press **4** for words 19-24.
-7. Write down every word, in order, on paper.
-8. ColdCard will quiz you on specific words. Enter the correct word when prompted.
-9. Once verified, the seed is stored encrypted on the ColdCard's secure element.
-10. **Back up to steel immediately.** See the [At Rest guides](#steel-backup).
-
-### Notes
-- ColdCard stores your seed in dual secure elements. It persists across power cycles.
-- You can also save an encrypted backup to MicroSD: **Advanced/Tools > Backup > Backup System**.
-- The anti-phishing words are unique to your PIN + device. If they ever change, someone has tampered with your ColdCard.
-- Review how ColdCard generates seeds: [seed.py on GitHub](https://github.com/Coldcard/firmware/blob/master/shared/seed.py)
-
-</details>
-
-<details>
-<summary><strong>ColdCard Mk4</strong></summary>
-
-Same security model and firmware as the Q, but with a numeric keypad and smaller screen.
-
-### Steps
-
-1. Power on your ColdCard Mk4. Accept the Terms of Sale - press **OK** (checkmark button).
-2. Set your **PIN code**. ColdCard uses a two-part PIN:
-   - Use the **numeric keypad** to enter the first part (prefix). Press **OK**.
-   - The ColdCard displays two **anti-phishing words**. Write these down.
-   - Enter the second part (suffix). Press **OK**.
-3. After PIN setup, select **New Seed Words** using the **5-way joystick** to navigate the menu.
-4. Choose **24 Words** (recommended) or **12 Words**.
-5. ColdCard asks you to add randomness. Press the number keys randomly.
-6. ColdCard displays your **24-word seed phrase** on the small OLED screen:
-   - Scroll through with the joystick - words are shown in groups.
-   - Take your time. The screen is small so read carefully.
-7. Write down every word, in order, on paper.
-8. ColdCard quizzes you on specific words. Use the joystick to scroll to the correct word and press **OK**.
-9. The seed is stored encrypted on the dual secure elements.
-10. **Back up to steel immediately.** See the [At Rest guides](#steel-backup).
-
-### Notes
-- Navigation is via the 5-way joystick + numeric keypad (no QWERTY keyboard).
-- Encrypted MicroSD backup: **Advanced/Tools > Backup > Backup System**.
-- Review how ColdCard generates seeds: [seed.py on GitHub](https://github.com/Coldcard/firmware/blob/master/shared/seed.py)
-
-</details>
-
-<details>
 <summary><strong>Jade</strong></summary>
 
 Jade generates your seed and encrypts it on the device. Instead of a physical secure element chip, Jade uses a "virtual secure element" where Blockstream's server (or your own) holds a blinding key needed to unlock your seed. The server never sees your seed.

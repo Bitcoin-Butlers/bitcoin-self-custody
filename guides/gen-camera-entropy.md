@@ -8,7 +8,6 @@ Use your SeedSigner's camera to capture visual noise and hash it into a seed phr
 
 This method is **SeedSigner only**. Other signing devices do not use camera-based entropy generation.
 
-- **ColdCard Q** - no camera entropy (use [Dice Rolls](#gen-dice-rolls) or [Hardware Wallet](#gen-hardware-wallet) generation)
 - **Jade** - no camera entropy (use [Hardware Wallet](#gen-hardware-wallet) generation or import from SeedSigner)
 
 ## What You'll Need
@@ -40,27 +39,7 @@ This method is **SeedSigner only**. Other signing devices do not use camera-base
 
 ## Importing to Another Device
 
-If your daily signing device is a ColdCard Q or Jade, generate the seed on SeedSigner via camera entropy, then import:
-
-<details>
-<summary><strong>Import to ColdCard Q</strong></summary>
-
-1. On ColdCard Q, log in and navigate to **Import Existing** → **24 Word Seed**.
-2. Type each of the 24 words using the QWERTY keyboard.
-3. ColdCard auto-completes - press **OK** after each word.
-4. After word 24, ColdCard verifies the checksum and stores the seed in the secure element.
-
-</details>
-
-<details>
-<summary><strong>Import to ColdCard Mk4</strong></summary>
-
-1. On ColdCard Mk4, log in and navigate to **Import Existing** → **24 Word Seed** using the joystick.
-2. Use the **numeric keypad** to type each word (T9-style input).
-3. ColdCard narrows down matches - press **OK** to confirm each word.
-4. After word 24, ColdCard verifies the checksum and stores the seed in the secure element.
-
-</details>
+If your daily signing device is a Jade, generate the seed on SeedSigner via camera entropy, then import:
 
 <details>
 <summary><strong>Import to Jade</strong></summary>

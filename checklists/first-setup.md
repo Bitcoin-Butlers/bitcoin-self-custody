@@ -19,7 +19,7 @@ Just got a signing device or hardware wallet? Follow this checklist before sendi
 ## Firmware
 
 - [ ] Update to the latest firmware before generating any keys
-- [ ] Verify the firmware signature if your device supports it (ColdCard)
+- [ ] Verify the firmware signature if your device supports it
 - [ ] Note the firmware version for your records
 
 ## Seed Generation

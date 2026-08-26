@@ -3,21 +3,6 @@
 
 ---
 
-## coldcard-mk4.md
-- **Firmware in guide:** v5.4.5 (Nov 2025) | **Current:** v5.4.5 ✅
-- **Accurate:** Tamper-evident bag process, PIN setup (prefix/suffix), USB-C power, MicroSD backup, NFC features, Sparrow pairing via file export
-- **No issues found**
-
-## coldcard-q.md
-- **Firmware in guide:** v1.3.5Q | **Current:** v1.3.5Q ✅
-- **Accurate:** QR scanning, full QWERTY keyboard, battery power (3x AAA), MicroSD + NFC + QR, Sparrow pairing
-- **No issues found**
-
-## passport.md
-- **No firmware version hardcoded** (says "Passport Core, current model") ✅
-- **Accurate:** QR-only air gap, Envoy companion app, MicroSD for firmware updates, Foundation supply chain verification
-- **No issues found**
-
 ## jade.md
 - **Firmware in guide:** was v1.0.38+ | **Updated to:** v1.0.39 (Feb 2026) ✅
 - **Accurate:** Virtual Secure Element (blind oracle model), QR scanning on both Jade and Jade Plus, stateless mode, anti-rollback

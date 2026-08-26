@@ -42,68 +42,11 @@ Each die roll provides ~2.58 bits of entropy. 99 rolls = ~256 bits, which matche
 </details>
 
 <details>
-<summary><strong>ColdCard Q - Dice Rolls</strong></summary>
-
-ColdCard Q has a built-in dice roll seed generation tool.
-
-### Steps
-
-1. Power on your ColdCard Q and log in with your PIN.
-2. Navigate to **New Seed Words** → **Advanced** → **Dice Rolls**.
-3. ColdCard explains the process. Press **OK** to continue.
-4. Roll your die. Enter the result using the keypad:
-   - Press **1** through **6** for each roll.
-   - ColdCard tracks the number of rolls at the top of the screen.
-5. Continue rolling. ColdCard requires a **minimum of 99 rolls** for full entropy.
-   - You can do more rolls for additional entropy - there's no maximum.
-6. When satisfied, press **OK** to finalize.
-7. ColdCard hashes the dice data and generates your **24-word seed phrase**.
-8. Write down every word. ColdCard shows them 6 at a time:
-   - Press **1** for words 1-6.
-   - Press **2** for words 7-12.
-   - Press **3** for words 13-18.
-   - Press **4** for words 19-24.
-9. ColdCard quizzes you on specific words.
-10. The seed is stored in the dual secure elements.
-11. **Back up to steel immediately.** See the [At Rest guides](#steel-backup).
-
-### Notes
-- Review how ColdCard processes dice entropy: [seed.py on GitHub](https://github.com/Coldcard/firmware/blob/master/shared/seed.py)
-
-</details>
-
-<details>
-<summary><strong>ColdCard Mk4 - Dice Rolls</strong></summary>
-
-Same dice tool as the Q, but navigated with the joystick and numeric keypad.
-
-### Steps
-
-1. Power on your ColdCard Mk4 and log in with your PIN.
-2. Navigate to **New Seed Words** → **Advanced** → **Dice Rolls** using the joystick.
-3. ColdCard explains the process. Press **OK** to continue.
-4. Roll your die. Enter the result using the **numeric keypad**:
-   - Press **1** through **6** for each roll.
-   - The roll count is displayed at the top.
-5. Continue for at least **99 rolls**.
-6. When satisfied, press **OK** to finalize.
-7. ColdCard hashes the dice data and generates your **24-word seed phrase**.
-8. Scroll through the words using the joystick. Write down every word, in order.
-9. ColdCard quizzes you on specific words. Use the joystick to select the correct answer.
-10. The seed is stored in the dual secure elements.
-11. **Back up to steel immediately.** See the [At Rest guides](#steel-backup).
-
-### Notes
-- Review how ColdCard processes dice entropy: [seed.py on GitHub](https://github.com/Coldcard/firmware/blob/master/shared/seed.py)
-
-</details>
-
-<details>
 <summary><strong>Jade - No Built-In Dice Tool</strong></summary>
 
 Jade does not have a built-in dice roll seed generation feature. To use dice-generated entropy with Jade:
 
-### Option A: Generate on SeedSigner, Import to Jade
+### Generate on SeedSigner, Import to Jade
 
 1. Use a SeedSigner to generate a seed via 99 dice rolls (see SeedSigner steps above).
 2. Write down the 24 words.
@@ -111,17 +54,9 @@ Jade does not have a built-in dice roll seed generation feature. To use dice-gen
 4. Enter all 24 words.
 5. Set your PIN.
 
-### Option B: Generate on ColdCard, Import to Jade
-
-1. Use a ColdCard to generate a seed via dice rolls.
-2. Write down the 24 words.
-3. On Jade, select **Restore Wallet**.
-4. Enter all 24 words.
-5. Set your PIN.
-
 ### Why No Dice Tool?
 
-Jade is designed as a compact, user-friendly device. Advanced entropy generation is typically done on a dedicated air-gapped device like SeedSigner or ColdCard, then the seed is imported.
+Jade is designed as a compact, user-friendly device. Advanced entropy generation is typically done on a dedicated air-gapped device like SeedSigner, then the seed is imported.
 
 </details>
 

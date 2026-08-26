@@ -45,36 +45,6 @@ The last word is mathematically derived from the first 23. Choose your device:
 </details>
 
 <details>
-<summary><strong>ColdCard Q</strong></summary>
-
-1. Power on your ColdCard Q and log in with your PIN.
-2. Navigate to **Import Existing** → **24 Word Seed**.
-3. Type each of the 23 words on the QWERTY keyboard. ColdCard auto-completes.
-4. Press **OK** after each word.
-5. At word 24, ColdCard displays valid checksum word(s).
-6. Select one and write it down.
-7. Choose whether to save as your active seed or exit.
-- Review ColdCard's seed handling code: [seed.py on GitHub](https://github.com/Coldcard/firmware/blob/master/shared/seed.py)
-
-</details>
-
-<details>
-<summary><strong>ColdCard Mk4</strong></summary>
-
-1. Power on your ColdCard Mk4 and log in with your PIN.
-2. Navigate to **Import Existing** → **24 Word Seed** using the joystick.
-3. For each of the 23 words:
-   - Use the **numeric keypad** to type letters (T9-style). Press each number key to cycle through letters.
-   - ColdCard narrows down matches as you type.
-   - Press **OK** to confirm each word.
-4. At word 24, ColdCard displays valid checksum word(s).
-5. Select one with the joystick and write it down.
-6. Choose whether to store the seed or exit.
-- Review ColdCard's seed handling code: [seed.py on GitHub](https://github.com/Coldcard/firmware/blob/master/shared/seed.py)
-
-</details>
-
-<details>
 <summary><strong>Jade</strong></summary>
 
 1. Power on your Jade.

@@ -92,36 +92,6 @@ SeedSigner has native Codex32 support:
 </details>
 
 <details>
-<summary><strong>ColdCard Q</strong></summary>
-
-ColdCard Q supports Codex32 import:
-
-1. Power on your ColdCard Q and log in with your PIN.
-2. Navigate to **Import Existing** > **Codex32**.
-3. Enter your Codex32 string using the QWERTY keyboard.
-4. ColdCard validates the checksum.
-5. If valid, ColdCard imports the seed and stores it in the secure element.
-
-- Review ColdCard's seed handling code: [seed.py on GitHub](https://github.com/Coldcard/firmware/blob/master/shared/seed.py)
-
-</details>
-
-<details>
-<summary><strong>ColdCard Mk4</strong></summary>
-
-Same Codex32 import as the Q, navigated with joystick and numeric keypad:
-
-1. Power on your ColdCard Mk4 and log in with your PIN.
-2. Navigate to **Import Existing** > **Codex32** using the joystick.
-3. Enter the Codex32 string using the numeric keypad (T9-style input).
-4. ColdCard validates the checksum.
-5. If valid, ColdCard imports the seed and stores it in the secure element.
-
-- Review ColdCard's seed handling code: [seed.py on GitHub](https://github.com/Coldcard/firmware/blob/master/shared/seed.py)
-
-</details>
-
-<details>
 <summary><strong>Jade</strong></summary>
 
 Jade does not currently support direct Codex32 import. To use a Codex32-generated seed with Jade:
@@ -148,7 +118,7 @@ Jade does not currently support direct Codex32 import. To use a Codex32-generate
 
 - **Time-intensive.** Generating and verifying takes 1-3 hours vs. seconds for a hardware wallet.
 - **Learning curve.** You need to understand the worksheet and volvelle process before starting.
-- **Not widely supported yet.** Only SeedSigner and ColdCard support direct Codex32 import as of early 2026. Other devices require converting to BIP-39 words first.
+- **Not widely supported yet.** Only SeedSigner supports direct Codex32 import as of early 2026. Other devices require converting to BIP-39 words first.
 - **Shares add complexity.** If you use Shamir splitting, you must keep track of which shares exist and where they are stored.
 
 ## Resources
