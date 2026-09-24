@@ -4,7 +4,7 @@ Use this repo's guides and concierge manifest in your own Bitcoin self-custody p
 
 ## Concierge Manifest
 
-The manifest describes all devices, seed generation methods, wallet software, and backup options with compatibility mappings between them.
+The manifest describes custody models, signers, coordinators, blockchain connections, seed generation methods, and recovery content. It also retains the version 1 device and software collections for compatible consumers.
 
 ```
 GET https://bitcoin-butlers.github.io/bitcoin-self-custody/concierge.json
@@ -14,7 +14,7 @@ GET https://bitcoin-butlers.github.io/bitcoin-self-custody/concierge.json
 
 ```jsonc
 {
-  "version": "1.0.0",
+  "version": "2.2.3",
   "steps": [                          // 5 steps of the self-custody journey
     { "id": "plan", "number": 0, "title": "Plan Your Setup", ... },
     { "id": "hardware-setup", "number": 1, ... },
@@ -22,7 +22,32 @@ GET https://bitcoin-butlers.github.io/bitcoin-self-custody/concierge.json
     { "id": "seed-in-use", "number": 3, ... },
     { "id": "seed-at-rest", "number": 4, ... }
   ],
-  "devices": {                         // Signing devices keyed by slug
+  "builder": {
+    "modes": { "build": { ... }, "compare": { ... } },
+    "custodyModels": {                 // Single-key and multi-key policies
+      "single-sig": { "signerCount": 1, "threshold": 1, ... },
+      "multisig": {
+        "signerCount": 3,
+        "threshold": 2,
+        "minimumProjects": 1,
+        "recommendedMinimumProjects": 2,
+        ...
+      }
+    },
+    "signers": {                       // Physical devices and Bitcoin Core routes
+      "seedsigner": {
+        "project": "seedsigner",
+        "setupGuide": "seedsigner-preparation",
+        "custodyModels": ["single-sig", "multisig"],
+        "coordinators": ["sparrow-wallet"],
+        ...
+      }
+    },
+    "coordinators": { ... },
+    "connections": { ... },
+    "questions": [ ... ]               // Published comparison rules
+  },
+  "devices": {                         // Version 1 compatible signing-device data
     "jade": {
       "name": "Blockstream Jade / Jade Plus",
       "guide": "jade",                  // → fetch guide markdown at /guides/{guide}.md
@@ -61,6 +86,38 @@ GET https://bitcoin-butlers.github.io/bitcoin-self-custody/concierge.json
 ```
 
 ### Compatibility
+
+Version 2 consumers should start from a custody model. Filter `builder.signers`
+by `custodyModels`, then intersect the signers' `coordinators` arrays. Filter
+connections through the selected coordinator. Enforce `minimumProjects` against
+each signer's `project` field. Treat `recommendedMinimumProjects` as guidance,
+not as a validation rule. A person can choose one signer project after reviewing
+the implementation-diversity trade-off.
+
+When present, `signer.multisigSetupGuides[coordinator]` prepares that signer
+before the selected multisignature coordinator guide. Use it when the signer
+needs a coordinator-specific preparation step but the general signer guide
+would repeat the complete wallet flow.
+`signer.coordinatorGuides[coordinator]` can replace the general guide when one
+coordinator requires a different complete flow.
+
+When present, `signer.setupGuide` prepares the tool without creating a wallet.
+The concierge uses it before the selected seed-generation and coordinator
+guides. `signer.coordinatorsByCustody` can narrow a signer's coordinator list
+for one custody model. A coordinator's optional `signerProjects` list limits it
+to compatible signer implementations.
+
+The comparison options publish three transparent preference fields:
+
+- `matches` changes the order of compatible signers;
+- `custodyModels` limits the custody starting points shown in the results;
+- `connections` selects the first compatible connection after the person
+  chooses a result.
+
+The person still chooses a result and can change every setup field before the
+tutorial is built.
+
+Version 1 consumers can continue to use the existing compatibility fields:
 
 Use the `devices` arrays in `seedMethods` and `software` to filter options based on the user's chosen device:
 

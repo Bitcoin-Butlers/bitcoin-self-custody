@@ -39,9 +39,12 @@ A secure element is a dedicated chip that protects your private keys from physic
 
 ### Multisig Support
 
-With single-sig, one device controls your Bitcoin. If that device has a flaw, a backdoor, or gets compromised, your Bitcoin is gone. Multisig eliminates that single point of failure by requiring multiple keys from different devices to approve a transaction (e.g., 2-of-3).
+With single-sig, one key controls the wallet. A 2-of-3 multisig requires any two
+of three separate keys. Loss or compromise of one key is not enough to spend.
 
-Using devices from **different manufacturers** (multi-vendor multisig) means a vulnerability in one manufacturer's hardware or firmware can't compromise your funds on its own. For example, a 2-of-3 multisig using a Jade, a SeedSigner, and a third device from another manufacturer means an attacker would need to independently compromise two different companies' security models simultaneously. This guide covers the first two. Any BIP-39 device that signs PSBTs can hold the third key.
+The keys can use the same supported signer project. Using at least two independent
+signer projects reduces reliance on one implementation, but it adds different
+workflows to learn and test. This is a recommendation, not a requirement.
 
 Every device on this list supports multisig. The experience varies:
 

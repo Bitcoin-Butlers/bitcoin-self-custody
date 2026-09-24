@@ -8,7 +8,7 @@ Free, open-source guides and device emulators for securing your own Bitcoin. Ste
 
 ## What This Is
 
-A complete, beginner-friendly tutorial site for Bitcoin self-custody. Covers seed generation, signing devices, wallet software, steel backups, and multisig - with browser-based device emulators so you can practice before buying hardware.
+A beginner-friendly tutorial site for Bitcoin self-custody. The concierge can compare approaches or let you choose each setup layer. It then builds one tutorial from the maintained guides. The site also includes browser-based device emulators so you can practice before buying hardware.
 
 No tracking. No paywalls. No affiliate links. No sales CTAs.
 
@@ -65,7 +65,12 @@ Each guide includes device-specific steps via dropdown selectors (SeedSigner, Ja
 |-------|----------|
 | [Sparrow Wallet](guides/sparrow-wallet.md) | Desktop coordinator for single-sig and multisig |
 | [Bull Bitcoin](guides/bull-bitcoin.md) | Non-custodial hot wallet |
-| [Multisig with Sparrow](guides/multisig-sparrow.md) | 2-of-3 multi-vendor multisig |
+| [Multisig with Sparrow](guides/multisig-sparrow.md) | 2-of-3 multisig with optional signer diversity |
+| [Multisig with Bitcoin Core](guides/multisig-bitcoin-core.md) | 2-of-3 multisig using Bitcoin Core descriptor wallets and PSBTs |
+| [Bitcoin Core Wallet](guides/bitcoin-core-wallet.md) | Online Bitcoin Core wallet for learning or active use |
+| [Offline Bitcoin Core](guides/bitcoin-core-offline.md) | Two-computer offline signing with PSBTs |
+| [Bitcoin Core Multisig Signer](guides/bitcoin-core-multisig-signer.md) | Use an offline Core key with hardware signers in Sparrow |
+| [Bitcoin Core Node](guides/bitcoin-core-node.md) | Private blockchain verification and wallet connection |
 
 ### Backup (At Rest)
 
@@ -84,7 +89,10 @@ Each guide includes device-specific steps via dropdown selectors (SeedSigner, Ja
 ## Roadmap
 
 ### Done
-- [x] 17 guides: 6 seed generation methods, 5 signing devices, 3 wallet/multisig, steel backup, device comparison, seed overview
+- [x] Trade-off based concierge with direct-build and guided-comparison routes
+- [x] Single-key and multi-key setup models
+- [x] Commercial, DIY, online Bitcoin Core, and offline Bitcoin Core signer routes
+- [x] Maintained guides for seed generation, signers, software, backups, nodes, and recovery
 - [x] 3 checklists: first setup, backup verification, inheritance planning
 - [x] Codex32 (BIP-93) guide with Shamir splitting and hand-verifiable checksums
 - [x] SeedSigner web emulator (Pyodide/WASM - real firmware in browser, webcam QR, mobile touch, guided tutorials)
@@ -109,6 +117,11 @@ All tutorial content is original. The following external sources are referenced 
 - [BIP-39](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki) - Mnemonic code for deterministic keys ([word list](https://github.com/bitcoin/bips/blob/master/bip-0039/english.txt))
 - [BIP-93](https://github.com/bitcoin/bips/blob/master/bip-0093.mediawiki) - Codex32: Shamir secret sharing for seed backup
 - [BIP-85](https://github.com/bitcoin/bips/blob/master/bip-0085.mediawiki) - Deterministic entropy from BIP-32 keychains (child seeds)
+
+### Bitcoin Core
+- [Managing Wallets](https://github.com/bitcoin/bitcoin/blob/master/doc/managing-wallets.md) - Wallet creation and backup
+- [Offline Signing Tutorial](https://github.com/bitcoin/bitcoin/blob/master/doc/offline-signing-tutorial.md) - Two-computer PSBT flow
+- [PSBT Documentation](https://github.com/bitcoin/bitcoin/blob/master/doc/psbt.md) - Partially signed Bitcoin transactions
 
 ### Device Firmware (source code linked in guides)
 - [SeedSigner/seedsigner](https://github.com/SeedSigner/seedsigner) - `src/seedsigner/models/seed.py` (FOSS, MIT)
