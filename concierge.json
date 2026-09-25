@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "2.2.3",
   "steps": [
     {
       "id": "plan",
@@ -37,6 +37,214 @@
       "description": "Stamp your seed into steel, consider a passphrase for additional security, and plan for inheritance. Your Bitcoin should outlast you."
     }
   ],
+  "builder": {
+    "modes": {
+      "build": {
+        "name": "Build my setup",
+        "summary": "Choose the custody model and tools yourself."
+      },
+      "compare": {
+        "name": "Help me compare",
+        "summary": "Compare suitable approaches from your stated preferences."
+      }
+    },
+    "custodyModels": {
+      "single-sig": {
+        "name": "Single-key",
+        "summary": "One key authorizes a payment.",
+        "signerCount": 1,
+        "threshold": 1,
+        "minimumProjects": 1,
+        "tradeoffs": [
+          "The setup is simpler to operate and recover.",
+          "Loss or compromise of the one key can cause loss of funds."
+        ]
+      },
+      "multisig": {
+        "name": "Multi-key",
+        "summary": "A 2-of-3 multisignature policy. Any two of three separate keys authorize a payment.",
+        "signerCount": 3,
+        "threshold": 2,
+        "minimumProjects": 1,
+        "recommendedMinimumProjects": 2,
+        "defaultSigners": ["seedsigner", "jade", "bitcoin-core-offline"],
+        "tradeoffs": [
+          "One lost key does not prevent spending.",
+          "Three keys, their locations, and the wallet descriptor must be managed.",
+          "Different signer projects reduce reliance on one implementation, but they also add different workflows to learn."
+        ]
+      }
+    },
+    "signers": {
+      "seedsigner": {
+        "name": "SeedSigner",
+        "project": "seedsigner",
+        "kind": "diy-stateless",
+        "summary": "Build an open-source, stateless QR signing device from commodity parts.",
+        "guide": "seedsigner",
+        "setupGuide": "seedsigner-preparation",
+        "device": "seedsigner",
+        "custodyModels": ["single-sig", "multisig"],
+        "seedMethods": ["gen-camera-entropy", "gen-dice-rolls", "gen-seed-picker", "gen-entropia-pills", "gen-codex32"],
+        "coordinators": ["sparrow-wallet"],
+        "tradeoffs": [
+          "The device stores no seed after power is removed.",
+          "The user must build or source the parts and load the seed for each signing session."
+        ]
+      },
+      "jade": {
+        "name": "Blockstream Jade",
+        "project": "blockstream-jade",
+        "kind": "commercial-device",
+        "summary": "Use an open-source commercial signing device with QR, USB, and Bluetooth options.",
+        "guide": "jade",
+        "setupGuide": "jade-preparation",
+        "device": "jade",
+        "custodyModels": ["single-sig", "multisig"],
+        "seedMethods": ["gen-hardware-wallet", "gen-seed-picker", "gen-entropia-pills"],
+        "coordinators": ["sparrow-wallet"],
+        "tradeoffs": [
+          "The packaged device is simpler to start using than a DIY signer.",
+          "Its default PIN flow depends on Blockstream's blind-oracle service unless the user configures an alternative."
+        ]
+      },
+      "bitcoin-core-online": {
+        "name": "Bitcoin Core on an online computer",
+        "project": "bitcoin-core",
+        "kind": "hot-wallet",
+        "summary": "Let Bitcoin Core hold the key and verify the blockchain on one networked computer.",
+        "guide": "bitcoin-core-wallet",
+        "custodyModels": ["single-sig"],
+        "seedMethods": [],
+        "coordinators": ["bitcoin-core"],
+        "tradeoffs": [
+          "One application can create, verify, and spend from the wallet.",
+          "Malware on the online computer can reach the private keys. This is a hot wallet."
+        ]
+      },
+      "bitcoin-core-offline": {
+        "name": "Bitcoin Core on a dedicated offline computer",
+        "project": "bitcoin-core",
+        "kind": "offline-computer",
+        "summary": "Keep one signing key in an offline Bitcoin Core wallet and transfer PSBTs through a watch-only coordinator.",
+        "guide": "bitcoin-core-offline",
+        "multisigSetupGuides": {
+          "sparrow-wallet": "bitcoin-core-multisig-key-preparation"
+        },
+        "coordinatorGuides": {
+          "bitcoin-core": "multisig-bitcoin-core"
+        },
+        "custodyModels": ["single-sig", "multisig"],
+        "seedMethods": [],
+        "coordinators": ["sparrow-wallet", "bitcoin-core"],
+        "coordinatorsByCustody": {
+          "single-sig": ["bitcoin-core"],
+          "multisig": ["sparrow-wallet", "bitcoin-core"]
+        },
+        "tradeoffs": [
+          "Private keys stay away from network connections.",
+          "The user must maintain two computers, transfer PSBTs, and protect wallet backups."
+        ]
+      }
+    },
+    "coordinators": {
+      "sparrow-wallet": {
+        "name": "Sparrow Wallet",
+        "summary": "Create addresses and PSBTs with a graphical desktop coordinator.",
+        "guide": "sparrow-wallet",
+        "multisigGuide": "multisig-sparrow",
+        "connections": ["public-server", "bitcoin-core-node"]
+      },
+      "bitcoin-core": {
+        "name": "Bitcoin Core",
+        "summary": "Use Bitcoin Core as the wallet, coordinator, and blockchain verifier.",
+        "multisigGuide": "multisig-bitcoin-core",
+        "signerProjects": ["bitcoin-core"],
+        "connections": ["bitcoin-core-node"]
+      }
+    },
+    "connections": {
+      "public-server": {
+        "name": "Public server",
+        "summary": "Start quickly, but disclose wallet activity to a server operator."
+      },
+      "bitcoin-core-node": {
+        "name": "My Bitcoin Core node",
+        "summary": "Verify the blockchain yourself and avoid sending wallet queries to a public server.",
+        "guide": "bitcoin-core-node"
+      }
+    },
+    "questions": [
+      {
+        "id": "keyCount",
+        "question": "How many keys can you manage?",
+        "options": [
+          {"value": "one", "label": "One key", "custodyModels": ["single-sig"]},
+          {"value": "three", "label": "Three keys in separate locations", "custodyModels": ["multisig"]},
+          {"value": "unsure", "label": "Not sure", "custodyModels": ["single-sig", "multisig"]}
+        ]
+      },
+      {
+        "id": "setupWork",
+        "question": "How much setup work is okay?",
+        "options": [
+          {"value": "minimal", "label": "Keep it simple", "matches": ["jade", "bitcoin-core-online"]},
+          {"value": "some", "label": "Some manual setup", "matches": ["seedsigner", "jade"]},
+          {"value": "advanced", "label": "Advanced setup is fine", "matches": ["seedsigner", "bitcoin-core-offline"]},
+          {"value": "unsure", "label": "Not sure"}
+        ]
+      },
+      {
+        "id": "keyIsolation",
+        "question": "Where should the keys live?",
+        "options": [
+          {"value": "connected", "label": "A connected computer is okay", "matches": ["bitcoin-core-online"]},
+          {"value": "signer", "label": "A signing device", "matches": ["seedsigner", "jade"]},
+          {"value": "offline", "label": "A separate offline computer", "matches": ["bitcoin-core-offline"]},
+          {"value": "unsure", "label": "Not sure"}
+        ]
+      },
+      {
+        "id": "equipment",
+        "question": "Which equipment sounds best?",
+        "options": [
+          {"value": "ready-made", "label": "A ready-made device", "matches": ["jade"]},
+          {"value": "diy", "label": "A DIY device", "matches": ["seedsigner"]},
+          {"value": "computers", "label": "Computers I already have", "matches": ["bitcoin-core-online", "bitcoin-core-offline"]},
+          {"value": "unsure", "label": "No preference"}
+        ]
+      },
+      {
+        "id": "signingSteps",
+        "question": "How much signing work is okay?",
+        "options": [
+          {"value": "minimal", "label": "The fewest steps", "matches": ["jade", "bitcoin-core-online"]},
+          {"value": "manual", "label": "Some manual steps", "matches": ["seedsigner", "jade"]},
+          {"value": "advanced", "label": "Advanced offline steps", "matches": ["seedsigner", "bitcoin-core-offline"]},
+          {"value": "unsure", "label": "Not sure"}
+        ]
+      },
+      {
+        "id": "maintenance",
+        "question": "How much maintenance is okay?",
+        "options": [
+          {"value": "minimal", "label": "As little as possible", "matches": ["jade"]},
+          {"value": "occasional", "label": "Occasional updates", "matches": ["seedsigner", "jade"]},
+          {"value": "advanced", "label": "Dedicated computers are fine", "matches": ["bitcoin-core-online", "bitcoin-core-offline"]},
+          {"value": "unsure", "label": "Not sure"}
+        ]
+      },
+      {
+        "id": "connectionPreference",
+        "question": "What matters more when connecting your wallet?",
+        "options": [
+          {"value": "convenience", "label": "Convenience", "connections": ["public-server"]},
+          {"value": "privacy", "label": "Privacy and independent verification", "connections": ["bitcoin-core-node"]},
+          {"value": "both", "label": "Show both options", "connections": ["public-server", "bitcoin-core-node"]}
+        ]
+      }
+    ]
+  },
   "devices": {
     "seedsigner": {
       "name": "SeedSigner / SeedSigner+",
@@ -240,7 +448,12 @@
     "multisig": {
       "guide": "multisig-sparrow",
       "step": "seed-in-use",
-      "summary": "2-of-3 multi-vendor multisig setup with Sparrow"
+      "summary": "2-of-3 multisig setup with Sparrow"
+    },
+    "multisig-bitcoin-core": {
+      "guide": "multisig-bitcoin-core",
+      "step": "seed-in-use",
+      "summary": "2-of-3 multisig setup with Bitcoin Core"
     }
   },
   "videos": {

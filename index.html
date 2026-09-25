@@ -427,9 +427,25 @@
         <h3>Bull Bitcoin</h3>
         <p>Single-sig hot wallet. Non-custodial. Buy, sell, and spend.</p>
       </div>
+      <div class="card" onclick="showGuide('bitcoin-core-wallet')">
+        <h3>Bitcoin Core Wallet</h3>
+        <p>Use Bitcoin Core as an online wallet. Simple to understand, but the keys remain on a networked computer.</p>
+      </div>
+      <div class="card" onclick="showGuide('bitcoin-core-offline')">
+        <h3>Offline Bitcoin Core</h3>
+        <p>Keep keys on an offline computer and move PSBTs through a separate watch-only wallet.</p>
+      </div>
       <div class="card" onclick="showGuide('multisig-sparrow')">
         <h3>Multisig with Sparrow</h3>
-        <p>2-of-3 multisig setup. The gold standard for large amounts.</p>
+        <p>Use two of three keys to spend. This adds redundancy and more recovery work.</p>
+      </div>
+      <div class="card" onclick="showGuide('multisig-bitcoin-core')">
+        <h3>Multisig with Bitcoin Core</h3>
+        <p>Use three Bitcoin Core signer wallets and a 2-of-3 descriptor policy.</p>
+      </div>
+      <div class="card" onclick="showGuide('bitcoin-core-node')">
+        <h3>Run a Bitcoin Core Node</h3>
+        <p>Verify the blockchain yourself and connect compatible wallet software to your own node.</p>
       </div>
     </div>
 
@@ -566,8 +582,8 @@ async function showGuide(slug, skipHistory) {
   html = html.replace(/\[x\]/g, '<input type="checkbox" checked>');
 
   // Rewrite internal links to use hash routing
-  // .md links like "jade.md" or "../guides/jade.md" -> showGuide('jade')
-  html = html.replace(/href="(?:\.\.\/guides\/)?([a-z0-9_-]+)\.md"/gi, (_, slug) => {
+  // .md links like "jade.md", "guides/jade.md", or "../guides/jade.md" -> showGuide('jade')
+  html = html.replace(/href="(?:(?:\.\.\/)?guides\/)?([a-z0-9_-]+)\.md"/gi, (_, slug) => {
     return `href="#${slug}" onclick="showGuide('${slug}'); return false;"`;
   });
   // Emulator links like "../emulators/seedsigner/" -> showGuide('seedsigner')

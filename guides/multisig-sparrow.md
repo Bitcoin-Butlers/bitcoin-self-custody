@@ -18,42 +18,47 @@ Multi-signature (multisig) means your Bitcoin requires multiple keys to spend. I
 - **Inheritance friendly.** Give one key to a trusted party - they can't spend alone but can help heirs.
 
 ### When Is Multisig Overkill?
-- Small amounts (under ~$50K)
-- Users who might lose track of multiple devices
-- People who need fast, frequent transactions
-- **Single-sig with good seed backup is secure for most people.**
+- You cannot reliably maintain multiple independent recovery packages.
+- You need fast, frequent transactions.
+- The added recovery work does not fit your needs.
+
+A tested single-key setup can be safer than a multi-key setup that you cannot
+operate or recover reliably.
 
 ---
 
 ## What You'll Need
 
 ### Hardware (2-of-3 Example)
-- **3 different signing devices** - we recommend mixing manufacturers:
-  - Example: Jade + SeedSigner + a third device from another manufacturer
-  - Using different manufacturers protects against a firmware vulnerability in one brand
-  - This guide covers Jade and SeedSigner. Any Bitcoin-only device that exports an xpub and signs PSBTs can hold the third key
-- **3 steel backup plates** (multisig set)
+- **3 signing keys**, each created from a different seed:
+  - The keys can use the same supported signer project.
+  - Using at least two independent signer projects reduces reliance on one implementation.
+  - Different projects also add different signing and recovery workflows to learn.
+  - This guide covers SeedSigner, Jade, and an offline Bitcoin Core signer.
+- **3 independent recovery backups** appropriate to the selected signers
 - **MicroSD cards** for each device that supports them
 
 ### Software
 - **Sparrow Wallet** on your computer (coordinator - creates the wallet, builds transactions)
-- Each device must be set up individually first (see individual device guides)
+- Each signer must be prepared individually first.
 
 ### Time
 - 45-60 minutes for initial setup
-- Each device should already have its own seed generated and backed up
+- Each signer should already have its own independent key and tested recovery
+  material.
 
 ---
 
 ## Step 1: Set Up Each Signing Device Individually
 
-Before creating the multisig wallet, each device must have its own independent seed.
+Before creating the multisig wallet, each signer must hold an independent key.
+Do not load one seed or wallet backup into more than one key slot.
 
-1. **Device A (e.g., Jade):** Follow the Jade setup guide. Generate seed. Back up to steel.
-2. **Device B (e.g., SeedSigner):** Follow the SeedSigner setup guide. Generate seed. Back up to steel.
-3. **Device C (your third device):** Follow its manufacturer's setup guide. Generate seed. Back up to steel.
+1. **Key A:** Follow the selected signer guide. Create and back up its key.
+2. **Key B:** Repeat the selected signer guide with a new independent key.
+3. **Key C:** Repeat the selected signer guide with another independent key.
 
-**Critical:** Each device must have a DIFFERENT seed. Using the same seed defeats the purpose of multisig.
+The signers can use the same project. The three keys must be different.
 
 ---
 
@@ -68,6 +73,12 @@ Each device needs to share its public key (xpub) with Sparrow. This does NOT exp
 
 ### From Jade Plus (QR)
 1. **Export Xpub → Multisig → Via QR**
+
+### From an offline Bitcoin Core signer
+1. Follow the Bitcoin Core multisig signer guide.
+2. Record the master fingerprint, derivation path, and xpub together.
+3. In Sparrow, choose **xPub / Watch Only Wallet** for that keystore.
+4. Enter the origin information and xpub exactly as Bitcoin Core produced them.
 
 ---
 
@@ -126,7 +137,13 @@ it first, then verify.
 - Each device has its own method for registering or verifying multisig addresses.
 - Follow the export that matches the device in Sparrow's list.
 
-**All 3 devices must show the same receive address.** If any device shows a different address, the wallet is misconfigured - do not use it.
+### Bitcoin Core
+- Import Sparrow's public multisig descriptor into a blank wallet with private
+  keys disabled on the offline computer.
+- Confirm that its receive address matches Sparrow and the hardware signers.
+
+Every signer environment must derive the same receive address. If any address
+differs, the wallet is misconfigured. Do not use it.
 
 ---
 
@@ -136,21 +153,38 @@ The wallet descriptor is the blueprint for your multisig wallet. Without it, see
 
 1. In Sparrow: **File → Export Wallet → Output Descriptor**.
 2. Save this file.
-3. **Include the descriptor on every steel backup plate** (see Steel Backup Guide - Multisig section).
-4. Also save to MicroSD cards stored with each device.
+3. Include the checked descriptor with every signer recovery package.
+4. Save multiple durable copies separately from the Sparrow computer.
 
 ---
 
-## Step 6: Receive Bitcoin
+## Step 6: Test Recovery Before Funding
+
+Complete this test on signet before you receive mainnet funds.
+Signet keys and descriptors do not carry over to mainnet. Create new keys,
+rebuild the wallet, and repeat this test.
+
+1. Keep the original Sparrow wallet and signers unchanged.
+2. In a separate test environment, restore two signer recovery packages.
+3. Recreate the watch-only wallet from a checked copy of the complete descriptor.
+4. Confirm that the restored wallet derives the same receive addresses.
+5. Receive a small signet payment to one verified address.
+6. Create and sign a return payment with the two restored signers.
+7. Stop and correct the backups if any address or signature does not match.
+
+---
+
+## Step 7: Receive Bitcoin
 
 1. In Sparrow: **Receive** tab.
 2. Share the address with the sender.
-3. **Verify the address on at least one hardware device** before sharing.
+3. Verify the address in at least one independent signer environment before
+   sharing.
 4. Wait for confirmations.
 
 ---
 
-## Step 7: Sending Bitcoin (Multisig Signing)
+## Step 8: Sending Bitcoin (Multisig Signing)
 
 Spending from a multisig wallet requires signatures from 2 of your 3 devices.
 
@@ -175,6 +209,12 @@ Spending from a multisig wallet requires signatures from 2 of your 3 devices.
 1. Connect Device 1, click **Sign**.
 2. Verify and confirm on device.
 
+#### Offline Bitcoin Core
+1. Save the PSBT to dedicated transfer media.
+2. Load it in the offline Core watch-only multisig wallet and verify the outputs.
+3. Sign it with the Core signer wallet by using `walletprocesspsbt`.
+4. Return the partially signed PSBT to Sparrow.
+
 ### Sign with Device 2
 1. The transaction now has 1 of 2 required signatures.
 2. Repeat the signing process with Device 2.
@@ -190,48 +230,51 @@ Spending from a multisig wallet requires signatures from 2 of your 3 devices.
 
 ## Geographic Distribution Strategy
 
-The security of multisig comes from physical separation of keys.
+The resilience of multisig depends on keeping independent keys and recovery
+material in separate locations.
 
 ### Recommended Locations (2-of-3)
 
 | Key | Device | Location | Access |
 |-----|--------|----------|--------|
-| Key 1 | Jade | Home safe | Daily access |
-| Key 2 | Jade | Bank safety deposit box | Weekly access |
-| Key 3 | SeedSigner seed on steel | Trusted family member | Emergency only |
+| Key 1 | Signer and recovery package | Primary secure location | Regular access |
+| Key 2 | Signer and recovery package | Separate secure location | Recovery access |
+| Key 3 | Signer and recovery package | Third secure location | Emergency access |
 
 ### Rules
-- **No two keys in the same building.**
-- **Any combination of 2 locations must be accessible to you** (for normal spending).
-- **At least 2 locations must survive** a catastrophic event at any one location.
-- **Steel backup plates** at each location include the wallet descriptor.
+- Choose separate locations that match your threat model.
+- Keep two recovery paths accessible for normal spending and recovery.
+- Make sure one local event cannot destroy two required keys.
+- Include the checked wallet descriptor with each signer recovery package.
 
 ---
 
 ## Recovery Scenarios
 
-### Scenario 1: One Device Lost/Stolen
-- **Impact:** None. You still have 2 devices.
-- **Action:** Move funds to a new 2-of-3 wallet with a replacement device.
+### Scenario 1: One Signer Lost/Stolen
+- **Impact:** The wallet still works while two independent signers remain.
+- **Action:** Move funds to a new 2-of-3 wallet with a replacement signer.
 - **Urgency:** Medium. The thief can't spend with 1 key, but don't delay.
 
-### Scenario 2: One Device Destroyed (Fire/Flood)
-- **Impact:** None. Recover using the steel backup plate.
-- **Action:** Import seed from steel into a new device. Verify it produces the same xpub.
+### Scenario 2: One Signer Destroyed (Fire/Flood)
+- **Impact:** The wallet still works while two independent signers remain.
+- **Action:** Follow that signer's documented recovery process in a separate
+  test environment. Confirm that it produces the expected xpub before use.
 
 ### Scenario 3: Lost Wallet Descriptor
 - **Impact:** Critical if you also lost devices.
-- **Action:** If you have 2+ functioning devices, Sparrow can rebuild from their xpubs.
-- **Prevention:** Descriptor on EVERY steel plate and EVERY MicroSD.
+- **Action:** Rebuild only from a checked copy of the complete descriptor or
+  from all three public-key expressions with their origins and derivation paths.
+  Two signer keys alone do not reconstruct the original wallet.
+- **Prevention:** Keep a checked descriptor with every signer recovery package.
 
-### Scenario 4: Total Recovery from Steel
-If all devices are gone but you have 2 of 3 steel plates (with seed + descriptor):
-1. Buy 2 new signing devices.
-2. Import seed from Plate 1 into Device A.
-3. Import seed from Plate 2 into Device B.
-4. In Sparrow: recreate the multisig wallet using the descriptor from either plate.
-5. Verify addresses match your previous wallet.
-6. Move funds to a new wallet with fresh keys.
+### Scenario 4: Total Recovery from Backups
+If all active signers are gone but two signer backups and the descriptor remain:
+1. Restore two signer backups in separate test environments.
+2. Recreate the multisig wallet in Sparrow from the checked descriptor.
+3. Verify that the restored signers derive the expected addresses.
+4. Sign a recovery transaction with both restored keys.
+5. Move the funds to a new wallet with fresh keys.
 
 ---
 
@@ -239,7 +282,7 @@ If all devices are gone but you have 2 of 3 steel plates (with seed + descriptor
 
 | Problem | Solution |
 |---------|----------|
-| Addresses don't match across devices | Delete the wallet in Sparrow and recreate. Ensure correct derivation path (m/48'/0'/0'/2' for P2WSH). |
+| Addresses don't match across devices | Stop and recreate the wallet from each signer's exact recorded fingerprint, derivation path, and xpub. Do not force different signer implementations onto one path. |
 | A device rejects the multisig PSBT | Register the multisig wallet on that device first, using its own import step. |
 | Only 1 signature but need 2 | Sign with a second device. The PSBT carries the first signature. |
 | "Unknown signer" error | The device doesn't recognize itself in the multisig. Re-register the wallet config on the device. |
