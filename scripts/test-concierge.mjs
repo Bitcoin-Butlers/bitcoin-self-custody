@@ -167,7 +167,11 @@ assert.deepEqual(
   "The all-Core flow must create each key only once inside the Core coordinator guide",
 );
 
-assert.ok(multisigGuide.indexOf("## Step 6: Test Recovery Before Funding") < multisigGuide.indexOf("## Step 7: Receive Bitcoin"));
+const recoveryHeading = multisigGuide.indexOf("## Step 6: Test Recovery Before Funding");
+const receiveHeading = multisigGuide.indexOf("## Step 7: Receive Bitcoin");
+assert.ok(recoveryHeading > -1, "The multisig guide must keep its recovery-test section");
+assert.ok(receiveHeading > -1, "The multisig guide must keep its receive section");
+assert.ok(recoveryHeading < receiveHeading, "The recovery test must come before funding");
 
 concierge.printTutorial();
 assert.equal(printCalled, true);

@@ -161,6 +161,8 @@ The wallet descriptor is the blueprint for your multisig wallet. Without it, see
 ## Step 6: Test Recovery Before Funding
 
 Complete this test on signet before you receive mainnet funds.
+Signet keys and descriptors do not carry over to mainnet. Create new keys,
+rebuild the wallet, and repeat this test.
 
 1. Keep the original Sparrow wallet and signers unchanged.
 2. In a separate test environment, restore two signer recovery packages.

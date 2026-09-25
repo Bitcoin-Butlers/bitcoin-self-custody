@@ -54,7 +54,8 @@ a requirement.
 5. Encrypt and back up each signer wallet separately.
 6. Extract the key origin and account xpub from each signer wallet by following
    the official multisig tutorial.
-7. Create a 2-of-3 native SegWit descriptor in this form:
+7. Create a 2-of-3 native SegWit descriptor in this form, where each key
+   carries its origin as `[fingerprint/derivation path]xpub...`:
    `wsh(sortedmulti(2,KEY_A/<0;1>/*,KEY_B/<0;1>/*,KEY_C/<0;1>/*))`.
 8. Add the checksum with Bitcoin Core's `getdescriptorinfo` RPC.
 9. Create a blank watch-only wallet with private keys disabled.
@@ -70,6 +71,15 @@ a requirement.
 
 Never copy a private descriptor or signer-wallet backup to the online
 coordinator.
+
+BIP-48 defines `m/48'/0'/0'/2'` as the account path for this script type, and
+other coordinators expect it. Record the exact path each wallet uses, because
+recovery in other software needs it. The steel backup guide shows a complete
+descriptor.
+
+Signet keys and descriptors do not carry over to mainnet. Repeat every step in
+this section with new keys and a new descriptor, and complete the recovery test
+again, before you receive mainnet funds.
 
 ## Sign a Payment
 

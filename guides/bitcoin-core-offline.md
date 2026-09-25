@@ -62,7 +62,8 @@ This follows Bitcoin Core's official offline-signing model.
 16. Move the signed PSBT back to the online computer.
 17. Finalize and broadcast it from the online computer.
 18. Repeat the flow after restoring the offline wallet from backup.
-19. Consider mainnet only after the signing and recovery tests succeed.
+19. Start again on mainnet only after the signing and recovery tests succeed.
+    Signet keys do not carry over. Create a new wallet and repeat every step.
 
 ## Verify It Works
 

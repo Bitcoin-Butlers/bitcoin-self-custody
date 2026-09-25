@@ -46,6 +46,10 @@ private key offline and signs only the PSBTs that you transfer to it.
 Repeat this process in a separate wallet and signing environment for every Core
 key in the policy. Never reuse one Core wallet for two key slots.
 
+BIP-48 defines `m/48'/0'/0'/2'` as the standard account path for this script
+type. Record the path your wallet actually uses. A path outside BIP-48 still
+works inside the descriptor, and it makes recovery in other software harder.
+
 Do not choose a different derivation path only to make it match another signer.
 Bitcoin Core must recognize the path as belonging to the signer wallet.
 
@@ -92,6 +96,8 @@ Stop if Sparrow and Bitcoin Core do not derive the same addresses.
 ## Test Recovery
 
 Complete the entire process on signet before receiving mainnet funds.
+Signet keys and descriptors do not carry over. Prepare every mainnet key again,
+rebuild the Sparrow wallet, and repeat this test.
 Restore the Core signer wallet from backup in a separate test environment.
 Recreate the multisig wallet from the descriptor.
 Confirm that two restored signers can authorize a new signet payment.

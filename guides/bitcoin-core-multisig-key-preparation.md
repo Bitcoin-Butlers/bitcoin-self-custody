@@ -50,6 +50,10 @@ recovery, and signs a transaction.
 9. Record the master fingerprint, complete derivation path, and xpub together.
 10. Stop before you create the multisignature wallet.
 
+BIP-48 defines `m/48'/0'/0'/2'` as the standard account path for this script
+type. Record the path your wallet actually uses. A path outside BIP-48 still
+works inside the descriptor, and it makes recovery in other software harder.
+
 Do not change the derivation path only to make it match another signer.
 The coordinator must use the exact origin and path that belong to this Bitcoin
 Core wallet.
@@ -57,6 +61,9 @@ Core wallet.
 Repeat this process in a separate wallet and signing environment for every Core
 key in the policy.
 Never reuse one Core wallet for two key slots.
+
+Signet keys do not carry over to mainnet. Prepare every mainnet key again from
+step 1, and record its own origin details.
 
 ## Verify It Works
 
