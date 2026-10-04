@@ -95,7 +95,7 @@ storage or a backup.
 - Seed backup where the signer uses a seed
 - Passphrase backup where the setup uses a passphrase
 - Wallet descriptor backup for multisignature and watch-only setups
-- A tested recovery exercise before meaningful funds are received
+- A small mainnet payment signed with restored backups before larger deposits
 
 ## Tutorial result
 
@@ -107,10 +107,16 @@ The result is one ordered plan, not a list of unrelated articles.
 4. Create the coordinator or watch-only wallet.
 5. Verify receive addresses on an independent device where possible.
 6. Back up every required recovery item.
-7. Complete a recovery test.
-8. Receive a small test amount.
-9. Create, sign, and broadcast a test transaction.
-10. Show ongoing maintenance and inheritance tasks.
+7. Restore the backups in trusted environments without changing the originals.
+8. Compare the restored mainnet receive addresses with the original wallet.
+9. Check current fees and receive a test amount the person can afford to lose.
+10. Sign and broadcast the test payment with the restored wallet or signers.
+11. Confirm receipt in another wallet before depositing more.
+12. Show ongoing maintenance and inheritance tasks.
+
+Private keys stay within the selected signer's security boundary during recovery.
+The test amount must cover the outgoing fee and leave a usable output.
+Fees are spent even if the test succeeds.
 
 Each tutorial section comes from a maintained guide in this repository.
 

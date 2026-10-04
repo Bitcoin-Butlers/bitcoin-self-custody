@@ -39,7 +39,8 @@ This follows Bitcoin Core's official offline-signing model.
 - Transfer media reserved for the signing workflow
 - Separate encrypted media for wallet backups
 - A written recovery procedure
-- A small amount of signet bitcoin for the first test
+- A small amount of bitcoin that you can afford to lose during the recovery test
+- A verified receive address in another wallet you control
 
 ## Build the Setup
 
@@ -47,32 +48,53 @@ This follows Bitcoin Core's official offline-signing model.
 2. Download and verify Bitcoin Core on the online computer.
 3. Transfer the verified installer to the offline computer.
 4. Remove or disable every network interface on the offline computer.
-5. Start both Bitcoin Core instances on signet.
+5. Start both Bitcoin Core instances on mainnet.
 6. Create and encrypt the signing wallet on the offline computer.
 7. Export its watch-only wallet using Bitcoin Core's supported export flow.
 8. Move the watch-only wallet to the online computer.
 9. Load the watch-only wallet and let the online node synchronize it.
 10. Generate a receive address on both computers and compare the complete
     address.
-11. Receive a small signet payment.
-12. Create an unsigned PSBT with the online watch-only wallet.
-13. Move the PSBT to the offline computer.
-14. Inspect every payment output and the fee on the offline computer.
-15. Sign the PSBT with the offline wallet.
-16. Move the signed PSBT back to the online computer.
-17. Finalize and broadcast it from the online computer.
-18. Repeat the flow after restoring the offline wallet from backup.
-19. Start again on mainnet only after the signing and recovery tests succeed.
-    Signet keys do not carry over. Create a new wallet and repeat every step.
+11. Back up the encrypted signing wallet and its public watch-only wallet data.
+12. Keep the original wallets unchanged.
+    Restore the signing-wallet backup in a separate trusted offline environment.
+    Restore the public watch-only data in a separate online recovery wallet.
+13. Compare the complete receive address in both restored wallets with the
+    address recorded in step 10.
+    Stop if any address differs.
+14. Check the current fee estimate and choose the test amount as described below.
+15. Receive only that small mainnet payment to the verified address.
+    Wait for confirmation.
+16. Create an unsigned PSBT with the restored online watch-only wallet to send
+    the test balance, minus the fee, to the verified address in your other wallet.
+17. Move the PSBT to the restored offline signing environment.
+18. Inspect every payment output, the change address if present, and the fee.
+19. Sign the PSBT with the restored signing wallet.
+20. Move the signed PSBT back to the restored online watch-only wallet.
+21. Finalize and broadcast it from the online computer.
+22. Wait for confirmation and check that the other wallet receives the payment.
+    Deposit more only after this recovery test succeeds.
+
+Use mainnet settings and your own wallet data when you follow the official examples.
+Do not copy their example network options, keys, or addresses.
+
+Private signing-wallet backups stay offline during recovery.
+Only public wallet data and PSBTs go to the online computer.
+This test uses real bitcoin.
+A mistake can lose the entire test amount, and transaction fees are spent even
+when the test succeeds.
+Choose an amount that comfortably covers the outgoing fee and leaves an output
+the receiving wallet can accept.
+Wait if the current fees make the test too expensive.
 
 ## Verify It Works
 
 - The offline computer has no working network connection.
 - Both wallets derive the same receive addresses.
 - The online wallet cannot sign the PSBT.
-- The offline wallet signs only after you inspect the outputs and fee.
-- The online wallet broadcasts the returned signed transaction.
-- A restored offline backup can sign a new signet transaction.
+- The restored offline wallet signs only after you inspect the outputs and fee.
+- The restored online wallet broadcasts the returned signed transaction.
+- The other wallet receives the confirmed mainnet payment.
 
 ## Backup
 
@@ -90,7 +112,7 @@ and must still be treated as private.
 - Installing software on the offline computer without verifying it
 - Using the same removable media for unrelated files
 - Signing without inspecting every output and the fee
-- Testing the process for the first time with mainnet funds
+- Depositing more before the restored wallets complete the test payment
 - Backing up only the online watch-only wallet
 - Assuming that encryption replaces a physical access policy
 
