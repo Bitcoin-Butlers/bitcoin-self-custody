@@ -22,8 +22,10 @@ const element = () => ({
   textContent: "",
 });
 const location = { hash: "" };
+const messages = [];
 const context = vm.createContext({
   URLSearchParams,
+  URL,
   console,
   document: { getElementById: element },
   fetch() { throw new Error("Tests do not fetch browser content"); },
@@ -32,6 +34,7 @@ const context = vm.createContext({
   marked: { parse(value) { return value; } },
   requestAnimationFrame(callback) { callback(); },
   window: {
+    parent: { postMessage(data, origin) { messages.push({ data, origin }); } },
     addEventListener(event, callback) {
       if (event === "afterprint") afterPrint = callback;
     },
@@ -54,6 +57,7 @@ globalThis.conciergeTest = {
   selectStartingPoint,
   setCustodyModel,
   setDefaultCoordinatorAndConnection,
+  updateUrl,
 };`;
 vm.runInContext(source + expose, context);
 
@@ -179,4 +183,21 @@ assert.equal(printableSections.every((section) => section.open), true);
 afterPrint();
 assert.deepEqual(printableSections.map((section) => section.open), [false, true]);
 
-console.log("Concierge state, compatibility, and tutorial composition are valid.");
+location.search = "?parentOrigin=https%3A%2F%2Fpartner.example";
+concierge.updateUrl();
+assert.equal(messages.length, 1);
+assert.equal(messages[0].origin, "https://partner.example");
+assert.equal(messages[0].data.type, "self-custody:configuration");
+assert.equal(messages[0].data.version, 1);
+assert.ok(messages[0].data.setup.includes("custody=multisig"));
+assert.equal(messages[0].data.setup.includes("answers"), false);
+
+for (const parent of ["*", "null", "javascript:alert(1)", "https://partner.example/path"]) {
+  location.search = `?parentOrigin=${encodeURIComponent(parent)}`;
+  concierge.updateUrl();
+}
+delete location.search;
+concierge.updateUrl();
+assert.equal(messages.length, 1, "Only the exact configured web origin receives public choices");
+
+console.log("Concierge state, compatibility, tutorial composition, and embed events are valid.");

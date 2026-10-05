@@ -107,4 +107,5 @@ footer { padding: 22px 24px; text-align: center; color: var(--muted); border-top
   main { max-width: none; padding: 0; }
   .summary-card, .tutorial-section { border-color: #bbb; background: white; }
   .tutorial-section { break-inside: avoid; }
+  .guide-render pre { white-space: pre-wrap; overflow-wrap: anywhere; overflow: visible; }
 }

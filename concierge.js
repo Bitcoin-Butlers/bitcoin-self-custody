@@ -164,6 +164,25 @@ function updateUrl() {
   if (state.coordinator) params.set("coordinator", state.coordinator);
   if (state.connection) params.set("connection", state.connection);
   history.replaceState(null, "", `#${params.toString()}`);
+  publishConfiguration(params);
+}
+
+function publishConfiguration(params) {
+  if (window.parent === window || !location.search) return;
+  const parentOrigin = new URLSearchParams(location.search).get("parentOrigin");
+  if (!parentOrigin) return;
+  try {
+    const origin = new URL(parentOrigin);
+    if (!["https:", "http:"].includes(origin.protocol) || origin.origin !== parentOrigin) return;
+    // Only public choices leave the frame. Key material never belongs here.
+    window.parent.postMessage({
+      type: "self-custody:configuration",
+      version: 1,
+      setup: params.toString(),
+    }, origin.origin);
+  } catch {
+    // An invalid integration origin leaves the standalone flow unchanged.
+  }
 }
 
 function parseUrl() {
@@ -717,7 +736,7 @@ container.addEventListener("change", (event) => {
 
 async function init() {
   try {
-    const response = await fetch("concierge.json?v=2.2.3");
+    const response = await fetch("concierge.json?v=2.2.4");
     if (!response.ok) throw new Error(`Manifest returned ${response.status}`);
     manifest = await response.json();
     if (!manifest.builder) throw new Error("Manifest does not contain the builder contract");

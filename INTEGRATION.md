@@ -14,7 +14,7 @@ GET https://bitcoin-butlers.github.io/bitcoin-self-custody/concierge.json
 
 ```jsonc
 {
-  "version": "2.2.3",
+  "version": "2.2.4",
   "steps": [                          // 5 steps of the self-custody journey
     { "id": "plan", "number": 0, "title": "Plan Your Setup", ... },
     { "id": "hardware-setup", "number": 1, ... },
@@ -126,6 +126,28 @@ Use the `devices` arrays in `seedMethods` and `software` to filter options based
 const compatible = Object.entries(manifest.seedMethods)
   .filter(([, method]) => method.devices.includes("jade"));
 ```
+
+## Embedded builder
+
+Embed `concierge.html` to use the maintained builder instead of copying its
+selection and tutorial logic. Its URL fragment holds the public setup choices.
+The standalone page has no sales or tracking integration.
+
+For an optional product panel in the host page, set `parentOrigin` to the host's
+exact HTTP or HTTPS origin. The builder sends this event after each choice:
+
+```js
+{
+  type: "self-custody:configuration",
+  version: 1,
+  setup: "screen=build&mode=build&custody=single-sig&signers=seedsigner&..."
+}
+```
+
+The message goes only to that origin. The host must verify both `event.origin`
+against the builder URL and `event.source` against the iframe's `contentWindow`.
+Only public choices are included. The host owns products, stock, prices and any
+checkout. Do not send key material to a host or put it in a URL.
 
 ## Guide Markdown
 
