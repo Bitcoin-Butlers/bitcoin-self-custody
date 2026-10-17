@@ -5,7 +5,7 @@ Blockstream provides an official emulator for Jade in their firmware repository.
 ## Requirements
 
 - Docker
-- Linux (the official emulator script uses Linux-specific Docker networking)
+- macOS, Linux or Windows. Docker is the only requirement.
 
 ## Setup
 
@@ -15,7 +15,7 @@ git clone --recursive https://github.com/Blockstream/Jade.git
 cd Jade
 
 # Build and run the emulator
-./run_emulator.sh
+./run.sh
 ```
 
 ## Usage
@@ -40,8 +40,8 @@ The web interface provides on-screen buttons that mirror the physical Jade devic
 
 - The emulator runs the actual Jade firmware, so it behaves identically to a real device
 - Only use testnet for any transaction signing practice
-- macOS/Windows users will need to adjust Docker networking (the script assumes Linux)
-- For macOS, you may need to modify `run_emulator.sh` to use `host.docker.internal` instead of `--network host`
+- `run.sh` handles the Docker networking on every platform.
+- Every Jade and Jade Plus screen in the lesson library was captured on macOS with this script, on 2026-10-01.
 
 ## Source
 
