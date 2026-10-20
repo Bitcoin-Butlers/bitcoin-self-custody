@@ -127,27 +127,25 @@ const compatible = Object.entries(manifest.seedMethods)
   .filter(([, method]) => method.devices.includes("jade"));
 ```
 
-## Embedded builder
+## Embedded setup updates
 
-Embed `concierge.html` to use the maintained builder instead of copying its
-selection and tutorial logic. Its URL fragment holds the public setup choices.
-The standalone page has no sales or tracking integration.
+An iframe can pass its parent's exact HTTP(S) origin in `parentOrigin`:
 
-For an optional product panel in the host page, set `parentOrigin` to the host's
-exact HTTP or HTTPS origin. The builder sends this event after each choice:
-
-```js
-{
-  type: "self-custody:configuration",
-  version: 1,
-  setup: "screen=build&mode=build&custody=single-sig&signers=seedsigner&..."
-}
+```html
+<iframe src="https://bitcoin-butlers.github.io/bitcoin-self-custody/concierge.html?parentOrigin=https%3A%2F%2Fshop.example"></iframe>
 ```
 
-The message goes only to that origin. The host must verify both `event.origin`
-against the builder URL and `event.source` against the iframe's `contentWindow`.
-Only public choices are included. The host owns products, stock, prices and any
-checkout. Do not send key material to a host or put it in a URL.
+The concierge posts this message to that origin on initial load and when a selection changes:
+
+```json
+{ "type": "self-custody:configuration", "version": 1, "setup": "screen=build&custody=single-sig&signers=jade&seeds=gen-hardware-wallet&coordinator=sparrow-wallet&connection=public-server" }
+```
+
+`setup` contains only the public setup fields used in a shareable URL fragment.
+It excludes query parameters, comparison answers, and unknown fragment fields.
+Standalone use and invalid or missing parent origins send no messages.
+The parent must check both `event.origin` and `event.source` before using a message.
+This message is a product selection, not proof of a purchase or referral.
 
 ## Guide Markdown
 

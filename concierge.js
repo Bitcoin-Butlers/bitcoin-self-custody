@@ -163,25 +163,18 @@ function updateUrl() {
   }
   if (state.coordinator) params.set("coordinator", state.coordinator);
   if (state.connection) params.set("connection", state.connection);
-  history.replaceState(null, "", `#${params.toString()}`);
-  publishConfiguration(params);
-}
+  const setup = params.toString();
+  history.replaceState(null, "", `#${setup}`);
+  if (window.parent === window) return;
 
-function publishConfiguration(params) {
-  if (window.parent === window || !location.search) return;
   const parentOrigin = new URLSearchParams(location.search).get("parentOrigin");
   if (!parentOrigin) return;
   try {
-    const origin = new URL(parentOrigin);
-    if (!["https:", "http:"].includes(origin.protocol) || origin.origin !== parentOrigin) return;
-    // Only public choices leave the frame. Key material never belongs here.
-    window.parent.postMessage({
-      type: "self-custody:configuration",
-      version: 1,
-      setup: params.toString(),
-    }, origin.origin);
+    const url = new URL(parentOrigin);
+    if (!["https:", "http:"].includes(url.protocol) || url.origin !== parentOrigin) return;
+    window.parent.postMessage({ type: "self-custody:configuration", version: 1, setup }, parentOrigin);
   } catch {
-    // An invalid integration origin leaves the standalone flow unchanged.
+    // An invalid embed origin must not interrupt the tutorial.
   }
 }
 

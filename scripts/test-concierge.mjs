@@ -21,11 +21,12 @@ const element = () => ({
   },
   textContent: "",
 });
-const location = { hash: "" };
+const location = { hash: "", search: "" };
 const messages = [];
+const parent = { postMessage(data, origin) { messages.push({ data, origin }); } };
 const context = vm.createContext({
-  URLSearchParams,
   URL,
+  URLSearchParams,
   console,
   document: { getElementById: element },
   fetch() { throw new Error("Tests do not fetch browser content"); },
@@ -34,7 +35,7 @@ const context = vm.createContext({
   marked: { parse(value) { return value; } },
   requestAnimationFrame(callback) { callback(); },
   window: {
-    parent: { postMessage(data, origin) { messages.push({ data, origin }); } },
+    parent,
     addEventListener(event, callback) {
       if (event === "afterprint") afterPrint = callback;
     },
@@ -56,6 +57,7 @@ globalThis.conciergeTest = {
   printTutorial,
   selectStartingPoint,
   setCustodyModel,
+  setSingleSigner,
   setDefaultCoordinatorAndConnection,
   updateUrl,
 };`;
@@ -183,21 +185,31 @@ assert.equal(printableSections.every((section) => section.open), true);
 afterPrint();
 assert.deepEqual(printableSections.map((section) => section.open), [false, true]);
 
-location.search = "?parentOrigin=https%3A%2F%2Fpartner.example";
+configure("single-sig", ["jade"], ["gen-hardware-wallet"], "sparrow-wallet", "public-server");
+location.hash = "#private=must-not-be-forwarded";
+location.search = "?parentOrigin=https%3A%2F%2Fshop.example&token=must-not-be-forwarded";
+concierge.state.answers = { private: "must-not-be-forwarded" };
 concierge.updateUrl();
 assert.equal(messages.length, 1);
-assert.equal(messages[0].origin, "https://partner.example");
-assert.equal(messages[0].data.type, "self-custody:configuration");
-assert.equal(messages[0].data.version, 1);
-assert.ok(messages[0].data.setup.includes("custody=multisig"));
-assert.equal(messages[0].data.setup.includes("answers"), false);
+assert.equal(messages[0].origin, "https://shop.example");
+assert.deepEqual(JSON.parse(JSON.stringify(messages[0].data)), {
+  type: "self-custody:configuration",
+  version: 1,
+  setup: "screen=entry&custody=single-sig&signers=jade&seeds=gen-hardware-wallet&coordinator=sparrow-wallet&connection=public-server",
+});
+concierge.setSingleSigner("seedsigner");
+concierge.updateUrl();
+assert.equal(new URLSearchParams(messages.at(-1).data.setup).get("signers"), "seedsigner");
 
-for (const parent of ["*", "null", "javascript:alert(1)", "https://partner.example/path"]) {
-  location.search = `?parentOrigin=${encodeURIComponent(parent)}`;
+messages.length = 0;
+for (const origin of ["", "*", "null", "https://shop.example/path", "https://user:pass@shop.example", "javascript:alert(1)"]) {
+  location.search = `?parentOrigin=${encodeURIComponent(origin)}`;
   concierge.updateUrl();
 }
-delete location.search;
+assert.equal(messages.length, 0, "Only an exact HTTP(S) origin can receive setup updates");
+location.search = "?parentOrigin=https%3A%2F%2Fshop.example";
+context.window.parent = context.window;
 concierge.updateUrl();
-assert.equal(messages.length, 1, "Only the exact configured web origin receives public choices");
+assert.equal(messages.length, 0, "Standalone use does not send setup updates");
 
-console.log("Concierge state, compatibility, tutorial composition, and embed events are valid.");
+console.log("Concierge state, compatibility, and tutorial composition are valid.");
