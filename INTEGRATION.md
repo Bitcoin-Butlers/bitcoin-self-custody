@@ -14,7 +14,7 @@ GET https://bitcoin-butlers.github.io/bitcoin-self-custody/concierge.json
 
 ```jsonc
 {
-  "version": "2.2.3",
+  "version": "2.2.4",
   "steps": [                          // 5 steps of the self-custody journey
     { "id": "plan", "number": 0, "title": "Plan Your Setup", ... },
     { "id": "hardware-setup", "number": 1, ... },
@@ -126,6 +126,26 @@ Use the `devices` arrays in `seedMethods` and `software` to filter options based
 const compatible = Object.entries(manifest.seedMethods)
   .filter(([, method]) => method.devices.includes("jade"));
 ```
+
+## Embedded setup updates
+
+An iframe can pass its parent's exact HTTP(S) origin in `parentOrigin`:
+
+```html
+<iframe src="https://bitcoin-butlers.github.io/bitcoin-self-custody/concierge.html?parentOrigin=https%3A%2F%2Fshop.example"></iframe>
+```
+
+The concierge posts this message to that origin on initial load and when a selection changes:
+
+```json
+{ "type": "self-custody:configuration", "version": 1, "setup": "screen=build&custody=single-sig&signers=jade&seeds=gen-hardware-wallet&coordinator=sparrow-wallet&connection=public-server" }
+```
+
+`setup` contains only the public setup fields used in a shareable URL fragment.
+It excludes query parameters, comparison answers, and unknown fragment fields.
+Standalone use and invalid or missing parent origins send no messages.
+The parent must check both `event.origin` and `event.source` before using a message.
+This message is a product selection, not proof of a purchase or referral.
 
 ## Guide Markdown
 

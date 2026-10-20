@@ -163,7 +163,19 @@ function updateUrl() {
   }
   if (state.coordinator) params.set("coordinator", state.coordinator);
   if (state.connection) params.set("connection", state.connection);
-  history.replaceState(null, "", `#${params.toString()}`);
+  const setup = params.toString();
+  history.replaceState(null, "", `#${setup}`);
+  if (window.parent === window) return;
+
+  const parentOrigin = new URLSearchParams(location.search).get("parentOrigin");
+  if (!parentOrigin) return;
+  try {
+    const url = new URL(parentOrigin);
+    if (!["https:", "http:"].includes(url.protocol) || url.origin !== parentOrigin) return;
+    window.parent.postMessage({ type: "self-custody:configuration", version: 1, setup }, parentOrigin);
+  } catch {
+    // An invalid embed origin must not interrupt the tutorial.
+  }
 }
 
 function parseUrl() {
@@ -717,7 +729,7 @@ container.addEventListener("change", (event) => {
 
 async function init() {
   try {
-    const response = await fetch("concierge.json?v=2.2.3");
+    const response = await fetch("concierge.json?v=2.2.4");
     if (!response.ok) throw new Error(`Manifest returned ${response.status}`);
     manifest = await response.json();
     if (!manifest.builder) throw new Error("Manifest does not contain the builder contract");
