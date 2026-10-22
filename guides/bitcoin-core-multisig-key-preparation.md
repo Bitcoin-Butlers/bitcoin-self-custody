@@ -42,13 +42,16 @@ recovery, and signs a transaction.
 2. Download and verify Bitcoin Core on an online computer.
 3. Transfer the verified installer to the dedicated offline computer.
 4. Remove or disable every network interface on the offline computer.
-5. Start Bitcoin Core on signet.
+5. Start Bitcoin Core on mainnet.
 6. Create and encrypt a new descriptor wallet for this signer.
 7. Back up the signer wallet to separate encrypted media.
 8. Follow Bitcoin Core's multisig tutorial to obtain the key origin and xpub
    from a derivation path that this wallet can sign.
 9. Record the master fingerprint, complete derivation path, and xpub together.
 10. Stop before you create the multisignature wallet.
+
+Use mainnet settings and your own wallet data when you follow the official examples.
+Do not copy their example network options, keys, or addresses.
 
 BIP-48 defines `m/48'/0'/0'/2'` as the standard account path for this script
 type. Record the path your wallet actually uses. A path outside BIP-48 still
@@ -62,16 +65,14 @@ Repeat this process in a separate wallet and signing environment for every Core
 key in the policy.
 Never reuse one Core wallet for two key slots.
 
-Signet keys do not carry over to mainnet. Prepare every mainnet key again from
-step 1, and record its own origin details.
-
 ## Verify It Works
 
 - The signer computer has no working network connection.
 - Bitcoin Core reports the recorded fingerprint and derivation path for the
   signer key.
 - The recorded xpub belongs to the encrypted signer wallet.
-- The wallet backup can be loaded in a separate signet test environment.
+- The wallet backup can be restored in a separate trusted offline environment.
+- The restored wallet produces the same fingerprint, derivation path, and xpub.
 
 ## Backup
 
@@ -80,6 +81,9 @@ Keep the recorded fingerprint, derivation path, and xpub with the recovery
 material.
 The later coordinator guide adds the complete multisignature descriptor after
 all three keys are combined.
+Keep the original signer wallet unchanged during the recovery test.
+Use the restored keys for the coordinator guide's small mainnet test payment
+before depositing more.
 
 ## Common Mistakes
 
@@ -88,7 +92,7 @@ all three keys are combined.
 - Forcing the Core key onto a hardware-wallet derivation path
 - Reusing one Core wallet for more than one key slot
 - Treating the public xpub record as a replacement for the private wallet backup
-- Continuing to mainnet before the complete signet recovery test succeeds
+- Depositing more before the complete mainnet recovery test succeeds
 
 ## Official Sources
 

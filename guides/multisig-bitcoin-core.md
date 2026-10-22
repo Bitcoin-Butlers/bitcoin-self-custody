@@ -11,8 +11,8 @@ A watch-only Bitcoin Core wallet holds the multisig descriptor and coordinates
 payments.
 Any two signer wallets can authorize a payment.
 
-This is an advanced route. Complete the full process on signet before you use
-mainnet.
+This is an advanced route.
+Test recovery with a small mainnet payment before depositing more.
 
 ## Trade-offs
 
@@ -43,13 +43,15 @@ a requirement.
 - Dedicated transfer media for the PSBT workflow
 - Separate backups for each signer wallet
 - Multiple copies of the public multisig descriptor
-- A small amount of signet bitcoin for setup and recovery tests
+- A small amount of bitcoin that you can afford to lose during the recovery test
+- A verified receive address in another wallet you control
 
 ## Build the Setup
 
 1. Read Bitcoin Core's official multisig and PSBT tutorials in full.
 2. Download and verify the same Bitcoin Core release for every environment.
-3. Start the online node on signet.
+3. Start the online node on mainnet and let it synchronize.
+   Use mainnet settings in each offline signing environment too.
 4. Create three descriptor signer wallets. Create a new key in each wallet.
 5. Encrypt and back up each signer wallet separately.
 6. Extract the key origin and account xpub from each signer wallet by following
@@ -64,10 +66,8 @@ a requirement.
     environment so each signer can review addresses and PSBTs.
 12. Verify that every environment derives the same receive addresses.
 13. Back up the checked descriptor separately from the three signer wallets.
-14. Receive a small signet payment.
-15. Complete the signing test below with two signer wallets.
-16. Restore two signer-wallet backups and the descriptor in a separate test
-    environment. Confirm that they can spend the signet funds.
+14. Complete **Test Recovery with a Small Mainnet Payment** below before
+    depositing more than the test amount.
 
 Never copy a private descriptor or signer-wallet backup to the online
 coordinator.
@@ -77,9 +77,40 @@ other coordinators expect it. Record the exact path each wallet uses, because
 recovery in other software needs it. The steel backup guide shows a complete
 descriptor.
 
-Signet keys and descriptors do not carry over to mainnet. Repeat every step in
-this section with new keys and a new descriptor, and complete the recovery test
-again, before you receive mainnet funds.
+Use mainnet settings when you follow the official examples.
+Use the origins and xpubs from your own wallets.
+Do not copy example keys, addresses, or network options.
+
+## Test Recovery with a Small Mainnet Payment
+
+1. Keep the original wallets unchanged.
+2. Restore two signer-wallet backups in separate trusted offline environments.
+3. Recreate an online watch-only wallet from the backed-up public descriptor.
+   Import that descriptor into an offline watch-only wallet in each restored
+   signing environment too.
+4. Compare the restored key origins and the complete receive addresses with the
+   original wallets.
+   Stop if any value differs.
+5. Check the current fee estimate.
+   Choose a test amount you can afford to lose that comfortably covers the
+   outgoing fee and leaves an output the receiving wallet can accept.
+6. Receive only that small mainnet payment to the verified address.
+   Wait for confirmation.
+7. Follow **Sign a Payment** below using the restored watch-only wallet and the
+   two restored signer wallets.
+   Send the test balance, minus the fee, to the verified address in your other
+   wallet.
+8. Wait for confirmation and check that the other wallet receives the payment.
+   Deposit more only after this recovery test succeeds.
+
+Private signer backups stay offline throughout recovery.
+Only the public descriptor and PSBTs go to the online coordinator.
+This test uses real bitcoin.
+A mistake can lose the entire test amount, and transaction fees are spent even
+when the test succeeds.
+Multisig transactions are larger than single-key transactions, so check the fee
+for this wallet rather than using a single-key estimate.
+Wait if the current fees make the test too expensive.
 
 ## Sign a Payment
 
@@ -112,7 +143,7 @@ signing procedure.
 - Rebuilding the descriptor with different key origins or derivation paths
 - Signing a PSBT without checking the outputs in the multisig wallet
 - Using `joinpsbts` instead of `combinepsbt` for copies of the same PSBT
-- Testing recovery for the first time after receiving mainnet funds
+- Depositing more before the restored wallets complete the test payment
 
 ## Official Sources
 

@@ -158,19 +158,39 @@ The wallet descriptor is the blueprint for your multisig wallet. Without it, see
 
 ---
 
-## Step 6: Test Recovery Before Funding
+## Step 6: Test Recovery with a Small Mainnet Payment
 
-Complete this test on signet before you receive mainnet funds.
-Signet keys and descriptors do not carry over to mainnet. Create new keys,
-rebuild the wallet, and repeat this test.
+Use the actual mainnet wallet for this test before depositing more than the test
+amount.
+This test uses real bitcoin.
+A mistake can lose the entire test amount, and transaction fees are spent even
+when the test succeeds.
+Multisig transactions are larger than single-key transactions.
+Check the current fee estimate for this wallet.
+Choose an amount you can afford to lose that comfortably covers the outgoing fee
+and leaves an output the receiving wallet can accept.
+Wait if the current fees make the test too expensive.
 
 1. Keep the original Sparrow wallet and signers unchanged.
-2. In a separate test environment, restore two signer recovery packages.
+2. Restore two signer recovery packages in separate trusted signer environments.
+   Keep hardware seeds on compatible signing devices and Core signer backups
+   in offline environments.
 3. Recreate the watch-only wallet from a checked copy of the complete descriptor.
-4. Confirm that the restored wallet derives the same receive addresses.
-5. Receive a small signet payment to one verified address.
-6. Create and sign a return payment with the two restored signers.
-7. Stop and correct the backups if any address or signature does not match.
+4. Confirm that the restored wallet and signer environments derive the same
+   complete receive addresses as the original wallet.
+   Stop if any address differs.
+5. Receive only the small mainnet test payment to one verified address.
+   Wait for confirmation.
+6. Follow **Step 8: Sending Bitcoin** with the restored watch-only wallet and
+   the two restored signers.
+   Send the test balance, minus the fee, to a verified address in another wallet
+   you control.
+7. Wait for confirmation and check that the other wallet receives the payment.
+   Stop and correct the backups if any address or signature does not match.
+
+This spending test checks the two restored signers used for the payment.
+Restore and check the third key backup independently too.
+Deposit more only after the recovery checks succeed.
 
 ---
 
